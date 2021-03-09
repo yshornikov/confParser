@@ -128,7 +128,7 @@ PeeringDict =  {
     "Hostname": [0, "TEXT NOT NULL,"],
     "SysAddr": [0, "TEXT,"],
     "CLISyntax": [0, "TEXT NOT NULL,"],
-    "AS": [0, "TEXT,"],
+    "LocalAS": [0, "TEXT,"],
     "PeerDescr": [0, "TEXT,"],
     "IfID": [0, "TEXT,"],
     "IfName": [0, "TEXT,"],
@@ -166,275 +166,258 @@ for value in PeeringDict:
     PeeringDict[value][0] = int(i)
     i = i + 1
 
-# CommandsDict =  {
-#     "IOS": [
-#         [ "show version", 30 ],
-#         [ "terminal length 0", 30 ],
-#         [ "show running-config", 300 ],
-#         [ "show bootvar", 30 ],
-#         [ "show interfaces", 60 ],
-#         [ "show inventory", 60 ],
-#         [ "show ip interface", 60 ],
-#         [ "show ipv6 interface", 60 ],
-#         [ "show mac address-table detail", 60 ],
-#         [ "show mpls interfaces detail", 60 ],
-#         [ "show cdp neighbors detail", 60 ],
-#         [ "show lldp neighbors detail", 60 ],
-#         [ "show bfd neighbors details", 60 ],
-#         [ "show ip ospf", 60 ],
-#         [ "show ip ospf neighbor detail", 60 ],
-#         [ "show ip ospf database router", 300 ],
-#         [ "show ip ospf database network", 300 ],
-#         [ "show ip ospf database summary", 300 ],
-#         [ "show ip ospf database asbr-summary", 300 ],
-#         [ "show ip ospf database external", 300 ],
-#         [ "show ip ospf database nssa-external", 300 ],
-#         [ "show ipv6 ospf", 60 ],
-#         [ "show ipv6 ospf neighbor detail", 60 ],
-#         [ "show ospfv3 database router", 300 ],
-#         [ "show ospfv3 database network", 300 ],
-#         [ "show ospfv3 database prefix", 300 ],
-#         [ "show ospfv3 database inter-area", 300 ],
-#         [ "show ospfv3 database external", 300 ],
-#         [ "show ospfv3 database nssa-external", 300 ],
-#         [ "show isis", 60 ],
-#         [ "show isis neighbors detail", 60 ],
-#         [ "show isis database detail", 300 ],
-#         [ "show mpls ldp neighbor detail", 60 ],
-#         [ "show ip bgp neighbors", 60 ],
-#         [ "show ip route", 300 ],
-#         [ "show ip route summary", 60 ],
-#         [ "show ip cef", 300 ],
-#         [ "show ip cef summary", 60 ],
-#         [ "show ipv6 route", 300 ],
-#         [ "show ipv6 route summary", 60 ],
-#         [ "show ipv6 cef", 300 ],
-#         [ "show ipv6 cef summary", 60 ],
-#         [ "show mpls ip binding", 300 ],
-#         [ "show mpls forwarding-table", 300 ],
-#         [ "show ip arp", 60 ],
-#         [ "show ipv6 neighbors", 60 ],
-#         [ "show vrf", 60 ],
-#         [ "show ip route vrf {vrf-name}", 300 ],
-#         [ "show ip route vrf {vrf-name} summary", 60 ],
-#         [ "show ip cef vrf {vrf-name}", 300 ],
-#         [ "show ip cef vrf {vrf-name} summary", 60 ],
-#         [ "show ipv6 route vrf {vrf-name}", 300 ],
-#         [ "show ipv6 route vrf {vrf-name} summary", 60 ],
-#         [ "show ipv6 cef vrf {vrf-name}", 300 ],
-#         [ "show ip cef vrf {vrf-name} summary", 60 ],
-#         [ "show ip arp vrf {vrf-name}", 60 ],
-#         [ "show ipv6 neighbors vrf {vrf-name}", 60 ],
-#         [ "show l2vpn service all", 60 ],
-#         [ "show xconnect all detail", 60 ],
-#         [ "show bgp vrf {vrf-name} summary", 60 ]
-#     ],
-#     "IOS-XR": [
-#         [ "show version", 30 ],
-#         [ "terminal length 0", 30 ],
-#         [ "show running-config", 300 ],
-#         [ "show variables boot", 30 ],
-#         [ "show interfaces", 60 ],
-#         [ "show inventory", 60 ],
-#         [ "show ipv4 interface", 60 ],
-#         [ "show ipv6 interface", 60 ],
-#         [ "show mpls interfaces detail", 60 ],
-#         [ "show rsvp interface detail", 60 ],
-#         [ "show rsvp session detail", 300 ],
-#         [ "show cdp neighbors detail", 60 ],
-#         [ "show lldp neighbors detail", 60 ],
-#         [ "show bfd session detail", 60 ],
-#         [ "show ospf neighbor detail", 60 ],
-#         [ "show ospf database router", 300 ],
-#         [ "show ospf database network", 300 ],
-#         [ "show ospf database summary", 300 ],
-#         [ "show ospf database asbr-summary", 300 ],
-#         [ "show ospf database external", 300 ],
-#         [ "show ospf database nssa-external", 300 ],
-#         [ "show ospfv3 neighbor detail", 60 ],
-#         [ "show ospfv3 database router", 300 ],
-#         [ "show ospfv3 database network", 300 ],
-#         [ "show ospfv3 database prefix", 300 ],
-#         [ "show ospfv3 database inter-area", 300 ],
-#         [ "show ospfv3 database external", 300 ],
-#         [ "show ospfv3 database nssa-external", 300 ],
-#         [ "show isis", 60 ],
-#         [ "show isis adjacency detail", 60 ],
-#         [ "show isis database detail", 300 ],
-#         [ "show mpls ldp neighbor detail", 60 ],
-#         [ "show rsvp neighbors detail", 60 ],
-#         [ "show bgp neighbors", 60 ],
-#         [ "show route ipv4", 300 ],
-#         [ "show route ipv4 summary detail", 60 ],
-#         [ "show cef ipv4", 300 ],
-#         [ "show cef ipv4 summary", 60 ],
-#         [ "show route ipv6", 300 ],
-#         [ "show route ipv6 summary detail", 60 ],
-#         [ "show cef ipv6", 300 ],
-#         [ "show cef ipv6 summary", 60 ],
-#         [ "show mpls ldp bindings", 300 ],
-#         [ "show mpls ldp bindings summary", 60 ],
-#         [ "show mpls forwarding", 300 ],
-#         [ "show mpls forwarding summary", 60 ],
-#         [ "show arp", 60 ],
-#         [ "show ipv6 neighbors", 60 ],
-#         [ "show vrf all", 60 ],
-#         [ "show route vrf {vrf-name} ipv4", 300 ],
-#         [ "show route vrf {vrf-name} ipv4 summary detail", 60 ],
-#         [ "show cef vrf {vrf-name} ipv4", 300 ],
-#         [ "show cef vrf {vrf-name} ipv4 summary", 60 ],
-#         [ "show route vrf {vrf-name} ipv6", 300 ],
-#         [ "show route vrf {vrf-name} ipv6 summary detail", 60 ],
-#         [ "show cef vrf {vrf-name} ipv6", 300 ],
-#         [ "show cef vrf {vrf-name} ipv6 summary", 60 ],
-#         [ "show arp vrf {vrf-name}", 60 ],
-#         [ "show l2vpn xconnect detail", 60 ],
-#         [ "show ospf vrf all neighbor detail", 60 ],
-#         [ "show ospfv3 vrf all neighbor detail", 60 ],
-#         [ "show bgp vrf all neighbors", 60 ]
-#     ],
-#     "VRP": [
-#         [ "display version", 30 ],
-#         [ "change cli more_enabled=no", 30 ],
-#         [ "display current-configuration", 300 ],
-#         [ "display interface", 60 ],
-#         [ "display interface phy-option", 60 ],
-#         [ "display ip interface", 60 ],
-#         [ "display ipv6 interface", 60 ],
-#         [ "display mpls interface verbose", 60 ],
-#         [ "display mpls rsvp interface", 60 ],
-#         [ "display lldp neighbor", 60 ],
-#         [ "display bfd session all verbose", 60 ],
-#         [ "display ospf peer", 60 ],
-#         [ "display ospf lsdb router", 300 ],
-#         [ "display ospf lsdb network", 300 ],
-#         [ "display ospf lsdb summary", 300 ],
-#         [ "display ospf lsdb asbr", 300 ],
-#         [ "display ospf lsdb nssa", 300 ],
-#         [ "display ospf lsdb ase", 300 ],
-#         [ "display ospfv3 peer", 60 ],
-#         [ "display ospfv3 lsdb router", 300 ],
-#         [ "display ospfv3 lsdb inter-prefix", 300 ],
-#         [ "display ospfv3 lsdb network", 300 ],
-#         [ "display ospfv3 lsdb intra-prefix", 300 ],
-#         [ "display ospfv3 lsdb inter-router", 300 ],
-#         [ "display ospfv3 lsdb nssa", 300 ],
-#         [ "display ospfv3 lsdb external", 300 ],
-#         [ "display isis peer verbose", 60 ],
-#         [ "display isis lsdb verbose", 300 ],
-#         [ "display mpls ldp peer verbose", 60 ],
-#         [ "display mpls rsvp-te peer", 60 ],
-#         [ "display bgp peer verbose", 60 ],
-#         [ "display ip vpn-instance", 60 ]
-#     ],
-#     "SR-OS": [
-#         [ "show version", 30 ],
-#         [ "environment no more", 30 ],
-#         [ "admin display-config", 300 ],
-#         [ "show bof", 30 ],
-#         [ "show port", 60 ],
-#         [ "show port {port-id} optical detail", 60 ],
-#         [ "show router \"{router-name}\" interface detail", 60 ],
-#         [ "show router {service-id} interface detail", 60 ],
-#         [ "show router mpls interface detail", 60 ],
-#         [ "show router rsvp interface detail", 60 ],
-#         [ "show router ldp interface detail", 60 ],
-#         [ "show router mpls lsp detail", 300 ],
-#         [ "show system lldp neighbor", 60 ],
-#         [ "show port {port-id} ethernet lldp remote-info detail", 60 ],
-#         [ "show router bfd session", 60 ],
-#         [ "show router ospf all status", 60 ],
-#         [ "show router ospf all neighbor detail", 60 ],
-#         [ "show router ospf all database detail", 600 ],
-#         [ "show router ospf3 all status", 60 ],
-#         [ "show router ospf3 all neighbor detail", 60 ],
-#         [ "show router ospf3 all database detail", 600 ],
-#         [ "show router isis all status", 60 ],
-#         [ "show router isis all adjacency detail", 60 ],
-#         [ "show router isis all database detail", 600 ],
-#         [ "show router ldp session detail", 60 ],
-#         [ "show router rsvp neighbor detail", 60 ],
-#         [ "show router bgp neighbor", 60 ],
-#         [ "show router \"{router-name}\" route-table ipv4", 300 ],
-#         [ "show router \"{router-name}\" route-table ipv4 summary", 60 ],
-#         [ "show router \"{router-name}\" fib {card-id} ipv4", 300 ],
-#         [ "show router \"Base\" fib {card-id} summary ipv4", 60 ],
-#         [ "show router \"{router-name}\" route-table ipv6", 300 ],
-#         [ "show router \"{router-name}\" route-table ipv6 summary", 60 ],
-#         [ "show router \"{router-name}\" fib {card-id} ipv6", 300 ],
-#         [ "show router \"Base\" fib {card-id} summary ipv6", 60 ],
-#         [ "show router \"{router-name}\" ldp bindings detail", 300 ],
-#         [ "show router \"{router-name}\" ldp bindings summary", 60 ],
-#         [ "show router \"{router-name}\" arp", 60 ],
-#         [ "show router \"{router-name}\" neighbor", 60 ],
-#         [ "show service service-using", 60 ],
-#         [ "show service id {vprn-id} all", 60 ],
-#         [ "show service id {ies-id} all", 60 ],
-#         [ "show router {vprn-id} route-table ipv4", 300 ],
-#         [ "show router {vprn-id} route-table ipv4 summary", 60 ],
-#         [ "show router {vprn-id} fib {card-id} ipv4", 300 ],
-#         [ "show router {vprn-id} route-table ipv6", 300 ],
-#         [ "show router {vprn-id} route-table ipv6 summary", 60 ],
-#         [ "show router {vprn-id} fib {card-id} ipv6", 300 ],
-#         [ "show router {vprn-id} arp", 60 ],
-#         [ "show router {vprn-id} arp summary", 60 ],
-#         [ "show router {vprn-id} neighbor", 60 ],
-#         [ "show router {vprn-id} neighbor summary", 60 ],
-#         [ "show service id {vpls-id} all", 60 ],
-#         [ "show service id {xpipe-id} all", 60 ],
-#         [ "show service sdp detail", 60 ],
-#         [ "show router {vprn-id} ospf all neighbor detail", 60 ],
-#         [ "show router {vprn-id} ospf3 all neighbor detail", 60 ],
-#         [ "show router {vprn-id} bgp neighbor", 60 ]
-#     ]
-
-# }
-
 CommandsDict =  {
     "IOS": [
         [ "show version", 30 ],
         [ "terminal length 0", 30 ],
         [ "show running-config", 300 ],
+        [ "show bootvar", 30 ],
+        [ "show interfaces", 60 ],
+        [ "show inventory", 60 ],
+        [ "show ip interface", 60 ],
+        [ "show ipv6 interface", 60 ],
+        [ "show mac address-table detail", 60 ],
+        [ "show mpls interfaces detail", 60 ],
         [ "show cdp neighbors detail", 60 ],
         [ "show lldp neighbors detail", 60 ],
+        [ "show bfd neighbors details", 60 ],
+        [ "show ip ospf", 60 ],
         [ "show ip ospf neighbor detail", 60 ],
+        [ "show ip ospf interface", 60 ],
+        [ "show ip ospf database router", 300 ],
+        [ "show ip ospf database network", 300 ],
+        [ "show ip ospf database summary", 300 ],
+        [ "show ip ospf database asbr-summary", 300 ],
+        [ "show ip ospf database external", 300 ],
+        [ "show ip ospf database nssa-external", 300 ],
+        [ "show ipv6 ospf", 60 ],
+        [ "show ipv6 ospf neighbor detail", 60 ],
+        [ "show ipv6 ospf interface", 60 ],
+        [ "show ospfv3 database router", 300 ],
+        [ "show ospfv3 database network", 300 ],
+        [ "show ospfv3 database prefix", 300 ],
+        [ "show ospfv3 database inter-area", 300 ],
+        [ "show ospfv3 database external", 300 ],
+        [ "show ospfv3 database nssa-external", 300 ],
+        [ "show isis", 60 ],
+        [ "show isis neighbors detail", 60 ],
+        [ "show isis database detail", 300 ],
+        [ "show mpls ldp neighbor detail", 60 ],
         [ "show ip bgp neighbors", 60 ],
+        [ "show ip route", 300 ],
+        [ "show ip route summary", 60 ],
+        [ "show ip cef", 300 ],
+        [ "show ip cef summary", 60 ],
+        [ "show ipv6 route", 300 ],
+        [ "show ipv6 route summary", 60 ],
+        [ "show ipv6 cef", 300 ],
+        [ "show ipv6 cef summary", 60 ],
+        [ "show mpls ip binding", 300 ],
+        [ "show mpls forwarding-table", 300 ],
+        [ "show ip arp", 60 ],
+        [ "show ipv6 neighbors", 60 ],
+        [ "show vrf", 60 ],
+        [ "show ip route vrf {vrf-name}", 300 ],
+        [ "show ip route vrf {vrf-name} summary", 60 ],
+        [ "show ip cef vrf {vrf-name}", 300 ],
+        [ "show ip cef vrf {vrf-name} summary", 60 ],
+        [ "show ipv6 route vrf {vrf-name}", 300 ],
+        [ "show ipv6 route vrf {vrf-name} summary", 60 ],
+        [ "show ipv6 cef vrf {vrf-name}", 300 ],
+        [ "show ip cef vrf {vrf-name} summary", 60 ],
+        [ "show ip arp vrf {vrf-name}", 60 ],
+        [ "show ipv6 neighbors vrf {vrf-name}", 60 ],
+        [ "show l2vpn service all", 60 ],
+        [ "show xconnect all detail", 60 ],
+        [ "show bgp vrf {vrf-name} summary", 60 ]
     ],
     "IOS-XR": [
-        [ "show version brief", 30 ],
+        [ "show version", 30 ],
         [ "terminal length 0", 30 ],
         [ "show running-config", 300 ],
+        [ "show variables boot", 30 ],
+        [ "show interfaces", 60 ],
+        [ "show inventory", 60 ],
+        [ "show ipv4 interface", 60 ],
+        [ "show ipv6 interface", 60 ],
+        [ "show mpls interfaces detail", 60 ],
+        [ "show rsvp interface detail", 60 ],
+        [ "show rsvp session detail", 300 ],
         [ "show cdp neighbors detail", 60 ],
         [ "show lldp neighbors detail", 60 ],
+        [ "show bfd session detail", 60 ],
+        [ "show ospf", 60 ],
         [ "show ospf neighbor detail", 60 ],
-        [ "show bgp neighbors", 60 ]
+        [ "show ospf interface", 60 ],
+        [ "show ospf database router", 300 ],
+        [ "show ospf database network", 300 ],
+        [ "show ospf database summary", 300 ],
+        [ "show ospf database asbr-summary", 300 ],
+        [ "show ospf database external", 300 ],
+        [ "show ospf database nssa-external", 300 ],
+        [ "show ospfv3", 60 ],
+        [ "show ospfv3 neighbor detail", 60 ],
+        [ "show ospfv3 interface", 60 ],
+        [ "show ospfv3 database router", 300 ],
+        [ "show ospfv3 database network", 300 ],
+        [ "show ospfv3 database prefix", 300 ],
+        [ "show ospfv3 database inter-area", 300 ],
+        [ "show ospfv3 database external", 300 ],
+        [ "show ospfv3 database nssa-external", 300 ],
+        [ "show isis", 60 ],
+        [ "show isis adjacency detail", 60 ],
+        [ "show isis interface", 60 ],
+        [ "show isis database detail", 300 ],
+        [ "show mpls ldp neighbor detail", 60 ],
+        [ "show rsvp neighbors detail", 60 ],
+        [ "show bgp neighbors", 60 ],
+        [ "show route ipv4", 300 ],
+        [ "show route ipv4 summary detail", 60 ],
+        [ "show cef ipv4", 300 ],
+        [ "show cef ipv4 summary", 60 ],
+        [ "show route ipv6", 300 ],
+        [ "show route ipv6 summary detail", 60 ],
+        [ "show cef ipv6", 300 ],
+        [ "show cef ipv6 summary", 60 ],
+        [ "show mpls ldp bindings", 300 ],
+        [ "show mpls ldp bindings summary", 60 ],
+        [ "show mpls forwarding", 300 ],
+        [ "show mpls forwarding summary", 60 ],
+        [ "show arp", 60 ],
+        [ "show ipv6 neighbors", 60 ],
+        [ "show vrf all", 60 ],
+        [ "show route vrf {vrf-name} ipv4", 300 ],
+        [ "show route vrf {vrf-name} ipv4 summary detail", 60 ],
+        [ "show cef vrf {vrf-name} ipv4", 300 ],
+        [ "show cef vrf {vrf-name} ipv4 summary", 60 ],
+        [ "show route vrf {vrf-name} ipv6", 300 ],
+        [ "show route vrf {vrf-name} ipv6 summary detail", 60 ],
+        [ "show cef vrf {vrf-name} ipv6", 300 ],
+        [ "show cef vrf {vrf-name} ipv6 summary", 60 ],
+        [ "show arp vrf {vrf-name}", 60 ],
+        [ "show l2vpn xconnect detail", 60 ],
+        [ "show ospf vrf all neighbor detail", 60 ],
+        [ "show ospfv3 vrf all neighbor detail", 60 ],
+        [ "show bgp vrf all neighbors", 60 ]
     ],
     "VRP": [
         [ "display version", 30 ],
-        [ "change cli more_enabled=no", 30 ],
+        [ "screen-length 0 temporary", 30],
         [ "display current-configuration", 300 ],
         [ "display interface", 60 ],
+        [ "display interface phy-option", 60 ],
+        [ "display inventory board", 60 ],
+        [ "display ip interface", 60 ],
+        [ "display ipv6 interface", 60 ],
+        [ "display mpls interface verbose", 60 ],
+        [ "display mpls rsvp interface", 60 ],
+        [ "display lldp neighbor", 60 ],
+        [ "display bfd session all verbose", 60 ],
+        [ "display mpls rsvp-te bfd session all", 60 ],
+        [ "display ospf brief", 60 ],
+        [ "display ospf peer", 60 ],
+        [ "display ospf lsdb router", 300 ],
+        [ "display ospf lsdb network", 300 ],
+        [ "display ospf lsdb summary", 300 ],
+        [ "display ospf lsdb asbr", 300 ],
+        [ "display ospf lsdb nssa", 300 ],
+        [ "display ospf lsdb ase", 300 ],
+        [ "display ospfv3 peer", 60 ],
+        [ "display ospfv3 lsdb router", 300 ],
+        [ "display ospfv3 lsdb inter-prefix", 300 ],
+        [ "display ospfv3 lsdb network", 300 ],
+        [ "display ospfv3 lsdb intra-prefix", 300 ],
+        [ "display ospfv3 lsdb inter-router", 300 ],
+        [ "display ospfv3 lsdb nssa", 300 ],
+        [ "display ospfv3 lsdb external", 300 ],
+        [ "display isis peer verbose", 60 ],
+        [ "display isis interface", 60 ],
+        [ "display isis interface verbose", 60 ],
+        [ "display isis lsdb verbose", 300 ],
+        [ "display mpls ldp peer verbose", 60 ],
+        [ "display mpls rsvp-te peer", 60 ],
+        [ "display bgp peer verbose", 60 ],
+        [ "display ip routing-table", 300 ],
+        [ "display ip routing-table statistics", 60 ],
+        [ "display ip vpn-instance", 60 ],
+        [ "display ip routing-table vpn-instance {vpn-name}", 300 ],
+        [ "display ip routing-table vpn-instance {vpn-name} statistics", 60 ]
     ],
     "SR-OS": [
         [ "show version", 30 ],
         [ "environment no more", 30 ],
         [ "admin display-config", 300 ],
+        [ "show bof", 30 ],
+        [ "show system information", 30 ],
+        [ "show port", 60 ],
+        [ "show port {port-id} optical detail", 60 ],
+        [ "show card detail", 60 ],
+        [ "show router \"{router-name}\" interface detail", 60 ],
+        [ "show router {service-id} interface detail", 60 ],
+        [ "show router mpls interface detail", 60 ],
+        [ "show router rsvp interface detail", 60 ],
+        [ "show router ldp interface detail", 60 ],
+        [ "show router mpls lsp detail", 300 ],
         [ "show system lldp neighbor", 60 ],
         [ "show port {port-id} ethernet lldp remote-info detail", 60 ],
+        [ "show router bfd session", 60 ],
+        [ "show router ospf all status", 60 ],
         [ "show router ospf all neighbor detail", 60 ],
-        [ "show router bgp neighbor", 60 ]
+        [ "show router ospf interface detail", 60 ],
+        [ "show router ospf all database detail", 300 ],
+        [ "show router ospf3 all status", 60 ],
+        [ "show router ospf3 all neighbor detail", 60 ],
+        [ "show router ospf3 interface detail", 60 ],
+        [ "show router ospf3 all database detail", 300 ],
+        [ "show router isis all status", 60 ],
+        [ "show router isis all adjacency detail", 60 ],
+        [ "show router isis interface detail", 60 ],
+        [ "show router isis all database detail", 300 ],
+        [ "show router ldp session detail", 60 ],
+        [ "show router rsvp neighbor detail", 60 ],
+        [ "show router bgp neighbor", 60 ],
+        [ "show router \"{router-name}\" route-table ipv4", 300 ],
+        [ "show router \"{router-name}\" route-table ipv4 summary", 60 ],
+        [ "show router \"{router-name}\" fib {card-id} ipv4", 300 ],
+        [ "show router \"Base\" fib {card-id} summary ipv4", 60 ],
+        [ "show router \"{router-name}\" route-table ipv6", 300 ],
+        [ "show router \"{router-name}\" route-table ipv6 summary", 60 ],
+        [ "show router \"{router-name}\" fib {card-id} ipv6", 300 ],
+        [ "show router \"Base\" fib {card-id} summary ipv6", 60 ],
+        [ "show router \"{router-name}\" ldp bindings detail", 300 ],
+        [ "show router \"{router-name}\" ldp bindings summary", 60 ],
+        [ "show router \"{router-name}\" arp", 60 ],
+        [ "show router \"{router-name}\" neighbor", 60 ],
+        [ "show service service-using", 60 ],
+        [ "show service id {vprn-id} all", 60 ],
+        [ "show service id {ies-id} all", 60 ],
+        [ "show router {vprn-id} route-table ipv4", 300 ],
+        [ "show router {vprn-id} route-table ipv4 summary", 60 ],
+        [ "show router {vprn-id} fib {card-id} ipv4", 300 ],
+        [ "show router {vprn-id} route-table ipv6", 300 ],
+        [ "show router {vprn-id} route-table ipv6 summary", 60 ],
+        [ "show router {vprn-id} fib {card-id} ipv6", 300 ],
+        [ "show router {vprn-id} arp", 60 ],
+        [ "show router {vprn-id} arp summary", 60 ],
+        [ "show router {vprn-id} neighbor", 60 ],
+        [ "show router {vprn-id} neighbor summary", 60 ],
+        [ "show service id {vpls-id} all", 60 ],
+        [ "show service id {xpipe-id} all", 60 ],
+        [ "show service sdp detail", 60 ],
+        [ "show router {vprn-id} ospf all neighbor detail", 60 ],
+        [ "show router {vprn-id} ospf3 all neighbor detail", 60 ],
+        [ "show router {vprn-id} bgp neighbor", 60 ]
     ]
 
 }
-
 
 PortsDict =  {
     "SSH": [ 22 ],
     "Telnet": [ 23 ]
 }
 
-shellPromptRegex = r"^[a-zA-Z0-9\-\._:@\{\}~\/\\ \t\*]+(>|#|\$|\%)[a-zA-Z0-9\-\._:@\{\}~\/\\ \t]*$"
-shellPromptRegexEmptyLine = r"^[a-zA-Z0-9\-\._:@\{\}~\/\\ \t\*]+(>|#|\$|\%) *$"
+shellPromptRegex = r"^[a-zA-Z0-9\-\._:@\{\}~\/\\ \t\*<\[]*[a-zA-Z0-9\-\._:@\{\}~\/\\\t\*](>|#|\$|\%|\])[a-zA-Z0-9\-\._:@\{\}~\/\\ \t]*$"
+shellPromptRegexEmptyLine = r"^[a-zA-Z0-9\-\._:@\{\}~\/\\ \t\*<\[]*[a-zA-Z0-9\-\._:@\{\}~\/\\\t\*](>|#|\$|\%|\]) *$"
 
 #####################################################################################################################################################
 ###########################################################      Execute CLI command      ###########################################################
@@ -459,7 +442,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
                     print("Error: command \"" + command + "\" execution has timed out")
-                    connectionCursor.send("\x03\nq\n")
+                    connectionCursor.send("\x03\n")
                     return [ 1, outputText, execTime]
                 connectionCursor.settimeout(readTimeout)
                 outputChunk = connectionCursor.recv(1000).decode("utf-8")
@@ -475,7 +458,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
                     print("Error: command \"" + command + "\" execution has timed out")
-                    connectionCursor.write(b"\x03\nq\n")
+                    connectionCursor.write(b"\x03\n")
                     return [ 1, outputText, execTime]
                 terminalLine = ""
                 terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
@@ -503,7 +486,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
                     print("Error: command \"" + command + "\" execution has timed out")
-                    connectionCursor.send("\x03\nq\n")
+                    connectionCursor.send("\x03\n")
                     return [ 2, outputText, execTime]
                 time.sleep(0.2)
                 waitTime = waitTime + 1
@@ -516,7 +499,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
                         print("Error: command \"" + command + "\" execution has timed out")
-                        connectionCursor.send("\x03\nq\n")
+                        connectionCursor.send("\x03\n")
                         return [ 3, outputText, execTime]
                     connectionCursor.settimeout(readTimeout)
                     outputChunk = connectionCursor.recv(1000).decode("utf-8")
@@ -531,7 +514,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
                         print("Error: command \"" + command + "\" execution has timed out")
-                        connectionCursor.write(b"\x03\nq\n")
+                        connectionCursor.write(b"\x03\n")
                         return [ 3, outputText, execTime]
                     terminalLine = ""
                     terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
@@ -544,12 +527,18 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
         # outputStream = outputStream.replace("\r","\n")
         # print(outputStream.split("\n"))
         for line in outputStream.split("\r\n"):
-            line = line.replace("[K [K","")
-            line = line.replace("[K","")
+            line = re.sub(r"\x1b\[K *\x1b\[K","",line)                   # Cisco IOS-XR garbage line
+            line = re.sub(r"\x1b\[K","",line)                            # Cisco IOS-XR garbage line
+            line = re.sub(r"\x1b\[42D +\x1b\[42D","",line)              # Huawei VRP garbage line
+            line = re.sub(r" *\[1D","",line)                            # Huawei VRP garbage line
             line = line.translate(translator)
             if ( re.search(re.compile(shellPromptRegexEmptyLine),line) ):
+                shellPrompt = line.lstrip().rstrip()
                 terminalActive = True
                 break
+
+        if terminalActive == True:
+            break
         else:
             time.sleep(0.2)
 
@@ -578,19 +567,20 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
                         print("Error: command \"" + command + "\" execution has timed out")
-                        connectionCursor.send("\x03\nq\n")
+                        connectionCursor.send("\x03\n")
                         return [ 4, outputText, execTime]
                     time.sleep(0.1)
                     waitTime = waitTime + 0.1
                     if waitTime >= waitTimeout:
                         print("Error: command \"" + command + "\" execution procedure has timed out while attempting to execute target command")
+                        print(outputStream)
                         break
                 while connectionCursor.recv_ready():
                     try:
                         execTime = time.time() - startTime
                         if ( execTime > execTimeout ):
                             print("Error: command \"" + command + "\" execution has timed out")
-                            connectionCursor.send("\x03\nq\n")
+                            connectionCursor.send("\x03\n")
                             return [ 4, outputText, execTime]
                         connectionCursor.settimeout(readTimeout)
                         outputChunk = ""
@@ -607,7 +597,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                         execTime = time.time() - startTime
                         if ( execTime > execTimeout ):
                             print("Error: command \"" + command + "\" execution has timed out")
-                            connectionCursor.write(b"\x03\nq\n")
+                            connectionCursor.write(b"\x03\n")
                             return [ 4, outputText, execTime]
                         terminalLine = ""
                         terminalLine = connectionCursor.read_until(b"\n",readTimeout/5).decode('utf-8')
@@ -624,11 +614,19 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
             # Detecting the end of output (if page contains CLI prefix without command)
             # for line in outputPage.split("\r\n"):
             for line in re.split(r"\r*\n",outputPage):
-                line = line.replace("[K [K","")
-                line = line.replace("[K","")
+                line = re.sub(r"\x1b\[K *\x1b\[K","",line)                   # Cisco IOS-XR garbage line
+                line = re.sub(r"\x1b\[K","",line)                            # Cisco IOS-XR garbage line
+                line = re.sub(r"\x1b\[42D +\x1b\[42D","",line)               # Huawei VRP garbage line
+                line = re.sub(r" *\[1D","",line)                            # Huawei VRP garbage line
+                # line = line.replace("[K [K","")
+                # line = line.replace("[K","")
                 line = line.translate(translator)
-                if ( re.search(re.compile(shellPromptRegexEmptyLine),line) ):
-                    pageRead = 1
+                if ( re.search(r"logout|quit|exit",command) ):
+                    if ( re.search(shellPromptRegexEmptyLine,line) ):
+                        pageRead = 1
+                else:
+                    if ( re.search(shellPrompt,line) ):
+                        pageRead = 1
 
             cycleEndTime = time.time()
 
@@ -671,13 +669,18 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                 pass
 
             # Removing paging lines and special symbols
-            outputLine = outputLine.replace("[K [K","")             # Cisco IOS-XR garbage line
-            outputLine = outputLine.replace("[K","")                # Cisco IOS-XR garbage line
-            outputLine = re.sub(r" *-* *More *-* *","",outputLine)    # Cisco paging line
-            outputLine = re.sub(r" *\x08+ +\x08+","",outputLine)    # Cisco paging line
+            # outputLine = outputLine.replace("[K [K","")               # Cisco IOS-XR garbage line
+            # outputLine = outputLine.replace("[K","")                  # Cisco IOS-XR garbage line
+            # outputLine = outputLine.replace("[K","")                  # Cisco IOS-XR garbage line
+            outputLine = re.sub(r"\x1b\[K *\x1b\[K","",outputLine)      # Cisco IOS-XR garbage line
+            outputLine = re.sub(r"\x1b\[K","",outputLine)               # Cisco IOS-XR garbage line
+            outputLine = re.sub(r" *-* *More *-* *","",outputLine)      # Cisco/Huawei paging line
+            outputLine = re.sub(r" *\x08+ +\x08+","",outputLine)        # Cisco paging line
+            outputLine = re.sub(r"\x1b\[42D +\x1b\[42D","",outputLine)  # Huawei VRP garbage line
+            outputLine = re.sub(r" *\[1D","",outputLine)               # Huawei VRP garbage line
             outputLine = re.sub(r" *Press any key to continue [a-zA-Z \(\)\.]+","",outputLine)  # Nokia paging line
-            outputLine = re.sub(r"\r+ +\r+","",outputLine)  # Nokia paging line
-            outputLine = re.sub(r" +(\r)+","",outputLine)   # Empty line
+            outputLine = re.sub(r"\r+ +\r+","",outputLine)              # Nokia paging line
+            outputLine = re.sub(r" +(\r)+","",outputLine)               # Empty line
             outputLine = outputLine.translate(translator)
 
             # Protocol-specific text post-modifications
@@ -751,7 +754,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
                     print("Error: remote connection to " + remoteAddr + " has timed out")
-                    connectionCursor.send("\x03\nq\n")
+                    connectionCursor.send("\x03\n")
                     return [ 1, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
                 connectionCursor.settimeout(readTimeout)
                 outputChunk = connectionCursor.recv(1000).decode("utf-8")
@@ -767,7 +770,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
                     print("Error: remote connection to " + remoteAddr + " has timed out")
-                    connectionCursor.write(b"\x03\nq\n")
+                    connectionCursor.write(b"\x03\n")
                     return [ 1, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
                 terminalLine = ""
                 terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
@@ -790,27 +793,13 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
     terminalActive = False
     outputStream = ""
     for attempt in range(0,60):
-        # Reading terminal to get CLI prefix
-        # if protocol == "ssh":
-        #     waitTime = 0
-        #     while not connectionCursor.recv_ready():
-        #         execTime = time.time() - startTime
-        #         if ( execTime > execTimeout ):
-        #             print("Error: remote connection to " + remoteAddr + " has timed out")
-        #             connectionCursor.send("\x03\nq\n")
-        #             return [ 2, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
-        #         time.sleep(0.2)
-        #         waitTime = waitTime + 1
-        #         if waitTime >= waitTimeout:
-        #             print("Error: command \"" + commandSSHConnect + "\" execution procedure has timed out while attempting to get CLI prefix")
-        #             break
         if protocol == "ssh":
             while connectionCursor.recv_ready():
                 try:
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
                         print("Error: remote connection to " + remoteAddr + " has timed out")
-                        connectionCursor.send("\x03\nq\n")
+                        connectionCursor.send("\x03\n")
                         return [ 3, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
                     connectionCursor.settimeout(readTimeout)
                     outputChunk = connectionCursor.recv(1000).decode("utf-8")
@@ -825,7 +814,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
                         print("Error: remote connection to " + remoteAddr + " has timed out")
-                        connectionCursor.write(b"\x03\nq\n")
+                        connectionCursor.write(b"\x03\n")
                         return [ 3, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
                     terminalLine = ""
                     terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
@@ -885,7 +874,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                         execTime = time.time() - startTime
                         if ( execTime > execTimeout ):
                             print("Error: command \"" + command + "\" execution has timed out")
-                            connectionCursor.send("\x03\nq\n")
+                            connectionCursor.send("\x03\n")
                             connectionSuccess = -1
                             break
                         time.sleep(0.1)
@@ -898,7 +887,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                             execTime = time.time() - startTime
                             if ( execTime > execTimeout ):
                                 print("Error: command \"" + command + "\" execution has timed out")
-                                connectionCursor.send("\x03\nq\n")
+                                connectionCursor.send("\x03\n")
                                 connectionSuccess = -1
                                 break
                             connectionCursor.settimeout(readTimeout)
@@ -916,7 +905,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                             execTime = time.time() - startTime
                             if ( execTime > execTimeout ):
                                 print("Error: command \"" + command + "\" execution has timed out")
-                                connectionCursor.write(b"\x03\nq\n")
+                                connectionCursor.write(b"\x03\n")
                                 connectionSuccess = -1
                                 break
                             terminalLine = ""
@@ -983,7 +972,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
                         print("Error: remote connection to " + remoteAddr + " has timed out")
-                        connectionCursor.send("\x03\nq\n")
+                        connectionCursor.send("\x03\n")
                         return [ 4, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
                     connectionCursor.settimeout(readTimeout)
                     outputChunk = connectionCursor.recv(1000).decode("utf-8")
@@ -999,7 +988,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
                         print("Error: remote connection to " + remoteAddr + " has timed out")
-                        connectionCursor.write(b"\x03\nq\n")
+                        connectionCursor.write(b"\x03\n")
                         return [ 4, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
                     terminalLine = ""
                     terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
@@ -1188,7 +1177,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
 #####################################################################################################################################################
 def printHelpFunc():
     print("""
-confParser script v3.1 2020-12-11
+confParser script v3.2 2021-03-10
 
 This script is used to parse text files with output of router's show-commands into structured data. Script supports syntaxes of Cisco IOS/IOS-XE,
 IOS-XR, Huawei VRP and Nokia/ALU SR-OS.
@@ -1198,11 +1187,10 @@ There are several actions available:
     -h|--help       Print help
 
 
-    -c|--collect    {login} {IPv4 addresses list/file} {output directory name} [recursive] [number of streams]
+    -c|--collect    {login} {IPv4 addresses list/file} {output directory name}
 
-            ***Under construction***
-            Collect requires show commands and save text output into output directory for future use. Login,router's management IPv4
-            adress and output directory path must be specified to begin. Password and enable password will be asked in prompt.
+            Collect text output from a set of show commands and save it into output directory for future use. To begin login, router's management
+            IPv4 adress and output directory path must be specified. Password and enable password will be asked in prompt.
 
             If it is required to collect output for multiple routers in a single run there are multiple options that can be combined:
             1) You can set adress argument as an individual adress (e.g. 1.1.1.1 or 1.1.1.1/32)
@@ -1212,15 +1200,10 @@ There are several actions available:
             4) You can provide path to a text file containing list of addresses, address ranges or subnets mentioned in 1)-3) or file containing
                current router configuration with BGP peers which addresses will be used as input.
 
-            Combining any of these options in terminal requires using a "," separator without spaces: 1.1.1.1,10.0.0.0/30,2.2.2.2-2.2.2.10, while
-            combining them in a file requires using a new line for each input.
+            Combining any of these options in terminal requires using a "," separator without spaces (e.g. 1.1.1.1,10.0.0.0/30,2.2.2.2-2.2.2.10),
+            while combining them in a file requires using a new line for each input.
 
             Appropriate CLI syntax (to issue correct commands) is detected automatically using "show|display version" output.
-
-            Use "recursive" to dynamically add all detected neighbors (from config file, network interfaces, LSDB etc.) to management address list.
-
-            To execute collection over multiple addresses in parallel issue "number of streams" argument in range from 2 to 100. If it is not
-            specified collection will work consecutively.
 
     -p|--parse      {input directory/directory+filename} {output database directory+name} [default CLI syntax] [clean]
 
@@ -1627,7 +1610,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
         SysAddr = ""                    # Stores system/loopback0 address
 
         # print("1111: len(versionLines) = "+str(len(versionLines)))
-        print(versionLines)
+        # print(versionLines)
         if len(versionLines) == 0:
             if defaultCLISyntax != "":
                 print("Could not determine parsing syntax in file "+showFilePath+", using default one specified")
@@ -3025,7 +3008,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     ospfIfType2 = ospfIfType1
                             break
 
-                        for obj100 in cfg.find_objects(r"^router ospf "+ospfPID):
+                        for obj100 in cfg.find_objects(r"^router ospf "+ospfPID+r" *$"):
                             for obj101 in obj100.re_search_children("router-id"):
                                 ospfRID = obj101.text.split("router-id ")[1].split()[0].lstrip().rstrip()
                                 break
@@ -3413,7 +3396,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             InterfacesParse[InterfacesDict["ParentIfName"][0]] = obj2.text.split("unnumbered interface ")[1]
                             InterfacesParse[InterfacesDict["IPV4Addr"][0]] = InterfacesParse[InterfacesDict["ParentIfName"][0]]
                         else:
-                            rawInput = obj2.text.split("ip address ")[1].lstrip().rstrip()
+                            rawInput = obj2.text.split("ip address ")[1].split("sub")[0].lstrip().rstrip()
                             rawInput = rawInput.replace(" ","/")
                             ipadd = ipaddress.ip_interface(str(rawInput))
                             if InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "":
@@ -3476,6 +3459,239 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                     for obj2 in obj1.re_search_children("lldp"):
                         InterfacesParse[InterfacesDict["LLDP"][0]] = "En"
                         break
+
+
+                    # Find all ISIS processes and areas where this interface is participating
+                    isisList = []
+                    bfdList = []
+
+                    # Find all ISIS processes associated with interface
+                    # for obj10 in obj1.re_search_children(r"isis"):
+                    for obj10 in obj1.re_search_children(r"isis enable [0-9]+"):
+                        isisLine = []
+                        isisPID = ""
+                        isisSID = ""
+                        isisArea = ""
+                        isisPID = str(obj10.text.split("isis enable ")[1].split(" ")[0])
+                        isisLine.append(isisPID)
+
+                        isisIfType1 = ""
+                        isisIfType2 = "Bcast"
+                        isisIfMode = "Act"
+                        isisBFDState = "Dis"
+
+                        bfdLine = []
+                        isisBFDMinTxTmr = ""
+                        isisBFDMinRxTmr = ""
+                        isisBFDMultTmr = ""
+
+                        isisLevelCapability = "L1/2"
+                        isisL1Priority = ""
+                        isisL2Priority = ""
+                        isisL1Metric = ""
+                        isisL2Metric = ""
+                        isisL1Hello = ""
+                        isisL2Hello = ""
+                        isisL1HelloMult = ""
+                        isisL2HelloMult = ""
+                        isisRetransmit = ""
+                        isisIfAuth = ""
+                        isisL1Auth = ""
+                        isisL2Auth = ""
+                        isisIfState = "En"
+
+                        bfdLine.append("isis")
+                        bfdLine.append(isisPID)
+
+                        # Find all ISIS interface parameters
+                        for obj11 in obj1.re_search_children("isis circuit-type "):
+                            isisIfType1 = str(obj11.text.split("isis circuit-type ")[1].split(" ")[0].lstrip().rstrip())
+                            isisIfType2 = ""
+                            if isisIfType1 == "p2p":
+                                isisIfType2 = "PtP"
+                            else:
+                                isisIfType2 = isisIfType1
+                            break
+
+                        for obj11 in obj1.re_search_children("isis silent"):
+                            isisIfMode = "Pass"
+                            break
+
+                        for obj100 in cfg.find_objects(r"^isis "+isisPID+r" *$"):
+                            for obj110 in obj100.re_search_children("is-level "):
+                                if re.match(r"^ *is-level *level-1$",obj110.text):
+                                    isisLevelCapability = "L1"
+                                else:
+                                    if re.match(r"^ *is-level *level-2$",obj110.text):
+                                        isisLevelCapability = "L2"
+                                    else:
+                                        if re.match(r"^ *is-level *level-1-2$",obj110.text):
+                                            isisLevelCapability = "L1/2"
+                                        else:
+                                            isisLevelCapability = obj110.text.split("is-level  ")[1]
+                                break
+                            for obj101 in obj100.re_search_children("network-entity"):
+                                isisSID = obj101.text.split("network-entity ")[1].split()[0].lstrip().rstrip()
+                                break
+                            for obj101 in obj100.re_search_children("bfd all-interfaces"):
+                                if re.search(r"enable",obj101.text):
+                                    isisBFDState = "En"
+                                if re.search(r"min-tx-interval ",obj101.text):
+                                    isisBFDMinTxTmr = obj101.text.lstrip().rstrip().split("min-tx-interval ")[1].split()[0]
+                                if re.search(r"min-rx-interval ",obj101.text):
+                                    isisBFDMinRxTmr = obj101.text.lstrip().rstrip().split("min-rx-interval ")[1].split()[0]
+                                if re.search(r"detect-multiplier ",obj101.text):
+                                    isisBFDMultTmr = obj101.text.lstrip().rstrip().split("detect-multiplier ")[1].split()[0]
+
+
+                        isisLine.append(isisSID)
+                        isisLine.append(isisArea)
+                        isisLine.append(isisIfType2)
+                        isisLine.append(isisIfMode)
+
+                        for obj101 in obj1.re_search_children("bfd "):
+                            if re.search(r"enable",obj101.text):
+                                isisBFDState = "En"
+                            if re.search(r"min-tx-interval ",obj101.text):
+                                isisBFDMinTxTmr = obj101.text.lstrip().rstrip().split("min-tx-interval ")[1].split()[0]
+                            if re.search(r"min-rx-interval ",obj101.text):
+                                isisBFDMinRxTmr = obj101.text.lstrip().rstrip().split("min-rx-interval ")[1].split()[0]
+                            if re.search(r"detect-multiplier ",obj101.text):
+                                isisBFDMultTmr = obj101.text.lstrip().rstrip().split("detect-multiplier ")[1].split()[0]
+                        isisLine.append(isisBFDState)
+
+                        for obj11 in obj1.re_search_children("isis circuit-level "):
+                            if re.match(r"^ *isis circuit-level *level-1$",obj11.text):
+                                isisLevelCapability = "L1"
+                            else:
+                                if re.match(r"^ *isis circuit-level *level-2$",obj11.text):
+                                    isisLevelCapability = "L2"
+                                else:
+                                    if re.match(r"^ *isis circuit-level *level-1-2$",obj11.text):
+                                        isisLevelCapability = "L1/2"
+                                    else:
+                                        isisLevelCapability = obj11.text.split("level-capability ")[1]
+                            break
+
+                        for obj11 in obj1.re_search_children("isis timer lsp-retransmit "):
+                            isisRetransmit = str(obj11.text.split("isis timer lsp-retransmit ")[1].split(" ")[0].lstrip().rstrip())
+                            break
+
+                        isisLine.append(isisLevelCapability)
+                        isisLine.append(isisIfState)
+                        isisLine.append(isisRetransmit)
+                        isisLine.append(isisIfAuth)
+                        bfdLine.append(isisBFDMinTxTmr)
+                        bfdLine.append(isisBFDMinRxTmr)
+                        bfdLine.append(isisBFDMultTmr)
+
+                        for obj11 in obj1.re_search_children(r"isis dis-priority "):
+                            if re.search(r"level-1",obj11.text):
+                                isisL1Priority = str(obj11.text.split("isis dis-priority ")[1].split(" ")[0].lstrip().rstrip())
+                            elif re.search(r"level-2",obj11.text):
+                                isisL2Priority = str(obj11.text.split("isis dis-priority ")[1].split(" ")[0].lstrip().rstrip())
+                            else:
+                                isisL1Priority = str(obj11.text.split("isis dis-priority ")[1].split(" ")[0].lstrip().rstrip())
+                                isisL2Priority = isisL1Priority
+                            break
+
+                        for obj11 in obj1.re_search_children("isis cost "):
+                            if re.search(r"level-1",obj11.text):
+                                isisL1Metric = str(obj11.text.split("isis cost ")[1].split(" ")[0].lstrip().rstrip())
+                            elif re.search(r"level-2",obj11.text):
+                                isisL2Metric = str(obj11.text.split("isis cost ")[1].split(" ")[0].lstrip().rstrip())
+                            else:
+                                isisL1Metric = str(obj11.text.split("isis cost ")[1].split(" ")[0].lstrip().rstrip())
+                                isisL2Metric = isisL1Metric
+                            break
+
+                        for obj11 in obj1.re_search_children("isis timer hello "):
+                            if re.search(r"level-1",obj11.text):
+                                isisL1Hello = str(obj11.text.split("isis timer hello ")[1].split(" ")[0].lstrip().rstrip())
+                            elif re.search(r"level-2",obj11.text):
+                                isisL2Hello = str(obj11.text.split("isis timer hello ")[1].split(" ")[0].lstrip().rstrip())
+                            else:
+                                isisL1Hello = str(obj11.text.split("isis timer hello ")[1].split(" ")[0].lstrip().rstrip())
+                                isisL2Hello = isisL1Hello
+                            break
+
+                        for obj11 in obj1.re_search_children("isis timer holding-multiplier "):
+                            if re.search(r"level-1",obj11.text):
+                                isisL1HelloMult = str(obj11.text.split("isis timer holding-multiplier ")[1].split(" ")[0].lstrip().rstrip())
+                            elif re.search(r"level-2",obj11.text):
+                                isisL2HelloMult = str(obj11.text.split("isis timer holding-multiplier ")[1].split(" ")[0].lstrip().rstrip())
+                            else:
+                                isisL1HelloMult = str(obj11.text.split("isis timer holding-multiplier ")[1].split(" ")[0].lstrip().rstrip())
+                                isisL2HelloMult = isisL1HelloMult
+                            break
+
+                        for obj11 in obj1.re_search_children("isis authentication-mode "):
+                            if re.search(r"level-1",obj11.text):
+                                isisL1Auth = str(obj11.text.split("isis authentication-mode ")[1].split(" ")[0].lstrip().rstrip())
+                            elif re.search(r"level-2",obj11.text):
+                                isisL2Auth = str(obj11.text.split("isis authentication-mode ")[1].split(" ")[0].lstrip().rstrip())
+                            else:
+                                isisL1Auth = str(obj11.text.split("isis authentication-mode ")[1].split(" ")[0].lstrip().rstrip())
+                                isisL2Auth = isisL1Auth
+                            break
+
+                        isisLine.append(isisL1Priority)
+                        isisLine.append(isisL1Metric)
+                        isisLine.append(isisL1Hello)
+                        isisLine.append(isisL1HelloMult)
+                        isisLine.append(isisL1Auth)
+
+                        isisLine.append(isisL2Priority)
+                        isisLine.append(isisL2Metric)
+                        isisLine.append(isisL2Hello)
+                        isisLine.append(isisL2HelloMult)
+                        isisLine.append(isisL2Auth)
+
+                        isisList.append(isisLine)
+                        print(bfdLine)
+                        bfdList.append(bfdLine)
+
+                        if len(isisList) > 0:
+                            isisOutputLine = ""
+                            for isisLine in isisList:
+                                # print(isisLine)
+                                if isisOutputLine != "":
+                                    isisOutputLine = isisOutputLine + ";"
+
+                                isisOutputLine = isisOutputLine + "pid:"+str(isisLine[0])
+                                if isisLine[1] != "": isisOutputLine = isisOutputLine + "|sid:"+str(isisLine[1])
+                                isisOutputLine = isisOutputLine + "|area:"+str(isisLine[2]) + "|type:"+str(isisLine[3]) + "|mode:"+str(isisLine[4]) + "|bfd:"+str(isisLine[5]) + "|cap:"+str(isisLine[6]) + "|if_state:"+str(isisLine[7])
+                                if isisLine[8] != "": isisOutputLine = isisOutputLine + "|retr:" + str(isisLine[8])
+                                if isisLine[9] != "": isisOutputLine = isisOutputLine + "|if_auth:" + str(isisLine[9])
+                                if isisLine[10] != "": isisOutputLine = isisOutputLine + "|l1_pri:" + str(isisLine[10])
+                                if isisLine[15] != "": isisOutputLine = isisOutputLine + "|l2_pri:" + str(isisLine[15])
+                                if isisLine[11] != "": isisOutputLine = isisOutputLine + "|l1_metr:" + str(isisLine[11])
+                                if isisLine[16] != "": isisOutputLine = isisOutputLine + "|l2_metr:" + str(isisLine[16])
+                                if ((isisLine[12] != "") or (isisLine[13] != "")):
+                                    if isisLine[12] == "": isisLine[11] = "def"
+                                    if isisLine[13] == "": isisLine[12] = "def"
+                                    isisOutputLine = isisOutputLine + "|isis_l1_tmr:" + str(isisLine[12]) + " " + str(isisLine[13])
+                                if ((isisLine[17] != "") or (isisLine[18] != "")):
+                                    if isisLine[17] == "": isisLine[17] = "def"
+                                    if isisLine[18] == "": isisLine[18] = "def"
+                                    isisOutputLine = isisOutputLine + "|isis_l2_tmr:" + str(isisLine[17]) + " " + str(isisLine[18])
+                                if isisLine[14] != "": isisOutputLine = isisOutputLine + "|l1_auth:" + str(isisLine[14])
+                                if isisLine[19] != "": isisOutputLine = isisOutputLine + "|l2_auth:" + str(isisLine[19])
+
+                            InterfacesParse[InterfacesDict["ISIS"][0]] = isisOutputLine
+
+                            # Print BFD timers for each ISIS process where this interface is enabled
+                            if len(bfdList) > 0:
+                                bfdOutputLine = ""
+                                for bfdLine in bfdList:
+                                    if bfdOutputLine != "":
+                                        bfdOutputLine = bfdOutputLine + ";"
+                                    if (( bfdLine[2] != "" ) or ( bfdLine[3] != "" )):
+                                        if bfdLine[2] == "": ospfLine[2] = "def"
+                                        if bfdLine[3] == "": ospfLine[3] = "def"
+                                        bfdOutputLine = bfdOutputLine + "type:"+str(bfdLine[0]) + "|pid:"+str(bfdLine[1]) + "|tmr:"+str(bfdLine[2])+" "+str(bfdLine[3])+" "+str(bfdLine[4])
+
+                                InterfacesParse[InterfacesDict["BFD"][0]] = bfdOutputLine
 
                     # Find if BFD timers on current interface for OSPF
                     # BFD = ""
@@ -6392,9 +6608,11 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         # Setting default Hostname
         if Hostname == "":
             if re.search(":",shellPrompt):
-                Hostname = shellPrompt.split(":")[1].replace(r"[#>\|\.\,\ \\\/\:]","")
+                # Hostname = shellPrompt.split(":")[1].replace(r"[#>\|\.\,\ \\\/\:]","")
+                Hostname = re.sub(r"[\.:@\{\}~\/\\ \t\*<\[>#\$\%\]]","",shellPrompt.split(":")[1])
             else:
-                Hostname = shellPrompt.replace(r"[#>\|\.\,\ \\\/\:]","")
+                # Hostname = shellPrompt.replace(r"[#>\|\.\,\ \\\/\:]","")
+                Hostname = re.sub(r"[\.:@\{\}~\/\\ \t\*<\[>#\$\%\]]","",shellPrompt)
 
         ################################################### Find system/loopback0 address ###################################################
         SysAddr = ""
@@ -6716,10 +6934,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
 
                         # Find all IPv4 addresses associated with current interface
                         for obj2 in obj1.re_search_children("ip address "):
-                            if re.search("ip address unnumbered interface", obj2.text):
-                                InterfacesParse[InterfacesDict["ParentIfName"][0]] = obj2.text.split("unnumbered interface ")[1]
-                                InterfacesParse[InterfacesDict["IPV4Addr"][0]] = InterfacesParse[InterfacesDict["ParentIfName"][0]]
-                            else:
+                            if not re.search("ip address unnumbered interface", obj2.text):
                                 rawInput = obj2.text.split("ip address ")[1].lstrip().rstrip()
                                 rawInput = rawInput.replace(" ","/")
                                 ipadd = ipaddress.ip_interface(str(rawInput))
@@ -6753,9 +6968,9 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                                 InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]]
                         else:
                             if re.search(r'\.',InterfacesParse[InterfacesDict["IfName"][0]]):
-                                tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("nnel")[1].split(".")[0])
+                                tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("runk")[1].split(".")[0])
                             else:
-                                tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("nnel")[1])
+                                tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("runk")[1])
 
                             # Find ports associated with this LAG
                             for obj20 in cfg.find_objects(r"^interface"):
@@ -7020,7 +7235,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                     # Set peer address as SysAddrRemote
                     BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = obj2.text.split("neighbor ")[1].split()[0]
                     # Set local AS
-                    BGPPeeringParse[PeeringDict["AS"][0]] = tempAS
+                    BGPPeeringParse[PeeringDict["LocalAS"][0]] = tempAS
 
                     # Get peer group
                     tempGroupName = ""
@@ -7049,7 +7264,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                             if line[0] == tempGroupName:
                                 BGPPeeringParse[PeeringDict["ASRemote"][0]] = line[2]
 
-                    if BGPPeeringParse[PeeringDict["AS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
+                    if BGPPeeringParse[PeeringDict["LocalAS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
                         BGPPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
                     else:
                         BGPPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
@@ -7122,7 +7337,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                     # Set peer address as SysAddrRemote
                     BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = obj2.text.split("neighbor ")[1].split()[0]
                     # Set local AS
-                    BGPPeeringParse[PeeringDict["AS"][0]] = tempAS
+                    BGPPeeringParse[PeeringDict["LocalAS"][0]] = tempAS
 
                     # Get peer group
                     tempGroupName = ""
@@ -7158,7 +7373,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                             if line[0] == tempGroupName:
                                 BGPPeeringParse[PeeringDict["ASRemote"][0]] = line[2]
 
-                    if BGPPeeringParse[PeeringDict["AS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
+                    if BGPPeeringParse[PeeringDict["LocalAS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
                         BGPPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
                     else:
                         BGPPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
@@ -7222,7 +7437,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                                 # Set peer address as SysAddrRemote
                                 BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = obj5.text.split("neighbor ")[1].split()[0]
                                 # Set local AS
-                                BGPPeeringParse[PeeringDict["AS"][0]] = tempAS
+                                BGPPeeringParse[PeeringDict["LocalAS"][0]] = tempAS
 
                                 for obj6 in obj5.re_search_children(r"description"):
                                     tempNBGroupLine[1] = obj6.text.split("description ")[1].replace("\"","")
@@ -7258,7 +7473,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                                     BGPPeeringParse[PeeringDict["PeeringType"][0]] = tempNBGroupLine[4]
 
                                 if BGPPeeringParse[PeeringDict["PeeringType"][0]] == "":
-                                    if BGPPeeringParse[PeeringDict["AS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
+                                    if BGPPeeringParse[PeeringDict["LocalAS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
                                         BGPPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
                                     else:
                                         BGPPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
@@ -7284,7 +7499,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                             # Set peer address as SysAddrRemote
                             BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = obj5.text.split("neighbor ")[1].split()[0]
                             # Set local AS
-                            BGPPeeringParse[PeeringDict["AS"][0]] = tempAS
+                            BGPPeeringParse[PeeringDict["LocalAS"][0]] = tempAS
 
                             for obj6 in obj5.re_search_children(r"description"):
                                 tempNBGroupLine[1] = obj6.text.split("description ")[1].replace("\"","")
@@ -7320,7 +7535,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                                 BGPPeeringParse[PeeringDict["PeeringType"][0]] = tempNBGroupLine[4]
 
                             if BGPPeeringParse[PeeringDict["PeeringType"][0]] == "":
-                                if BGPPeeringParse[PeeringDict["AS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
+                                if BGPPeeringParse[PeeringDict["LocalAS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
                                     BGPPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
                                 else:
                                     BGPPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
@@ -7348,7 +7563,8 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
             VRFNameList = []
             for obj1 in cfg.find_objects(r"^ *vrf "):       # Find node's VRF names from config
                 # if debug: print("debug: obj1: "+str(obj1))
-                VRFNameList.append(obj1.text.split("vrf ")[1].split()[0])
+                if obj1.text.split("vrf ")[1].split()[0] not in VRFNameList:
+                    VRFNameList.append(obj1.text.split("vrf ")[1].split()[0])
             # if debug:
                 # if len(VRFNameList) > 0:
                 #     print("debug: following VRF names found in configuration file: " + str(" ".join(str(item) for item in VRFNameList)))
@@ -7358,13 +7574,23 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
             VRFNameList = []
             for obj1 in cfg.find_objects(r"^ *vrf definition "):        # Find node's VRF names from config
                 # if debug: print("debug: obj1: "+str(obj1))
-                VRFNameList.append(obj1.text.split("vrf definition ")[1].split()[0])
+                if obj1.text.split("vrf definition ")[1].split()[0] not in VRFNameList:
+                    VRFNameList.append(obj1.text.split("vrf definition ")[1].split()[0])
             # if debug:
                 # if len(VRFNameList) > 0:
                 #     print("debug: following VRF names found in configuration file: " + str(" ".join(str(item) for item in VRFNameList)))
             pass
         # Syntax: Huawei VRP
+        # vpn-name
         if CLISyntax == "VRP":
+            VPNNameList = []
+            for obj1 in cfg.find_objects(r"^ *ip vpn-instance "):        # Find node's VRF names from config
+                # if debug: print("debug: obj1: "+str(obj1))
+                if obj1.text.split("ip vpn-instance ")[1].split()[0] not in VPNNameList:
+                    VPNNameList.append(obj1.text.split("ip vpn-instance ")[1].split()[0])
+            # if debug:
+            #     if len(VPNNameList) > 0:
+            #         print("debug: following VRF names found in configuration file: " + str(" ".join(str(item) for item in VPNNameList)))
             pass
         # Syntax: ALU/Nokia SR-OS
         if CLISyntax == "SR-OS":
@@ -7376,11 +7602,13 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                 # Find card numbers
                 for obj2 in obj1.re_search_children(r" +card +"):
                     # if debug: print("debug: obj2: "+str(obj2))
-                    cardList.append(obj2.text.split("card ")[1].split()[0])
+                    if obj2.text.split("card ")[1].split()[0] not in cardList:
+                        cardList.append(obj2.text.split("card ")[1].split()[0])
                 # Find port numbers
                 for obj2 in obj1.re_search_children(r" +port +"):
                     # if debug: print("debug: obj2: "+str(obj2))
-                    portList.append(obj2.text.split("port ")[1].split()[0])
+                    if obj2.text.split("port ")[1].split()[0] not in portList:
+                        portList.append(obj2.text.split("port ")[1].split()[0])
                 for obj2 in obj1.re_search_children(r" +router +"):
                     if obj2.text.split("router ")[1].split()[0].replace("\"","") not in routerList:
                         # if debug: print("debug: obj2: "+str(obj2))
@@ -7458,6 +7686,10 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                         for VRFName in VRFNameList:
                             tempCommandList[iteration].append([ command[0].replace("{vrf-name}",VRFName), command[1] ])
                         continue
+                    if re.search(r"\{vpn-name\}",command[0]):
+                        for VPNName in VPNNameList:
+                            tempCommandList[iteration].append([ command[0].replace("{vpn-name}",VPNName), command[1] ])
+                        continue
                     if re.search(r"\{service-id\}",command[0]):
                         for service in serviceList:
                             tempCommandList[iteration].append([ command[0].replace("{service-id}",service[0]), command[1] ])
@@ -7491,7 +7723,8 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                             tempCommandList[iteration].append([ command[0].replace("{port-id}",port), command[1] ])
                         continue
                     if re.search(r"\{.*\}",command[0]):
-                        print("Unknown variable: " + re.search(r"\{.*\}",command[0]).group[0])
+                        value = re.search(r"\{.*\}",command[0])
+                        print("Unknown variable: " + value.group())
                         continue
                 else:
                     tempCommandList[iteration].append([ command[0], command[1] ])
@@ -7506,7 +7739,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         execOutput = []
 
         for command in commadList:
-            for attempt in range(0,2):
+            for attempt in range(0,10):
                 commandExecLines = []
                 commandExecLines.append("#####\tExecuting \"" + str(command[0]) + "\" over " + protocol + " with " + str(command[1]) + " second(s) timeout\t#####")
                 print("Executing command \"" + str(command[0]) + "\"")
@@ -8932,7 +9165,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
 
                     if re.search(r"Remote AS ",line):
                         tempPeeringParse[PeeringDict["ASRemote"][0]] = line.split("Remote AS ")[1].split(",")[0].lstrip().rstrip()
-                        tempPeeringParse[PeeringDict["AS"][0]] = line.split("local AS ")[1].split(",")[0].lstrip().rstrip()
+                        tempPeeringParse[PeeringDict["LocalAS"][0]] = line.split("local AS ")[1].split(",")[0].lstrip().rstrip()
                         if len(line.split(", ")) >= 3:
                             if line.split(", ")[2].split(" link")[0].lstrip().rstrip() == "external":
                                 tempPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
@@ -9021,7 +9254,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                         tempPeeringParse[PeeringDict["ASRemote"][0]] = line.split(": ")[1].split()[0]
                         continue
                     if re.search(r"Local AS *: ",line):
-                        tempPeeringParse[PeeringDict["AS"][0]] = line.split(": ")[1].split()[0]
+                        tempPeeringParse[PeeringDict["LocalAS"][0]] = line.split(": ")[1].split()[0]
                         continue
                     if re.search(r"Peer Address *: ",line):
                         tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = line.split(": ")[1].split()[0]
@@ -9081,8 +9314,8 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                         BGPPeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = tempPeeringParse[PeeringDict["PeeringType"][0]]
                     if ( tempPeeringParse[PeeringDict["PeerDescr"][0]] != "" ) and ( tempPeeringParse[PeeringDict["PeerDescr"][0]] != peeringLine[PeeringDict["PeerDescr"][0]] ):
                         BGPPeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] = tempPeeringParse[PeeringDict["PeerDescr"][0]]
-                    if ( tempPeeringParse[PeeringDict["AS"][0]] != "" ) and ( tempPeeringParse[PeeringDict["AS"][0]] != peeringLine[PeeringDict["AS"][0]] ):
-                        BGPPeeringParseAll[lineIndex][PeeringDict["AS"][0]] = tempPeeringParse[PeeringDict["AS"][0]]
+                    if ( tempPeeringParse[PeeringDict["LocalAS"][0]] != "" ) and ( tempPeeringParse[PeeringDict["LocalAS"][0]] != peeringLine[PeeringDict["LocalAS"][0]] ):
+                        BGPPeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] = tempPeeringParse[PeeringDict["LocalAS"][0]]
                     if ( tempPeeringParse[PeeringDict["ASRemote"][0]] != "" ) and ( tempPeeringParse[PeeringDict["ASRemote"][0]] != peeringLine[PeeringDict["ASRemote"][0]] ):
                         BGPPeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = tempPeeringParse[PeeringDict["ASRemote"][0]]
                     if ( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" ) and ( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]] ):
@@ -9154,10 +9387,10 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                             PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + "|"
                         PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
 
-                    if tempPeeringParse[PeeringDict["AS"][0]] not in peeringLine[PeeringDict["AS"][0]].split("|"):
-                        if PeeringParseAll[lineIndex][PeeringDict["AS"][0]] != "":
-                            PeeringParseAll[lineIndex][PeeringDict["AS"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + "|"
-                        PeeringParseAll[lineIndex][PeeringDict["AS"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + tempPeeringParse[PeeringDict["AS"][0]]
+                    if tempPeeringParse[PeeringDict["LocalAS"][0]] not in peeringLine[PeeringDict["LocalAS"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] = PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] = PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] + tempPeeringParse[PeeringDict["LocalAS"][0]]
 
                     if tempPeeringParse[PeeringDict["PeerDescr"][0]] not in peeringLine[PeeringDict["PeerDescr"][0]].split("|"):
                         if PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] != "":
@@ -9166,7 +9399,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
 
                     if tempPeeringParse[PeeringDict["ASRemote"][0]] not in peeringLine[PeeringDict["ASRemote"][0]].split("|"):
                         if PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] != "":
-                            PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + "|"
+                            PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] + "|"
                         PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] + tempPeeringParse[PeeringDict["ASRemote"][0]]
 
                     if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
@@ -9187,10 +9420,10 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                                     PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + "|"
                                 PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
 
-                            if tempPeeringParse[PeeringDict["AS"][0]] not in peeringLine[PeeringDict["AS"][0]].split("|"):
-                                if PeeringParseAll[lineIndex][PeeringDict["AS"][0]] != "":
-                                    PeeringParseAll[lineIndex][PeeringDict["AS"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + "|"
-                                PeeringParseAll[lineIndex][PeeringDict["AS"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + tempPeeringParse[PeeringDict["AS"][0]]
+                            if tempPeeringParse[PeeringDict["LocalAS"][0]] not in peeringLine[PeeringDict["LocalAS"][0]].split("|"):
+                                if PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] != "":
+                                    PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] = PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] + "|"
+                                PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] = PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] + tempPeeringParse[PeeringDict["LocalAS"][0]]
 
                             if tempPeeringParse[PeeringDict["PeerDescr"][0]] not in peeringLine[PeeringDict["PeerDescr"][0]].split("|"):
                                 if PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] != "":
@@ -9199,7 +9432,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
 
                             if tempPeeringParse[PeeringDict["ASRemote"][0]] not in peeringLine[PeeringDict["ASRemote"][0]].split("|"):
                                 if PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] != "":
-                                    PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + "|"
+                                    PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["LocalAS"][0]] + "|"
                                 PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] + tempPeeringParse[PeeringDict["ASRemote"][0]]
 
                             if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
@@ -9218,10 +9451,10 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                                     tempPeeringLine[PeeringDict["PeeringType"][0]] = tempPeeringLine[PeeringDict["PeeringType"][0]] + "|"
                                 tempPeeringLine[PeeringDict["PeeringType"][0]] = tempPeeringLine[PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
 
-                            if tempPeeringParse[PeeringDict["AS"][0]] not in tempPeeringLine[PeeringDict["AS"][0]].split("|"):
-                                if tempPeeringLine[lineIndex][PeeringDict["AS"][0]] != "":
-                                    tempPeeringLine[lineIndex][PeeringDict["AS"][0]] = tempPeeringLine[lineIndex][PeeringDict["AS"][0]] + "|"
-                                tempPeeringLine[lineIndex][PeeringDict["AS"][0]] = tempPeeringLine[lineIndex][PeeringDict["AS"][0]] + tempPeeringParse[PeeringDict["AS"][0]]
+                            if tempPeeringParse[PeeringDict["LocalAS"][0]] not in tempPeeringLine[PeeringDict["LocalAS"][0]].split("|"):
+                                if tempPeeringLine[lineIndex][PeeringDict["LocalAS"][0]] != "":
+                                    tempPeeringLine[lineIndex][PeeringDict["LocalAS"][0]] = tempPeeringLine[lineIndex][PeeringDict["LocalAS"][0]] + "|"
+                                tempPeeringLine[lineIndex][PeeringDict["LocalAS"][0]] = tempPeeringLine[lineIndex][PeeringDict["LocalAS"][0]] + tempPeeringParse[PeeringDict["LocalAS"][0]]
 
                             if tempPeeringParse[PeeringDict["PeerDescr"][0]] not in tempPeeringLine[PeeringDict["PeerDescr"][0]].split("|"):
                                 if tempPeeringLine[lineIndex][PeeringDict["PeerDescr"][0]] != "":
@@ -9230,7 +9463,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
 
                             if tempPeeringParse[PeeringDict["ASRemote"][0]] not in tempPeeringLine[PeeringDict["ASRemote"][0]].split("|"):
                                 if tempPeeringLine[lineIndex][PeeringDict["ASRemote"][0]] != "":
-                                    tempPeeringLine[lineIndex][PeeringDict["ASRemote"][0]] = tempPeeringLine[lineIndex][PeeringDict["AS"][0]] + "|"
+                                    tempPeeringLine[lineIndex][PeeringDict["ASRemote"][0]] = tempPeeringLine[lineIndex][PeeringDict["LocalAS"][0]] + "|"
                                 tempPeeringLine[lineIndex][PeeringDict["ASRemote"][0]] = tempPeeringLine[lineIndex][PeeringDict["ASRemote"][0]] + tempPeeringParse[PeeringDict["ASRemote"][0]]
 
                             if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringLine[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
@@ -9276,7 +9509,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                         PeeringParse[PeeringDict["IPV4Subnet"][0]] = interfaceLine[InterfacesDict["IPV4Subnet"][0]]
                         PeeringParse[PeeringDict["IPV6Addr"][0]] = interfaceLine[InterfacesDict["IPV6Addr"][0]]
                         PeeringParse[PeeringDict["IPV6Subnet"][0]] = interfaceLine[InterfacesDict["IPV6Subnet"][0]]
-                        PeeringParse[PeeringDict["AS"][0]] = tempPeeringParse[PeeringDict["AS"][0]]
+                        PeeringParse[PeeringDict["LocalAS"][0]] = tempPeeringParse[PeeringDict["LocalAS"][0]]
                         PeeringParse[PeeringDict["ASRemote"][0]] = tempPeeringParse[PeeringDict["ASRemote"][0]]
                         PeeringParse[PeeringDict["PeerDescr"][0]] = tempPeeringParse[PeeringDict["PeerDescr"][0]]
                         if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
@@ -9350,26 +9583,27 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         tempPeeringParseAll = []
         # output = pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,srcIfName,CLISyntax,execTimeout):
         for pollPeerLine in pollPeerList:
-            print("Polling neighbor " + pollPeerLine[0] + " from source interface " + pollPeerLine[1])
-            output = pollNeighbor(connectionCursor,protocol,login,password1,password2,pollPeerLine[0],pollPeerLine[1],CLISyntax,60)
+            if CLISyntax != "VRP":
+                print("Polling neighbor " + pollPeerLine[0] + " from source interface " + pollPeerLine[1])
+                output = pollNeighbor(connectionCursor,protocol,login,password1,password2,pollPeerLine[0],pollPeerLine[1],CLISyntax,60)
 
-            if output[0] == 0:
-                print("Neighbor " + pollPeerLine[0] + " is accessible via " + output[1] + ", has remoteHostname=" + output[2] + ", remoteSysAddr=" + output[3] + ", remoteCLISyntax=" + output[4])
+                if output[0] == 0:
+                    print("Neighbor " + pollPeerLine[0] + " is accessible via " + output[1] + ", has remoteHostname=" + output[2] + ", remoteSysAddr=" + output[3] + ", remoteCLISyntax=" + output[4])
 
-                tempPeeringParse = [""] * len(PeeringDict)
-                tempPeeringParse[PeeringDict["PeeringType"][0]] = output[1]
-                tempPeeringParse[PeeringDict["IfName"][0]] = pollPeerLine[1]
-                tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = pollPeerLine[0]
-                tempPeeringParse[PeeringDict["HostnameRemote"][0]] = output[2]
-                tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = output[3]
-                tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = output[4]
+                    tempPeeringParse = [""] * len(PeeringDict)
+                    tempPeeringParse[PeeringDict["PeeringType"][0]] = output[1]
+                    tempPeeringParse[PeeringDict["IfName"][0]] = pollPeerLine[1]
+                    tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = pollPeerLine[0]
+                    tempPeeringParse[PeeringDict["HostnameRemote"][0]] = output[2]
+                    tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = output[3]
+                    tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = output[4]
 
-                tempPeeringParseAll.append(tempPeeringParse)
+                    tempPeeringParseAll.append(tempPeeringParse)
 
-            if debug:
-                with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
-                    debugTextFile.write("\n\n\n#####\tPolling neighbor " + pollPeerLine[0] + " from source interface " + pollPeerLine[1] + " on " + str(datetime.datetime.today()) + "\t#####")
-                    debugTextFile.write("\n".join(str(item) for item in output[5]))
+                if debug:
+                    with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+                        debugTextFile.write("\n\n\n#####\tPolling neighbor " + pollPeerLine[0] + " from source interface " + pollPeerLine[1] + " on " + str(datetime.datetime.today()) + "\t#####")
+                        debugTextFile.write("\n".join(str(item) for item in output[5]))
 
         # Write SSH/Telnet to a file (for diagnostic purposes)
         with open(outputFilePath, 'a') as outputFile:
