@@ -8,7 +8,6 @@ import shutil
 import uuid
 import datetime
 import time
-import getpass
 import paramiko
 import telnetlib
 import socket
@@ -122,23 +121,41 @@ for value in InterfacesDict:
 
 PeeringDict =  {
     "PeeringID": [0, "TEXT NOT NULL,"],
-    "NodeID": [0, "TEXT NOT NULL,"],
-    "Hostname": [0, "TEXT NOT NULL,"],
-    "CLISyntax": [0, "TEXT NOT NULL,"],
     "PeeringType": [0, "TEXT NOT NULL,"],
-    "IfIDLocal": [0, "TEXT,"],
-    "PortIDLocal": [0, "TEXT,"],
-    "IPV4AddrLocal": [0, "TEXT,"],
-    "IPV6AddrLocal": [0, "TEXT,"],
-    "NodeIDRemote": [0, "TEXT,"],
-    "HostnameRemote": [0, "TEXT,"],
-    "CLISyntaxRemote": [0, "TEXT,"],
-    "IfIDRemote": [0, "TEXT,"],
-    "PortIDRemote": [0, "TEXT,"],
-    "IPV4AddrRemote": [0, "TEXT,"],
-    "IPV6AddrRemote": [0, "TEXT,"],
     "PeeringAdmState": [0, "TEXT,"],
     "PeeringState": [0, "TEXT,"],
+    "NodeID": [0, "TEXT NOT NULL,"],
+    "Hostname": [0, "TEXT NOT NULL,"],
+    "SysAddr": [0, "TEXT,"],
+    "CLISyntax": [0, "TEXT NOT NULL,"],
+    "AS": [0, "TEXT,"],
+    "PeerDescr": [0, "TEXT,"],
+    "IfID": [0, "TEXT,"],
+    "IfName": [0, "TEXT,"],
+    "IfDescr": [0, "TEXT,"],
+    "PortBinding": [0, "TEXT,"],
+    "PortName": [0, "TEXT,"],
+    "PortDescr": [0, "TEXT,"],
+    "IPV4Addr": [0, "TEXT,"],
+    "IPV4Subnet": [0, "TEXT,"],
+    "IPV6Addr": [0, "TEXT,"],
+    "IPV6Subnet": [0, "TEXT,"],
+    "NodeIDRemote": [0, "TEXT,"],
+    "HostnameRemote": [0, "TEXT,"],
+    "SysAddrRemote": [0, "TEXT,"],
+    "CLISyntaxRemote": [0, "TEXT,"],
+    "ASRemote": [0, "TEXT,"],
+    "PeerDescrRemote": [0, "TEXT,"],
+    "IfIDRemote": [0, "TEXT,"],
+    "IfNameRemote": [0, "TEXT,"],
+    "IfDescrRemote": [0, "TEXT,"],
+    "PortBindingRemote": [0, "TEXT,"],
+    "PortNameRemote": [0, "TEXT,"],
+    "PortDescrRemote": [0, "TEXT,"],
+    "IPV4AddrRemote": [0, "TEXT,"],
+    "IPV4SubnetRemote": [0, "TEXT,"],
+    "IPV6AddrRemote": [0, "TEXT,"],
+    "IPV6SubnetRemote": [0, "TEXT,"],
     "Comments": [0, "TEXT,"],
     "LastUpdatedTime": [0, "TEXT,"],
     "LastUpdatedBy": [0, "TEXT"]
@@ -149,224 +166,267 @@ for value in PeeringDict:
     PeeringDict[value][0] = int(i)
     i = i + 1
 
+# CommandsDict =  {
+#     "IOS": [
+#         [ "show version", 30 ],
+#         [ "terminal length 0", 30 ],
+#         [ "show running-config", 300 ],
+#         [ "show bootvar", 30 ],
+#         [ "show interfaces", 60 ],
+#         [ "show inventory", 60 ],
+#         [ "show ip interface", 60 ],
+#         [ "show ipv6 interface", 60 ],
+#         [ "show mac address-table detail", 60 ],
+#         [ "show mpls interfaces detail", 60 ],
+#         [ "show cdp neighbors detail", 60 ],
+#         [ "show lldp neighbors detail", 60 ],
+#         [ "show bfd neighbors details", 60 ],
+#         [ "show ip ospf", 60 ],
+#         [ "show ip ospf neighbor detail", 60 ],
+#         [ "show ip ospf database router", 300 ],
+#         [ "show ip ospf database network", 300 ],
+#         [ "show ip ospf database summary", 300 ],
+#         [ "show ip ospf database asbr-summary", 300 ],
+#         [ "show ip ospf database external", 300 ],
+#         [ "show ip ospf database nssa-external", 300 ],
+#         [ "show ipv6 ospf", 60 ],
+#         [ "show ipv6 ospf neighbor detail", 60 ],
+#         [ "show ospfv3 database router", 300 ],
+#         [ "show ospfv3 database network", 300 ],
+#         [ "show ospfv3 database prefix", 300 ],
+#         [ "show ospfv3 database inter-area", 300 ],
+#         [ "show ospfv3 database external", 300 ],
+#         [ "show ospfv3 database nssa-external", 300 ],
+#         [ "show isis", 60 ],
+#         [ "show isis neighbors detail", 60 ],
+#         [ "show isis database detail", 300 ],
+#         [ "show mpls ldp neighbor detail", 60 ],
+#         [ "show ip bgp neighbors", 60 ],
+#         [ "show ip route", 300 ],
+#         [ "show ip route summary", 60 ],
+#         [ "show ip cef", 300 ],
+#         [ "show ip cef summary", 60 ],
+#         [ "show ipv6 route", 300 ],
+#         [ "show ipv6 route summary", 60 ],
+#         [ "show ipv6 cef", 300 ],
+#         [ "show ipv6 cef summary", 60 ],
+#         [ "show mpls ip binding", 300 ],
+#         [ "show mpls forwarding-table", 300 ],
+#         [ "show ip arp", 60 ],
+#         [ "show ipv6 neighbors", 60 ],
+#         [ "show vrf", 60 ],
+#         [ "show ip route vrf {vrf-name}", 300 ],
+#         [ "show ip route vrf {vrf-name} summary", 60 ],
+#         [ "show ip cef vrf {vrf-name}", 300 ],
+#         [ "show ip cef vrf {vrf-name} summary", 60 ],
+#         [ "show ipv6 route vrf {vrf-name}", 300 ],
+#         [ "show ipv6 route vrf {vrf-name} summary", 60 ],
+#         [ "show ipv6 cef vrf {vrf-name}", 300 ],
+#         [ "show ip cef vrf {vrf-name} summary", 60 ],
+#         [ "show ip arp vrf {vrf-name}", 60 ],
+#         [ "show ipv6 neighbors vrf {vrf-name}", 60 ],
+#         [ "show l2vpn service all", 60 ],
+#         [ "show xconnect all detail", 60 ],
+#         [ "show bgp vrf {vrf-name} summary", 60 ]
+#     ],
+#     "IOS-XR": [
+#         [ "show version", 30 ],
+#         [ "terminal length 0", 30 ],
+#         [ "show running-config", 300 ],
+#         [ "show variables boot", 30 ],
+#         [ "show interfaces", 60 ],
+#         [ "show inventory", 60 ],
+#         [ "show ipv4 interface", 60 ],
+#         [ "show ipv6 interface", 60 ],
+#         [ "show mpls interfaces detail", 60 ],
+#         [ "show rsvp interface detail", 60 ],
+#         [ "show rsvp session detail", 300 ],
+#         [ "show cdp neighbors detail", 60 ],
+#         [ "show lldp neighbors detail", 60 ],
+#         [ "show bfd session detail", 60 ],
+#         [ "show ospf neighbor detail", 60 ],
+#         [ "show ospf database router", 300 ],
+#         [ "show ospf database network", 300 ],
+#         [ "show ospf database summary", 300 ],
+#         [ "show ospf database asbr-summary", 300 ],
+#         [ "show ospf database external", 300 ],
+#         [ "show ospf database nssa-external", 300 ],
+#         [ "show ospfv3 neighbor detail", 60 ],
+#         [ "show ospfv3 database router", 300 ],
+#         [ "show ospfv3 database network", 300 ],
+#         [ "show ospfv3 database prefix", 300 ],
+#         [ "show ospfv3 database inter-area", 300 ],
+#         [ "show ospfv3 database external", 300 ],
+#         [ "show ospfv3 database nssa-external", 300 ],
+#         [ "show isis", 60 ],
+#         [ "show isis adjacency detail", 60 ],
+#         [ "show isis database detail", 300 ],
+#         [ "show mpls ldp neighbor detail", 60 ],
+#         [ "show rsvp neighbors detail", 60 ],
+#         [ "show bgp neighbors", 60 ],
+#         [ "show route ipv4", 300 ],
+#         [ "show route ipv4 summary detail", 60 ],
+#         [ "show cef ipv4", 300 ],
+#         [ "show cef ipv4 summary", 60 ],
+#         [ "show route ipv6", 300 ],
+#         [ "show route ipv6 summary detail", 60 ],
+#         [ "show cef ipv6", 300 ],
+#         [ "show cef ipv6 summary", 60 ],
+#         [ "show mpls ldp bindings", 300 ],
+#         [ "show mpls ldp bindings summary", 60 ],
+#         [ "show mpls forwarding", 300 ],
+#         [ "show mpls forwarding summary", 60 ],
+#         [ "show arp", 60 ],
+#         [ "show ipv6 neighbors", 60 ],
+#         [ "show vrf all", 60 ],
+#         [ "show route vrf {vrf-name} ipv4", 300 ],
+#         [ "show route vrf {vrf-name} ipv4 summary detail", 60 ],
+#         [ "show cef vrf {vrf-name} ipv4", 300 ],
+#         [ "show cef vrf {vrf-name} ipv4 summary", 60 ],
+#         [ "show route vrf {vrf-name} ipv6", 300 ],
+#         [ "show route vrf {vrf-name} ipv6 summary detail", 60 ],
+#         [ "show cef vrf {vrf-name} ipv6", 300 ],
+#         [ "show cef vrf {vrf-name} ipv6 summary", 60 ],
+#         [ "show arp vrf {vrf-name}", 60 ],
+#         [ "show l2vpn xconnect detail", 60 ],
+#         [ "show ospf vrf all neighbor detail", 60 ],
+#         [ "show ospfv3 vrf all neighbor detail", 60 ],
+#         [ "show bgp vrf all neighbors", 60 ]
+#     ],
+#     "VRP": [
+#         [ "display version", 30 ],
+#         [ "change cli more_enabled=no", 30 ],
+#         [ "display current-configuration", 300 ],
+#         [ "display interface", 60 ],
+#         [ "display interface phy-option", 60 ],
+#         [ "display ip interface", 60 ],
+#         [ "display ipv6 interface", 60 ],
+#         [ "display mpls interface verbose", 60 ],
+#         [ "display mpls rsvp interface", 60 ],
+#         [ "display lldp neighbor", 60 ],
+#         [ "display bfd session all verbose", 60 ],
+#         [ "display ospf peer", 60 ],
+#         [ "display ospf lsdb router", 300 ],
+#         [ "display ospf lsdb network", 300 ],
+#         [ "display ospf lsdb summary", 300 ],
+#         [ "display ospf lsdb asbr", 300 ],
+#         [ "display ospf lsdb nssa", 300 ],
+#         [ "display ospf lsdb ase", 300 ],
+#         [ "display ospfv3 peer", 60 ],
+#         [ "display ospfv3 lsdb router", 300 ],
+#         [ "display ospfv3 lsdb inter-prefix", 300 ],
+#         [ "display ospfv3 lsdb network", 300 ],
+#         [ "display ospfv3 lsdb intra-prefix", 300 ],
+#         [ "display ospfv3 lsdb inter-router", 300 ],
+#         [ "display ospfv3 lsdb nssa", 300 ],
+#         [ "display ospfv3 lsdb external", 300 ],
+#         [ "display isis peer verbose", 60 ],
+#         [ "display isis lsdb verbose", 300 ],
+#         [ "display mpls ldp peer verbose", 60 ],
+#         [ "display mpls rsvp-te peer", 60 ],
+#         [ "display bgp peer verbose", 60 ],
+#         [ "display ip vpn-instance", 60 ]
+#     ],
+#     "SR-OS": [
+#         [ "show version", 30 ],
+#         [ "environment no more", 30 ],
+#         [ "admin display-config", 300 ],
+#         [ "show bof", 30 ],
+#         [ "show port", 60 ],
+#         [ "show port {port-id} optical detail", 60 ],
+#         [ "show router \"{router-name}\" interface detail", 60 ],
+#         [ "show router {service-id} interface detail", 60 ],
+#         [ "show router mpls interface detail", 60 ],
+#         [ "show router rsvp interface detail", 60 ],
+#         [ "show router ldp interface detail", 60 ],
+#         [ "show router mpls lsp detail", 300 ],
+#         [ "show system lldp neighbor", 60 ],
+#         [ "show port {port-id} ethernet lldp remote-info detail", 60 ],
+#         [ "show router bfd session", 60 ],
+#         [ "show router ospf all status", 60 ],
+#         [ "show router ospf all neighbor detail", 60 ],
+#         [ "show router ospf all database detail", 600 ],
+#         [ "show router ospf3 all status", 60 ],
+#         [ "show router ospf3 all neighbor detail", 60 ],
+#         [ "show router ospf3 all database detail", 600 ],
+#         [ "show router isis all status", 60 ],
+#         [ "show router isis all adjacency detail", 60 ],
+#         [ "show router isis all database detail", 600 ],
+#         [ "show router ldp session detail", 60 ],
+#         [ "show router rsvp neighbor detail", 60 ],
+#         [ "show router bgp neighbor", 60 ],
+#         [ "show router \"{router-name}\" route-table ipv4", 300 ],
+#         [ "show router \"{router-name}\" route-table ipv4 summary", 60 ],
+#         [ "show router \"{router-name}\" fib {card-id} ipv4", 300 ],
+#         [ "show router \"Base\" fib {card-id} summary ipv4", 60 ],
+#         [ "show router \"{router-name}\" route-table ipv6", 300 ],
+#         [ "show router \"{router-name}\" route-table ipv6 summary", 60 ],
+#         [ "show router \"{router-name}\" fib {card-id} ipv6", 300 ],
+#         [ "show router \"Base\" fib {card-id} summary ipv6", 60 ],
+#         [ "show router \"{router-name}\" ldp bindings detail", 300 ],
+#         [ "show router \"{router-name}\" ldp bindings summary", 60 ],
+#         [ "show router \"{router-name}\" arp", 60 ],
+#         [ "show router \"{router-name}\" neighbor", 60 ],
+#         [ "show service service-using", 60 ],
+#         [ "show service id {vprn-id} all", 60 ],
+#         [ "show service id {ies-id} all", 60 ],
+#         [ "show router {vprn-id} route-table ipv4", 300 ],
+#         [ "show router {vprn-id} route-table ipv4 summary", 60 ],
+#         [ "show router {vprn-id} fib {card-id} ipv4", 300 ],
+#         [ "show router {vprn-id} route-table ipv6", 300 ],
+#         [ "show router {vprn-id} route-table ipv6 summary", 60 ],
+#         [ "show router {vprn-id} fib {card-id} ipv6", 300 ],
+#         [ "show router {vprn-id} arp", 60 ],
+#         [ "show router {vprn-id} arp summary", 60 ],
+#         [ "show router {vprn-id} neighbor", 60 ],
+#         [ "show router {vprn-id} neighbor summary", 60 ],
+#         [ "show service id {vpls-id} all", 60 ],
+#         [ "show service id {xpipe-id} all", 60 ],
+#         [ "show service sdp detail", 60 ],
+#         [ "show router {vprn-id} ospf all neighbor detail", 60 ],
+#         [ "show router {vprn-id} ospf3 all neighbor detail", 60 ],
+#         [ "show router {vprn-id} bgp neighbor", 60 ]
+#     ]
+
+# }
+
 CommandsDict =  {
     "IOS": [
         [ "show version", 30 ],
         [ "terminal length 0", 30 ],
         [ "show running-config", 300 ],
-        [ "show bootvar", 30 ],
-        [ "show interfaces", 60 ],
-        [ "show inventory", 60 ],
-        [ "show ip interface", 60 ],
-        [ "show ipv6 interface", 60 ],
-        [ "show mpls interfaces detail", 60 ],
         [ "show cdp neighbors detail", 60 ],
         [ "show lldp neighbors detail", 60 ],
-        [ "show bfd neighbors details", 60 ],
-        [ "show ip ospf", 60 ],
-        [ "show ip ospf neighbors detail", 60 ],
-        [ "show ip ospf database router", 300 ],
-        [ "show ip ospf database network", 300 ],
-        [ "show ip ospf database summary", 300 ],
-        [ "show ip ospf database asbr-summary", 300 ],
-        [ "show ip ospf database external", 300 ],
-        [ "show ip ospf database nssa-external", 300 ],
-        [ "show ipv6 ospf", 60 ],
-        [ "show ipv6 ospf neighbors detail", 60 ],
-        [ "show ospfv3 database router", 300 ],
-        [ "show ospfv3 database network", 300 ],
-        [ "show ospfv3 database prefix", 300 ],
-        [ "show ospfv3 database inter-area", 300 ],
-        [ "show ospfv3 database external", 300 ],
-        [ "show ospfv3 database nssa-external", 300 ],
-        [ "show isis neighbors detail", 60 ],
-        [ "show isis database detail", 300 ],
-        [ "show mpls ldp neighbors detail", 60 ],
+        [ "show ip ospf neighbor detail", 60 ],
         [ "show ip bgp neighbors", 60 ],
-        [ "show ip route", 300 ],
-        [ "show ip route summary", 60 ],
-        [ "show ip cef", 300 ],
-        [ "show ip cef summary", 60 ],
-        [ "show ipv6 route", 300 ],
-        [ "show ipv6 route summary", 60 ],
-        [ "show ipv6 cef", 300 ],
-        [ "show ipv6 cef summary", 60 ],
-        [ "show mpls ip binding", 300 ],
-        [ "show mpls forwarding-table", 300 ],
-        [ "show ip arp", 60 ],
-        [ "show ipv6 neighbors", 60 ],
-        [ "show vrf", 60 ],
-        [ "show ip route vrf {vrf-name}", 300 ],
-        [ "show ip route vrf {vrf-name} summary", 60 ],
-        [ "show ip cef vrf {vrf-name}", 300 ],
-        [ "show ip cef vrf {vrf-name} summary", 60 ],
-        [ "show ipv6 route vrf {vrf-name}", 300 ],
-        [ "show ipv6 route vrf {vrf-name} summary", 60 ],
-        [ "show ipv6 cef vrf {vrf-name}", 300 ],
-        [ "show ip cef vrf {vrf-name} summary", 60 ],
-        [ "show ip arp vrf {vrf-name}", 60 ],
-        [ "show ipv6 neighbors vrf {vrf-name}", 60 ],
-        [ "show l2vpn service all", 60 ],
-        [ "show xconnect all detail", 60 ],
-        [ "show bgp vrf {vrf-name} summary", 60 ]
     ],
     "IOS-XR": [
-        [ "show version", 30 ],
+        [ "show version brief", 30 ],
         [ "terminal length 0", 30 ],
         [ "show running-config", 300 ],
-        [ "show variables boot", 30 ],
-        [ "show interfaces", 60 ],
-        [ "show inventory", 60 ],
-        [ "show ipv4 interface", 60 ],
-        [ "show ipv6 interface", 60 ],
-        [ "show mpls interfaces detail", 60 ],
-        [ "show rsvp interface detail", 60 ],
-        [ "show rsvp session detail", 300 ],
         [ "show cdp neighbors detail", 60 ],
         [ "show lldp neighbors detail", 60 ],
-        [ "show bfd session detail", 60 ],
-        [ "show ospf neighbors detail", 60 ],
-        [ "show ospf database router", 300 ],
-        [ "show ospf database network", 300 ],
-        [ "show ospf database summary", 300 ],
-        [ "show ospf database asbr-summary", 300 ],
-        [ "show ospf database external", 300 ],
-        [ "show ospf database nssa-external", 300 ],
-        [ "show ospfv3 neighbors detail", 60 ],
-        [ "show ospfv3 database router", 300 ],
-        [ "show ospfv3 database network", 300 ],
-        [ "show ospfv3 database prefix", 300 ],
-        [ "show ospfv3 database inter-area", 300 ],
-        [ "show ospfv3 database external", 300 ],
-        [ "show ospfv3 database nssa-external", 300 ],
-        [ "show isis adjacency detail", 60 ],
-        [ "show isis database detail", 300 ],
-        [ "show mpls ldp neighbors detail", 60 ],
-        [ "show rsvp neighbors detail", 60 ],
-        [ "show bgp neighbors", 60 ],
-        [ "show route ipv4", 300 ],
-        [ "show route ipv4 summary detail", 60 ],
-        [ "show cef ipv4", 300 ],
-        [ "show cef ipv4 summary", 60 ],
-        [ "show route ipv6", 300 ],
-        [ "show route ipv6 summary detail", 60 ],
-        [ "show cef ipv6", 300 ],
-        [ "show cef ipv6 summary", 60 ],
-        [ "show mpls ldp bindings", 300 ],
-        [ "show mpls ldp bindings summary", 60 ],
-        [ "show mpls forwarding", 300 ],
-        [ "show mpls forwarding summary", 60 ],
-        [ "show arp", 60 ],
-        [ "show ipv6 neighbors", 60 ],
-        [ "show vrf all", 60 ],
-        [ "show route vrf {vrf-name} ipv4", 300 ],
-        [ "show route vrf {vrf-name} ipv4 summary detail", 60 ],
-        [ "show cef vrf {vrf-name} ipv4", 300 ],
-        [ "show cef vrf {vrf-name} ipv4 summary", 60 ],
-        [ "show route vrf {vrf-name} ipv6", 300 ],
-        [ "show route vrf {vrf-name} ipv6 summary detail", 60 ],
-        [ "show cef vrf {vrf-name} ipv6", 300 ],
-        [ "show cef vrf {vrf-name} ipv6 summary", 60 ],
-        [ "show arp vrf {vrf-name}", 60 ],
-        [ "show l2vpn xconnect detail", 60 ],
-        [ "show ospf vrf all neighbor detail", 60 ],
-        [ "show ospfv3 vrf all neighbor detail", 60 ],
-        [ "show bgp vrf all neighbors", 60 ]
+        [ "show ospf neighbor detail", 60 ],
+        [ "show bgp neighbors", 60 ]
     ],
     "VRP": [
         [ "display version", 30 ],
         [ "change cli more_enabled=no", 30 ],
         [ "display current-configuration", 300 ],
         [ "display interface", 60 ],
-        [ "display interface phy-option", 60 ],
-        [ "display ip interface", 60 ],
-        [ "display ipv6 interface", 60 ],
-        [ "display mpls interface verbose", 60 ],
-        [ "display mpls rsvp interface", 60 ],
-        [ "display lldp neighbor", 60 ],
-        [ "display bfd session all verbose", 60 ],
-        [ "display ospf peer", 60 ],
-        [ "display ospf lsdb router", 300 ],
-        [ "display ospf lsdb network", 300 ],
-        [ "display ospf lsdb summary", 300 ],
-        [ "display ospf lsdb asbr", 300 ],
-        [ "display ospf lsdb nssa", 300 ],
-        [ "display ospf lsdb ase", 300 ],
-        [ "display ospfv3 peer", 60 ],
-        [ "display ospfv3 lsdb router", 300 ],
-        [ "display ospfv3 lsdb inter-prefix", 300 ],
-        [ "display ospfv3 lsdb network", 300 ],
-        [ "display ospfv3 lsdb intra-prefix", 300 ],
-        [ "display ospfv3 lsdb inter-router", 300 ],
-        [ "display ospfv3 lsdb nssa", 300 ],
-        [ "display ospfv3 lsdb external", 300 ],
-        [ "display isis peer verbose", 60 ],
-        [ "display isis lsdb verbose", 300 ],
-        [ "display mpls ldp peer verbose", 60 ],
-        [ "display mpls rsvp-te peer", 60 ],
-        [ "display bgp peer verbose", 60 ],
-        [ "display ip vpn-instance", 60 ]
     ],
     "SR-OS": [
         [ "show version", 30 ],
         [ "environment no more", 30 ],
         [ "admin display-config", 300 ],
-        [ "show bof", 30 ],
-        [ "show port", 60 ],
-        [ "show port {port-id} optical", 60 ],
-        [ "show router \"{router-name}\" interface detail", 60 ],
-        [ "show router {service-id} interface detail", 60 ],
-        [ "show router mpls interface detail", 60 ],
-        [ "show router rsvp interface detail", 60 ],
-        [ "show router ldp interface detail", 60 ],
-        [ "show router mpls lsp detail", 300 ],
         [ "show system lldp neighbor", 60 ],
-        [ "show router bfd session", 60 ],
-        [ "show router ospf all status", 60 ],
+        [ "show port {port-id} ethernet lldp remote-info detail", 60 ],
         [ "show router ospf all neighbor detail", 60 ],
-        [ "show router ospf all database detail", 300 ],
-        [ "show router ospf3 all status", 60 ],
-        [ "show router ospf3 all neighbor detail", 60 ],
-        [ "show router ospf3 all database detail", 300 ],
-        [ "show router isis all adjacency detail", 60 ],
-        [ "show router isis all database detail", 300 ],
-        [ "show router ldp session detail", 60 ],
-        [ "show router rsvp neighbor detail", 60 ],
-        [ "show router bgp neighbor", 60 ],
-        [ "show router \"{router-name}\" route-table ipv4", 300 ],
-        [ "show router \"{router-name}\" route-table ipv4 summary", 60 ],
-        [ "show router \"{router-name}\" fib {card-id} ipv4", 300 ],
-        [ "show router \"Base\" fib {card-id} summary ipv4", 60 ],
-        [ "show router \"{router-name}\" route-table ipv6", 300 ],
-        [ "show router \"{router-name}\" route-table ipv6 summary", 60 ],
-        [ "show router \"{router-name}\" fib {card-id} ipv6", 300 ],
-        [ "show router \"Base\" fib {card-id} summary ipv6", 60 ],
-        [ "show router \"{router-name}\" ldp bindings detail", 300 ],
-        [ "show router \"{router-name}\" ldp bindings summary", 60 ],
-        [ "show router \"{router-name}\" arp", 60 ],
-        [ "show router \"{router-name}\" neighbor", 60 ],
-        [ "show service service-using", 60 ],
-        [ "show service id {vprn-id} all", 60 ],
-        [ "show service id {ies-id} all", 60 ],
-        [ "show router {vprn-id} route-table ipv4", 300 ],
-        [ "show router {vprn-id} route-table ipv4 summary", 60 ],
-        [ "show router {vprn-id} fib {card-id} ipv4", 300 ],
-        [ "show router {vprn-id} route-table ipv6", 300 ],
-        [ "show router {vprn-id} route-table ipv6 summary", 60 ],
-        [ "show router {vprn-id} fib {card-id} ipv6", 300 ],
-        [ "show router {vprn-id} arp", 60 ],
-        [ "show router {vprn-id} arp summary", 60 ],
-        [ "show router {vprn-id} neighbor", 60 ],
-        [ "show router {vprn-id} neighbor summary", 60 ],
-        [ "show service id {vpls-id} all", 60 ],
-        [ "show service id {xpipe-id} all", 60 ],
-        [ "show service sdp detail", 60 ],
-        [ "show router {vprn-id} ospf all neighbor detail", 60 ],
-        [ "show router {vprn-id} ospf3 all neighbor detail", 60 ],
-        [ "show router {vprn-id} bgp neighbor", 60 ]
+        [ "show router bgp neighbor", 60 ]
     ]
 
 }
+
 
 PortsDict =  {
     "SSH": [ 22 ],
@@ -374,18 +434,22 @@ PortsDict =  {
 }
 
 shellPromptRegex = r"^[a-zA-Z0-9\-\._:@\{\}~\/\\ \t\*]+(>|#|\$|\%)[a-zA-Z0-9\-\._:@\{\}~\/\\ \t]*$"
+shellPromptRegexEmptyLine = r"^[a-zA-Z0-9\-\._:@\{\}~\/\\ \t\*]+(>|#|\$|\%) *$"
 
 #####################################################################################################################################################
 ###########################################################      Execute CLI command      ###########################################################
 #####################################################################################################################################################
 def execCLICommand(connectionCursor, protocol, command, execTimeout):
     startTime = time.time()
+    if execTimeout is None: execTimeout = 30
+    pagingTimeout = 20
+    readTimeout = 0.1
+    waitTimeout = 10
 
     outputText = []
 
-    pagingTimeout = 3
-    readTimeout = 0.1
-    waitTimeout = 3
+    escapes = ''.join([chr(char) for char in range(1, 32)])
+    translator = str.maketrans('', '', escapes)
 
     outputStream = ""
     # Cleaning terminal contents before execution
@@ -394,7 +458,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
             try:
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
-                    print("Error: command execution has timed out")
+                    print("Error: command \"" + command + "\" execution has timed out")
                     connectionCursor.send("\x03\nq\n")
                     return [ 1, outputText, execTime]
                 connectionCursor.settimeout(readTimeout)
@@ -410,7 +474,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
             try:
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
-                    print("Error: command execution has timed out")
+                    print("Error: command \"" + command + "\" execution has timed out")
                     connectionCursor.write(b"\x03\nq\n")
                     return [ 1, outputText, execTime]
                 terminalLine = ""
@@ -422,6 +486,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                 print("   Connection error: ", sys.exc_info()[0])
 
     # Checking if terminal is alive
+    terminalActive = False
     for attempt in range(0,2):
         # Sending empty line to see response
         if protocol == "ssh":
@@ -437,20 +502,20 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
             while not connectionCursor.recv_ready():
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
-                    print("Error: command execution has timed out")
+                    print("Error: command \"" + command + "\" execution has timed out")
                     connectionCursor.send("\x03\nq\n")
                     return [ 2, outputText, execTime]
-                time.sleep(1)
+                time.sleep(0.2)
                 waitTime = waitTime + 1
                 if waitTime >= waitTimeout:
-                    print("Error: command execution procedure has timed out while attempting to get CLI prefix")
+                    print("Error: command \"" + command + "\" execution procedure has timed out while attempting to get CLI prefix")
                     break
         if protocol == "ssh":
             while connectionCursor.recv_ready():
                 try:
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
-                        print("Error: command execution has timed out")
+                        print("Error: command \"" + command + "\" execution has timed out")
                         connectionCursor.send("\x03\nq\n")
                         return [ 3, outputText, execTime]
                     connectionCursor.settimeout(readTimeout)
@@ -465,7 +530,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                 try:
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
-                        print("Error: command execution has timed out")
+                        print("Error: command \"" + command + "\" execution has timed out")
                         connectionCursor.write(b"\x03\nq\n")
                         return [ 3, outputText, execTime]
                     terminalLine = ""
@@ -476,46 +541,55 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                         outputStream = outputStream + terminalLine
                 except:
                     print("   Connection error: ", sys.exc_info()[0])
-        # print(outputStream)
-        if ( re.search(re.compile(shellPromptRegex),outputStream.split("\n")[-1]) ):
-            break
+        # outputStream = outputStream.replace("\r","\n")
+        # print(outputStream.split("\n"))
+        for line in outputStream.split("\r\n"):
+            line = line.replace("[K [K","")
+            line = line.replace("[K","")
+            line = line.translate(translator)
+            if ( re.search(re.compile(shellPromptRegexEmptyLine),line) ):
+                terminalActive = True
+                break
+        else:
+            time.sleep(0.2)
 
-    if ( not re.search(re.compile(shellPromptRegex),outputStream.split("\n")[-1]) ):
-        print("Error: terminal not responding")
+    if ( not terminalActive ):
+        print("Error: terminal not responding while trying to execute command \"" + command + "\"")
         return [ 3, outputText, execTime]
     else:
         # Sending command
         if protocol == "ssh":
-            connectionCursor.send("\n" + command + "\n")
+            # connectionCursor.send("\n" + command + "\n")
+            connectionCursor.send(command + "\n")
         if protocol == "telnet":
-            connectionCursor.write(b"\n" + command.encode('ascii') + b"\n")
-
+            # connectionCursor.write(b"\n" + command.encode('ascii') + b"\n")
+            connectionCursor.write(command.encode('ascii') + b"\n")
 
         # Reading command output
-        outputStream = ""
         pageRead = 0
         pagingTime = 0
         while pageRead == 0:
             outputPage = ""
+            cycleStartTime = time.time()
             if protocol == "ssh":
                 waitTime = 0
                 # Waiting for data
                 while not connectionCursor.recv_ready():
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
-                        print("Error: command execution has timed out")
+                        print("Error: command \"" + command + "\" execution has timed out")
                         connectionCursor.send("\x03\nq\n")
                         return [ 4, outputText, execTime]
                     time.sleep(0.1)
                     waitTime = waitTime + 0.1
                     if waitTime >= waitTimeout:
-                        print("Error: command execution procedure has timed out while attempting to execute target command")
+                        print("Error: command \"" + command + "\" execution procedure has timed out while attempting to execute target command")
                         break
                 while connectionCursor.recv_ready():
                     try:
                         execTime = time.time() - startTime
                         if ( execTime > execTimeout ):
-                            print("Error: command execution has timed out")
+                            print("Error: command \"" + command + "\" execution has timed out")
                             connectionCursor.send("\x03\nq\n")
                             return [ 4, outputText, execTime]
                         connectionCursor.settimeout(readTimeout)
@@ -532,7 +606,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                     try:
                         execTime = time.time() - startTime
                         if ( execTime > execTimeout ):
-                            print("Error: command execution has timed out")
+                            print("Error: command \"" + command + "\" execution has timed out")
                             connectionCursor.write(b"\x03\nq\n")
                             return [ 4, outputText, execTime]
                         terminalLine = ""
@@ -544,45 +618,49 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                             outputPage = outputPage + terminalLine
                     except:
                         print("   Connection error: ", sys.exc_info()[0])
-        
-            # print("outputPage: \"" + outputPage + "\"")
+
             outputStream = outputStream + outputPage
 
-            # Detecting the end of output (if last line of output contains CLI prefix)
-            if (( re.search(re.compile(shellPromptRegex),outputPage.split("\n")[-1]) )):
-                pageRead = 1
-            else:
-                # Sending space to scroll paging
-                if protocol == "ssh":
-                    connectionCursor.send(" ")
-                if protocol == "telnet":
-                    connectionCursor.write(b" ")
+            # Detecting the end of output (if page contains CLI prefix without command)
+            # for line in outputPage.split("\r\n"):
+            for line in re.split(r"\r*\n",outputPage):
+                line = line.replace("[K [K","")
+                line = line.replace("[K","")
+                line = line.translate(translator)
+                if ( re.search(re.compile(shellPromptRegexEmptyLine),line) ):
+                    pageRead = 1
+
+            cycleEndTime = time.time()
+
+            if pageRead == 0:
                 # Detecting the end of page in output (if last line of output contains specific phrases)
                 if ( re.search(re.compile(r" *-- *(M|m)ore *-- *|(P|p)ress any key|(C|continue)"),outputPage) ):
                     # Reset paging time to not reach timeout
                     pagingTime = 0
+                    # Increasing execTimeout on a value of last cycle run time to wait until paging ends
+                    execTimeout = execTimeout + cycleEndTime - cycleStartTime
+                    # Sending space to scroll paging
+                    if protocol == "ssh":
+                        connectionCursor.send(" ")
+                    if protocol == "telnet":
+                        connectionCursor.write(b" ")
                 else:
                     # Reading the output once again several times if we missed something
-                    time.sleep(waitTimeout)
+                    time.sleep(0.1)
                     pagingTime = pagingTime + 1
 
             # Check paging timeout to not loop endlessly
-            if pagingTime >= pagingTimeout:
+            if pagingTime >= pagingTimeout*10:
                 if protocol == "ssh":
-                    connectionCursor.send("\x03\nq\n")
+                    connectionCursor.send("\x03\n")
                 if protocol == "telnet":
-                    connectionCursor.write(b"\x03\nq\n")
+                    connectionCursor.write(b"\x03\n")
                 print("Error: output paging has timed out")
                 return [ 5, outputText, execTime]
-                    
-            # print(outputStream)
 
         # Stream preparation
         outputStream = re.sub(r"(\r)+","\r",outputStream)
         tempText = outputStream.split("\r\n")
-
-        escapes = ''.join([chr(char) for char in range(1, 32)])
-        translator = str.maketrans('', '', escapes)
 
         # Splitting text to a list
         for outputLine in tempText:
@@ -591,8 +669,10 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                 pass
             if ( protocol == "telnet" ):
                 pass
-            
+
             # Removing paging lines and special symbols
+            outputLine = outputLine.replace("[K [K","")             # Cisco IOS-XR garbage line
+            outputLine = outputLine.replace("[K","")                # Cisco IOS-XR garbage line
             outputLine = re.sub(r" *-* *More *-* *","",outputLine)    # Cisco paging line
             outputLine = re.sub(r" *\x08+ +\x08+","",outputLine)    # Cisco paging line
             outputLine = re.sub(r" *Press any key to continue [a-zA-Z \(\)\.]+","",outputLine)  # Nokia paging line
@@ -606,7 +686,9 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
                 pass
             if ( protocol == "telnet" ):
                 pass
-            
+
+            outputLine = outputLine.rstrip()
+
             outputText.append(outputLine)
 
         # Removing last line with CLI Prefix
@@ -618,6 +700,487 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
 #####################################################################################################################################################
 #####################################################################################################################################################
 #####################################################################################################################################################
+
+
+#####################################################################################################################################################
+###########################################################      Poll neighbor      ###########################################################
+#####################################################################################################################################################
+def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,srcIfName,CLISyntax,execTimeout):
+    startTime = time.time()
+    if execTimeout is None: execTimeout = 60
+    readTimeout = 0.1
+    waitTimeout = 60
+
+    escapes = ''.join([chr(char) for char in range(1, 32)])
+    translator = str.maketrans('', '', escapes)
+
+    remoteOutputText = []
+    remoteHostname = ""
+    remoteSysAddr = ""
+    remoteCLISyntax = ""
+    remoteProtocol = ""
+
+    # Define commands depending on syntax
+    commandSSHConnect = ""
+    commandTelnetConnect = ""
+    # Syntax: Cisco IOS
+    if CLISyntax == "IOS":
+        commandSSHConnect = "ssh -l "+ login + " " + remoteAddr
+        commandTelnetConnect = "telnet " + remoteAddr + " /source-interface " + srcIfName
+    # Syntax: Cisco IOS-XR
+    elif CLISyntax == "IOS-XR":
+        if srcIfName != "":
+            commandSSHConnect = "ssh " + remoteAddr + " source-interface " + srcIfName + " username " + login
+            commandTelnetConnect = "telnet " + remoteAddr + " source-interface " + srcIfName
+        else:
+            commandSSHConnect = "ssh " + remoteAddr + " username " + login
+    # Syntax: ALU/Nokia SR-OS
+    elif (CLISyntax == "SR-OS"):
+        commandSSHConnect = "ssh -l "+ login + " " + remoteAddr
+        commandTelnetConnect = "telnet " + remoteAddr
+    # Syntax: Huawei VRP
+    elif (CLISyntax == "VRP"):
+        # TBD
+        pass
+
+    outputStream = ""
+    # Cleaning terminal contents before execution
+    if protocol == "ssh":
+        while connectionCursor.recv_ready():
+            try:
+                execTime = time.time() - startTime
+                if ( execTime > execTimeout ):
+                    print("Error: remote connection to " + remoteAddr + " has timed out")
+                    connectionCursor.send("\x03\nq\n")
+                    return [ 1, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                connectionCursor.settimeout(readTimeout)
+                outputChunk = connectionCursor.recv(1000).decode("utf-8")
+                # print(outputChunk)
+                outputStream = outputStream + outputChunk
+            except:
+                print("   Connection error: ", sys.exc_info()[0])
+    if protocol == "telnet":
+        terminalRead = 0
+        outputChunk = ""
+        while terminalRead == 0:
+            try:
+                execTime = time.time() - startTime
+                if ( execTime > execTimeout ):
+                    print("Error: remote connection to " + remoteAddr + " has timed out")
+                    connectionCursor.write(b"\x03\nq\n")
+                    return [ 1, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                terminalLine = ""
+                terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
+                if (terminalLine == ""):
+                    terminalRead = 1
+                outputStream = outputStream + terminalLine
+            except:
+                print("   Connection error: ", sys.exc_info()[0])
+
+    remoteOutputText.extend(re.split(r"\r*\n",outputStream))
+
+    # Sending empty line to see response
+    if protocol == "ssh":
+        connectionCursor.send("\n")
+    if protocol == "telnet":
+        connectionCursor.write(b"\n")
+    time.sleep(0.2)
+
+    # Checking if terminal is alive
+    terminalActive = False
+    outputStream = ""
+    for attempt in range(0,60):
+        # Reading terminal to get CLI prefix
+        # if protocol == "ssh":
+        #     waitTime = 0
+        #     while not connectionCursor.recv_ready():
+        #         execTime = time.time() - startTime
+        #         if ( execTime > execTimeout ):
+        #             print("Error: remote connection to " + remoteAddr + " has timed out")
+        #             connectionCursor.send("\x03\nq\n")
+        #             return [ 2, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+        #         time.sleep(0.2)
+        #         waitTime = waitTime + 1
+        #         if waitTime >= waitTimeout:
+        #             print("Error: command \"" + commandSSHConnect + "\" execution procedure has timed out while attempting to get CLI prefix")
+        #             break
+        if protocol == "ssh":
+            while connectionCursor.recv_ready():
+                try:
+                    execTime = time.time() - startTime
+                    if ( execTime > execTimeout ):
+                        print("Error: remote connection to " + remoteAddr + " has timed out")
+                        connectionCursor.send("\x03\nq\n")
+                        return [ 3, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                    connectionCursor.settimeout(readTimeout)
+                    outputChunk = connectionCursor.recv(1000).decode("utf-8")
+                    outputStream = outputStream + outputChunk
+                except:
+                    print("   Connection error: ", sys.exc_info()[0])
+        if protocol == "telnet":
+            terminalRead = 0
+            outputChunk = ""
+            while terminalRead == 0:
+                try:
+                    execTime = time.time() - startTime
+                    if ( execTime > execTimeout ):
+                        print("Error: remote connection to " + remoteAddr + " has timed out")
+                        connectionCursor.write(b"\x03\nq\n")
+                        return [ 3, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                    terminalLine = ""
+                    terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
+                    if (terminalLine == ""):
+                        terminalRead = 1
+                    else:
+                        outputStream = outputStream + terminalLine
+                except:
+                    print("   Connection error: ", sys.exc_info()[0])
+        # outputStream = outputStream.replace("\r","\n")
+        # print(outputStream.split("\n"))
+        for line in outputStream.split("\r\n"):
+            line = line.replace("[K [K","")
+            line = line.replace("[K","")
+            line = line.translate(translator)
+            if ( re.search(re.compile(shellPromptRegexEmptyLine),line.lstrip().rstrip()) ):
+                localShellPrompt = line.lstrip().rstrip()
+                terminalActive = True
+                break
+        else:
+            time.sleep(1)
+
+        remoteOutputText.extend(re.split(r"\r*\n",outputStream))
+        if terminalActive == True:
+            break
+
+    if ( not terminalActive ):
+        print("Error: terminal not responding while trying to connect to " + remoteAddr)
+        return [ 3, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+    else:
+        # First try SSH and then Telnet
+        for attempt in range(2):
+            if attempt == 0:
+                command = commandSSHConnect
+                remoteProtocol = "SSH"
+            else:
+                command = commandTelnetConnect
+                remoteProtocol = "Telnet"
+
+            # Sending command
+            if protocol == "ssh":
+                # connectionCursor.send("\n" + command + "\n")
+                connectionCursor.send(command + "\n")
+            if protocol == "telnet":
+                # connectionCursor.write(b"\n" + command.encode('ascii') + b"\n")
+                connectionCursor.write(command.encode('ascii') + b"\n")
+
+            # Reading command output and waiting for password prompt
+            connectionSuccess = 0
+            while connectionSuccess == 0:
+                time.sleep(1)
+                outputPage = ""
+                if protocol == "ssh":
+                    waitTime = 0
+                    # Waiting for data
+                    while not connectionCursor.recv_ready():
+                        execTime = time.time() - startTime
+                        if ( execTime > execTimeout ):
+                            print("Error: command \"" + command + "\" execution has timed out")
+                            connectionCursor.send("\x03\nq\n")
+                            connectionSuccess = -1
+                            break
+                        time.sleep(0.1)
+                        waitTime = waitTime + 0.1
+                        if waitTime >= waitTimeout:
+                            print("Error: command \"" + command + "\" execution procedure has timed out while attempting to execute target command")
+                            break
+                    while connectionCursor.recv_ready():
+                        try:
+                            execTime = time.time() - startTime
+                            if ( execTime > execTimeout ):
+                                print("Error: command \"" + command + "\" execution has timed out")
+                                connectionCursor.send("\x03\nq\n")
+                                connectionSuccess = -1
+                                break
+                            connectionCursor.settimeout(readTimeout)
+                            outputChunk = ""
+                            outputChunk = connectionCursor.recv(1000).decode("utf-8")
+                            # print(outputChunk)
+                            outputPage = outputPage + outputChunk
+                        except:
+                            print("   Connection error: ", sys.exc_info()[0])
+                            # return None
+                if protocol == "telnet":
+                    terminalRead = 0
+                    while terminalRead == 0:
+                        try:
+                            execTime = time.time() - startTime
+                            if ( execTime > execTimeout ):
+                                print("Error: command \"" + command + "\" execution has timed out")
+                                connectionCursor.write(b"\x03\nq\n")
+                                connectionSuccess = -1
+                                break
+                            terminalLine = ""
+                            terminalLine = connectionCursor.read_until(b"\n",readTimeout/5).decode('utf-8')
+                            # print(terminalLine)
+                            if (terminalLine == ""):
+                                terminalRead = 1
+                            else:
+                                outputPage = outputPage + terminalLine
+                        except:
+                            print("   Connection error: ", sys.exc_info()[0])
+
+                outputStream = outputStream + outputPage
+                remoteOutputText.extend(re.split(r"\r*\n",outputPage))
+
+                # Check if output page containg any text
+                if re.search(r"[a-zA-Z0-9:;\"\'\.\,\-]+",re.sub("\r*\n","",outputPage)):
+                    if re.search(r"((E|e)rror|(F|f)ail|(R|r)efuse|(N|n)ot +allowed)",re.sub("\r*\n","",outputPage)):
+                        connectionSuccess = -1
+                        # Aborting previous commands
+                        if protocol == "ssh":
+                            connectionCursor.send("\x03\n")
+                        if protocol == "telnet":
+                            connectionCursor.write(b"\x03\n")
+                        time.sleep(3)
+                    elif re.search(r"(Y|y)es(/(N|n)o)?",re.sub("\r*\n","",outputPage)):
+                        # Sending login
+                        if protocol == "ssh":
+                            connectionCursor.send("yes\n")
+                        if protocol == "telnet":
+                            connectionCursor.write(b"yes\n")
+                    elif re.search(r"((L|l)ogin|((U|u)ser)?(N|n)ame)",re.sub("\r*\n","",outputPage)):
+                        # Sending login
+                        if protocol == "ssh":
+                            connectionCursor.send(login + "\n")
+                        if protocol == "telnet":
+                            connectionCursor.write(login.encode('ascii') + b"\n")
+                    elif re.search(r"(P|p)ass(word)?",re.sub("\r*\n","",outputPage)):
+                        # Sending password
+                        if protocol == "ssh":
+                            connectionCursor.send(password1 + "\n")
+                        if protocol == "telnet":
+                            connectionCursor.write(password1.encode('ascii') + b"\n")
+                    else:
+                        # Detecting if page contains CLI prefix without command
+                        for line in re.split(r"\r*\n",outputPage):
+                            line = line.replace("[K [K","")
+                            line = line.replace("[K","")
+                            line = line.translate(translator)
+                            if ( re.search(re.compile(shellPromptRegexEmptyLine),line) ):
+                                if line.lstrip().rstrip() == localShellPrompt:
+                                    connectionSuccess = -1
+                                else:
+                                    connectionSuccess = 1
+
+            # Check if we are connected, then proceed
+            if connectionSuccess == 1:
+                break
+
+        # Cleaning terminal contents after execution
+        if protocol == "ssh":
+            while connectionCursor.recv_ready():
+                try:
+                    execTime = time.time() - startTime
+                    if ( execTime > execTimeout ):
+                        print("Error: remote connection to " + remoteAddr + " has timed out")
+                        connectionCursor.send("\x03\nq\n")
+                        return [ 4, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                    connectionCursor.settimeout(readTimeout)
+                    outputChunk = connectionCursor.recv(1000).decode("utf-8")
+                    # print(outputChunk)
+                    outputStream = outputStream + outputChunk
+                except:
+                    print("   Connection error: ", sys.exc_info()[0])
+        if protocol == "telnet":
+            terminalRead = 0
+            outputChunk = ""
+            while terminalRead == 0:
+                try:
+                    execTime = time.time() - startTime
+                    if ( execTime > execTimeout ):
+                        print("Error: remote connection to " + remoteAddr + " has timed out")
+                        connectionCursor.write(b"\x03\nq\n")
+                        return [ 4, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                    terminalLine = ""
+                    terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
+                    if (terminalLine == ""):
+                        terminalRead = 1
+                    outputStream = outputStream + terminalLine
+                except:
+                    print("   Connection error: ", sys.exc_info()[0])
+
+        remoteOutputText.extend(re.split(r"\r*\n",outputStream))
+
+        if connectionSuccess != 1:
+            if protocol == "ssh":
+                connectionCursor.send("\x03\n")
+            if protocol == "telnet":
+                connectionCursor.write(b"\x03\n")
+
+            print("Error: remote connection to " + remoteAddr + " failed")
+            execTime = time.time() - startTime
+            return [ 5, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+        else:
+
+            # Determine SW version and CLI syntax
+            remoteCLISyntax = ""
+            # Issuing a Cisco/Nokia style command
+            for attempt in range(0,2):
+                remoteVersionLines = []
+                print("Executing remote command \"" + str(CommandsDict["IOS"][0][0]) + "\"")
+                output = execCLICommand(connectionCursor, protocol, CommandsDict["IOS"][0][0], CommandsDict["IOS"][0][1])
+                remoteVersionLines.extend(output[1])
+                if output[0] == 0: break
+
+            # Trying to find shell prompt
+            remoteShellPrompt = ""
+            for line in remoteVersionLines:
+                if not re.match(r"^#+.*#+$",line):
+                    # Syntax: all
+                    if re.search(re.compile(shellPromptRegex),line):
+                        remoteShellPrompt = line.lstrip().rstrip()
+                        remoteShellPrompt = re.split(r"((>|#|\$|\%))", remoteShellPrompt)[0] + re.split(r"((>|#|\$|\%))", remoteShellPrompt)[1]
+                    if remoteShellPrompt != "":
+                        print("Found remote shell prompt: "+remoteShellPrompt)
+                        break
+
+            # Trying to find CLI syntax of Cisco/Nokia node
+            for line in remoteVersionLines:
+                searchExpression = r'.*Cisco IOS XR'
+                if re.match(searchExpression,line):
+                    remoteCLISyntax = "IOS-XR"
+                    break
+                searchExpression = r'.*Cisco IOS((-| )XE)? '
+                if re.match(searchExpression,line):
+                    remoteCLISyntax = "IOS"
+                    break
+                searchExpression = r'.*TiMOS-'
+                if re.match(searchExpression,line):
+                    remoteCLISyntax = "SR-OS"
+                    break
+
+            if remoteCLISyntax == "":
+                # Issuing a Huawei style command
+                for attempt in range(0,2):
+                    remoteVersionLines = []
+                    print("Executing remote command \"" + str(CommandsDict["VRP"][0][0]) + "\"")
+                    output = execCLICommand(connectionCursor, protocol, CommandsDict["VRP"][0][0], CommandsDict["VRP"][0][1])
+                    remoteVersionLines.extend(output[1])
+                    if output[0] == 0: break
+
+                # Trying to find CLI syntax of Hiawei node
+                for line in remoteVersionLines:
+                    searchExpression = r'.*VRP \(R\) software'
+                    if re.match(searchExpression,line):
+                        remoteCLISyntax = "VRP"
+                        break
+
+            remoteOutputText.extend(remoteVersionLines)
+            if remoteCLISyntax == "":
+                print("Could not determine remote CLI syntax, skipping to next remote node")
+                remoteOutputText = remoteVersionLines.copy()
+                execTime = time.time() - startTime
+                return [ 0, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+            else:
+                print("Using following command syntax for this remote node: "+remoteCLISyntax)
+
+            remoteEnableLines = []
+            # Vendor-specific preparation phase
+            if remoteCLISyntax == "IOS":
+                if re.search(r'>',remoteShellPrompt):
+
+                    for attempt in range(0,2):
+                        print("Executing remote command \"enable\"")
+                        output = execCLICommand(connectionCursor, protocol, "enable\n" + password2, 20)
+                        remoteEnableLines.extend(output[1])
+                        remoteOutputText.extend(remoteEnableLines)
+                        if output[0] == 0: break
+
+                    # if debug:
+                    #     with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+                    #         debugTextFile.write("\n".join(str(item) for item in enableLines))
+
+                    remoteShellPrompt = remoteShellPrompt.replace(">","#")
+                    searchExpression = re.compile(remoteShellPrompt)
+                    match = 0
+                    for line in output[1]:
+                        if re.search(searchExpression, line):
+                            match = 1
+                            break
+                    if match == 1:
+                        for attempt in range(0,2):
+                            remoteVersionLines = []
+                            print("Executing remote command \"" + str(CommandsDict["IOS"][0][0]) + "\"")
+                            output = execCLICommand(connectionCursor, protocol, CommandsDict["IOS"][0][0], CommandsDict["IOS"][0][1])
+                            remoteVersionLines.extend(output[1])
+                            remoteOutputText.extend(remoteVersionLines)
+                            if output[0] == 0: break
+
+                        print("Using new remote shell prompt: "+remoteShellPrompt)
+
+
+                    else:
+                        print("Could not activate enable mode, skipping to next node")
+                        execTime = time.time() - startTime
+                        return [ 0, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+
+
+
+            # Send required commands
+            if remoteCLISyntax == "IOS" or remoteCLISyntax == "IOS-XR":
+                command1 = "show run | i hostname"
+                print("Executing remote command \"" + str(command1) + "\"")
+                output1 = execCLICommand(connectionCursor, protocol, command1, 10)
+                remoteOutputText.extend(output1[1])
+                for line in output1[1]:
+                    if re.match(r"^ *hostname ",line):
+                        remoteHostname = line.split("hostname ")[1].split()[0]
+                        break
+                command2 = "show running-config interface Loopback0 | i address"
+                print("Executing remote command \"" + str(command2) + "\"")
+                output2 = execCLICommand(connectionCursor, protocol, command2, 10)
+                remoteOutputText.extend(output2[1])
+                for line in output2[1]:
+                    if re.match(r"^ *ip(v4)? address ",line):
+                        remoteSysAddr = line.split("address ")[1].split()[0].split("/")[0]
+                        break
+                command3 = "exit"
+                print("Executing remote command \"" + str(command3) + "\"")
+                output3 = execCLICommand(connectionCursor, protocol, command3, 10)
+                remoteOutputText.extend(output3[1])
+
+            if remoteCLISyntax == "SR-OS":
+                command1 = "admin display-config | match \"        name\""
+                print("Executing remote command \"" + str(command1) + "\"")
+                output1 = execCLICommand(connectionCursor, protocol, command1, 10)
+                remoteOutputText.extend(output1[1])
+                for line in output1[1]:
+                    if re.match(r"^ *name ",line):
+                        remoteHostname = line.split("name ")[1].split()[0].replace("\"","")
+                        break
+                command2 = "admin display-config | match \"interface \\\"system\\\"\" context children | match address"
+                print("Executing remote command \"" + str(command2) + "\"")
+                output2 = execCLICommand(connectionCursor, protocol, command2, 10)
+                remoteOutputText.extend(output2[1])
+                for line in output2[1]:
+                    if re.match(r"^ *address ",line):
+                        remoteSysAddr = line.split("address ")[1].split()[0].split("/")[0]
+                        break
+                command3 = "logout"
+                print("Executing remote command \"" + str(command3) + "\"")
+                output3 = execCLICommand(connectionCursor, protocol, command3, 10)
+                remoteOutputText.extend(output3[1])
+
+            # print(output1)
+            # print(output2)
+
+    execTime = time.time() - startTime
+    return [ 0, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+
+#####################################################################################################################################################
+#####################################################################################################################################################
+#####################################################################################################################################################
+
 
 
 #####################################################################################################################################################
@@ -634,7 +1197,7 @@ There are several actions available:
 
     -h|--help       Print help
 
-    
+
     -c|--collect    {login} {IPv4 addresses list/file} {output directory name} [recursive] [number of streams]
 
             ***Under construction***
@@ -648,12 +1211,12 @@ There are several actions available:
             3) You can set adress as a range between two adresses (separated by "-") (e.g. 2.2.2.2-2.2.2.10)
             4) You can provide path to a text file containing list of addresses, address ranges or subnets mentioned in 1)-3) or file containing
                current router configuration with BGP peers which addresses will be used as input.
-            
+
             Combining any of these options in terminal requires using a "," separator without spaces: 1.1.1.1,10.0.0.0/30,2.2.2.2-2.2.2.10, while
             combining them in a file requires using a new line for each input.
 
             Appropriate CLI syntax (to issue correct commands) is detected automatically using "show|display version" output.
-            
+
             Use "recursive" to dynamically add all detected neighbors (from config file, network interfaces, LSDB etc.) to management address list.
 
             To execute collection over multiple addresses in parallel issue "number of streams" argument in range from 2 to 100. If it is not
@@ -681,7 +1244,7 @@ There are several actions available:
                 - *display current-configuration
                 - display interface
                 - display ip interface
-                - display ipv6 interface 
+                - display ipv6 interface
             > Nokia/ALU SR-OS:
                 - *show version - used to recognize SW version and CLI syntax
                 - *admin display-config
@@ -731,7 +1294,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
         versionLines = []                   # Extracted version output lines from input file
         configLines = []                    # Extracted configuration output lines from input file
-        configLines2 = []                 # Extracted configuration output lines from input file when inpur file is a config file only
+        configLines2 = []                   # Extracted configuration output lines from input file when inpur file is a config file only
         PHYInterfacesLines = []             # Extracted physical interface output lines from input file
         IPInterfacesLines = []              # Extracted IPv4/IPv6 interface output lines from input file
         MPLSInterfacesLines = []            # Extracted MPLS/LDP/RSVP interface output lines from input file
@@ -753,7 +1316,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
         for line in showFileLines:
             lineNumber = lineNumber + 1
-            
+
             # if debug: print(line)
 
             # Remove paging from log (Cisco/Huawei)
@@ -792,10 +1355,10 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
             escapes = ''.join([chr(char) for char in range(1, 32)])
             translator = str.maketrans('', '', escapes)
             line = line.translate(translator)
-            
+
             # if debug: print(line)
 
-            # if debug: 
+            # if debug:
             #     if re.search(r'(N|n)o',input("Press any key to do for the next interface, or \"no\" to stop:\r\n")):
             #         print("Stopping parsing")
             #         sys.exit()
@@ -1090,13 +1653,13 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                 if re.match(searchExpression,obj2):
                     SWDescr = obj2
                     CLISyntax = "VRP"
-                    break          
+                    break
                 searchExpression = r'.*TiMOS-'
                 if re.match(searchExpression,obj2):
                     SWDescr = obj2
                     CLISyntax = "SR-OS"
                     break
-            
+
             SWDescr = SWDescr.replace("#","")
             SWDescr = SWDescr.replace("!","")
             SWDescr = SWDescr.rstrip()
@@ -1115,7 +1678,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
         else:
             configLinesToParser = []
             for line in configLines:                            # Cleaning configLines before parsing
-                if not re.match(r'^ *[#!]',line):                # Remove all comments        
+                if not re.match(r'^ *[#!]',line):                # Remove all comments
                     if not re.match(r'echo "',line):            # Remove SR-OS echo lines
                         if not re.match(r'^$',line):            # Remove empty lines
                             if CLISyntax == "SR-OS":
@@ -1215,7 +1778,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                 else:
                     if os.path.isdir("./clean_input") == False:
                         os.mkdir("./clean_input")
-                        
+
                     cleanInputFileName = str(Hostname +"_"+ SysAddr +"_"+ time.strftime("%Y%m%d_%H%M%S")+".txt")
 
                     with open("./clean_input/"+cleanInputFileName, 'w') as cleanInputFile:
@@ -1310,7 +1873,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
 
             # Checking if the node already exists
-            DBQuery="""SELECT * 
+            DBQuery="""SELECT *
                         FROM Nodes
                         WHERE Hostname = '"""+str(Hostname)+"""' AND CLISyntax = '"""+str(CLISyntax)+"""'
                         ORDER BY LastUpdatedTime DESC
@@ -1335,8 +1898,8 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             SourceFile,
                             LastUpdatedTime,
                             LastUpdatedBy
-                            ) 
-                            VALUES 
+                            )
+                            VALUES
                             (
                             '"""+str(NodeID)+"""',
                             '"""+str(Hostname)+"""',
@@ -1353,36 +1916,36 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
             else:
                 if DBResponse[NodesDict["SysAddr"][0]] != SysAddr:
                     print("Node system address changed to "+SysAddr+" - updating.")
-                    DBQuery="""UPDATE Nodes 
-                                SET 
-                                    SysAddr = '"""+str(SysAddr)+"""', 
-                                    LastUpdatedTime = '"""+str(datetime.datetime.today())+"""', 
-                                    LastUpdatedBy = '"""+str(getpass.getuser())+"""' 
-                                WHERE 
+                    DBQuery="""UPDATE Nodes
+                                SET
+                                    SysAddr = '"""+str(SysAddr)+"""',
+                                    LastUpdatedTime = '"""+str(datetime.datetime.today())+"""',
+                                    LastUpdatedBy = '"""+str(getpass.getuser())+"""'
+                                WHERE
                                     NodeID = '"""+NodeID+"""'
                                     """
                     if debugSQL: print("debug: DBQuery: "+str(DBQuery))
                     if not DBUpdateDisable: outputCursor.execute(DBQuery)
                 if DBResponse[NodesDict["SourceFile"][0]] != str(os.path.split(showFilePath)[1]):
                     print("Node source file changed to "+str(os.path.split(showFilePath)[1])+" - updating.")
-                    DBQuery="""UPDATE Nodes 
+                    DBQuery="""UPDATE Nodes
                                 SET
-                                    SourceFile = '"""+str(os.path.split(showFilePath)[1])+"""', 
-                                    LastUpdatedTime = '"""+str(datetime.datetime.today())+"""', 
-                                    LastUpdatedBy = '"""+str(getpass.getuser())+"""' 
-                                WHERE 
+                                    SourceFile = '"""+str(os.path.split(showFilePath)[1])+"""',
+                                    LastUpdatedTime = '"""+str(datetime.datetime.today())+"""',
+                                    LastUpdatedBy = '"""+str(getpass.getuser())+"""'
+                                WHERE
                                     NodeID = '"""+NodeID+"""'
                                     """
                     if debugSQL: print("debug: DBQuery: "+str(DBQuery))
                     if not DBUpdateDisable: outputCursor.execute(DBQuery)
                 if DBResponse[NodesDict["SWDescr"][0]] != SWDescr:
                     print("Node SW description changed to "+SWDescr+" - updating.")
-                    DBQuery="""UPDATE Nodes 
-                                SET 
-                                    SWDescr = '"""+str(SWDescr)+"""', 
-                                    LastUpdatedTime = '"""+str(datetime.datetime.today())+"""', 
+                    DBQuery="""UPDATE Nodes
+                                SET
+                                    SWDescr = '"""+str(SWDescr)+"""',
+                                    LastUpdatedTime = '"""+str(datetime.datetime.today())+"""',
                                     LastUpdatedBy = '"""+str(getpass.getuser())+"""'
-                                WHERE 
+                                WHERE
                                     NodeID = '"""+NodeID+"""'
                                     """
                     if debugSQL: print("debug: DBQuery: "+str(DBQuery))
@@ -1421,11 +1984,11 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         print("File "+str(os.path.split(inputPath)[1])+" contains duplicate interface lines: "+str(duplicate)+", skipping this file")
                         nextFile = 1
                         break
-                    
+
                     IfNumber = IfNumber + 1
                     InterfacesParse = [""] * len(InterfacesDict)
                     if debug: print("debug: obj1: "+str(obj1))
-                    
+
                     InterfacesParse[InterfacesDict["NodeID"][0]] = NodeID
                     InterfacesParse[InterfacesDict["Hostname"][0]] = Hostname
                     InterfacesParse[InterfacesDict["CLISyntax"][0]] = CLISyntax
@@ -1457,11 +2020,11 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                             InterfacesParse[InterfacesDict["PortType"][0]] = ""
 
                     # Check if interface is a loopback
-                    if re.search(r"L|loopB|back",InterfacesParse[InterfacesDict["IfName"][0]]):
+                    if re.search(r"[Ll]oop[Bb]ack",InterfacesParse[InterfacesDict["IfName"][0]]):
                         InterfacesParse[InterfacesDict["IfType"][0]] = "Loopback"
 
                     # Check if interface is a bundle
-                    if re.search(r'B|bundle-E|ether',InterfacesParse[InterfacesDict["IfName"][0]]):
+                    if re.search(r'[Bb]undle-[Ee]ther',InterfacesParse[InterfacesDict["IfName"][0]]):
                         InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]]
                         InterfacesParse[InterfacesDict["LAGID"][0]] = str(InterfacesParse[InterfacesDict["IfName"][0]].split("ther")[1].split(".")[0])
                         InterfacesParse[InterfacesDict["IfType"][0]] = "LAG"
@@ -1472,7 +2035,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         InterfacesParse[InterfacesDict["ServiceType"][0]] = "L2VPN"
                         if InterfacesParse[InterfacesDict["IfType"][0]] != "":
                             InterfacesParse[InterfacesDict["IfType"][0]] = InterfacesParse[InterfacesDict["IfType"][0]] + "|"
-                        
+
                         InterfacesParse[InterfacesDict["IfType"][0]] = InterfacesParse[InterfacesDict["IfType"][0]] + "L2VPN"
                         InterfacesParse[InterfacesDict["IfMode"][0]] = "Access"
 
@@ -1490,7 +2053,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                     for obj2 in obj1.re_search_children("description "):
                         InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj2.text.split("description ")[1].replace("\"",""))
                         break
-                    
+
                     # Find encapsulation associated with current interface
                     for obj2 in obj1.re_search_children(r"^ *encapsulation "):
                         if InterfacesParse[InterfacesDict["VLAN"][0]] != "": InterfacesParse[InterfacesDict["VLAN"][0]] = InterfacesParse[InterfacesDict["VLAN"][0]] + "|"
@@ -1566,12 +2129,12 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         InterfacesParse[InterfacesDict["ServiceName"][0]] = str(obj2.text.split("vrf ")[1])
                         InterfacesParse[InterfacesDict["ServiceType"][0]] = "L3VPN"
 
-                    # Find L2 MTU associated with current interface 
+                    # Find L2 MTU associated with current interface
                     for obj2 in obj1.re_search_children(r"^ +mtu"):
                         InterfacesParse[InterfacesDict["L2MTU"][0]]  = str(obj2.text.split("mtu ")[1])
                         break
 
-                    # Find L3 MTU associated with current interface 
+                    # Find L3 MTU associated with current interface
                     for obj2 in obj1.re_search_children(r"^ +ipv4 mtu"):
                         InterfacesParse[InterfacesDict["L3MTU"][0]]  = str(obj2.text.split("mtu ")[1])
                         break
@@ -1635,8 +2198,8 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     if InterfacesParse[InterfacesDict["PortBinding"][0]] != "":
                                         InterfacesParse[InterfacesDict["PortBinding"][0]] = InterfacesParse[InterfacesDict["PortBinding"][0]] + "|"
                                     InterfacesParse[InterfacesDict["PortBinding"][0]] = InterfacesParse[InterfacesDict["PortBinding"][0]] + InterfacesParse[InterfacesDict["PortName"][0]] + ":" + vlan
-                    
-                    
+
+
                     # Find all OSPF processes and areas where this interface is participating
                     ospfList = []
                     # ospfLine = []
@@ -1650,7 +2213,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         ospfRID = ""
                         ospfVRFList = []
                         ospfLine = []
-                        
+
                         ospfBFDMinTmr = ""
                         ospfBFDMultTmr = ""
                         bfdLine = []
@@ -1661,7 +2224,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                         bfdLine.append("ospf")
                         bfdLine.append(ospfPID)
-                        
+
                         # Create a list of base entities (GRT + all VRFs) where areas can be located
                         for obj70 in obj10.re_search_children(r"vrf"):
                             ospfVRFList.append(obj70)
@@ -1682,10 +2245,10 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                             for obj101 in ospfVRF.re_search_children("bfd minimum-interval"):
                                 ospfBFDMinTmr = obj101.text.lstrip().rstrip().split("bfd minimum-interval ")[1]
-                            
+
                             for obj101 in ospfVRF.re_search_children("bfd multiplier"):
                                 ospfBFDMultTmr = obj101.text.lstrip().rstrip().split("bfd multiplier ")[1]
-                            
+
 
                             # First we will look for the area where interface is primary
                             ospfIfType1 = ""
@@ -1702,7 +2265,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                             area = ""
                             for obj11 in ospfVRF.re_search_children(r"area "):
-                                
+
                                 area = int(obj11.text.split("area ")[1])
                                 area = ipaddress.ip_address(area)
 
@@ -1714,7 +2277,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                                 for obj101 in obj11.re_search_children("bfd minimum-interval"):
                                     ospfBFDMinTmr = obj101.text.lstrip().rstrip().split("bfd minimum-interval ")[1]
-                                
+
                                 for obj101 in obj11.re_search_children("bfd multiplier"):
                                     ospfBFDMultTmr = obj101.text.lstrip().rstrip().split("bfd multiplier ")[1]
 
@@ -1772,7 +2335,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         ospfLine.append(ospfBFDState)
                                         for obj101 in obj12.re_search_children("bfd minimum-interval"):
                                             ospfBFDMinTmr = obj101.text.lstrip().rstrip().split("bfd minimum-interval ")[1]
-                                        
+
                                         for obj101 in obj12.re_search_children("bfd multiplier"):
                                             ospfBFDMultTmr = obj101.text.lstrip().rstrip().split("bfd multiplier ")[1]
 
@@ -1816,7 +2379,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                                         ospfLine.append(ospfAreaList)
 
-                                        ospfList.append(ospfLine)  
+                                        ospfList.append(ospfLine)
                                         bfdList.append(bfdLine)
 
                                         break
@@ -1887,9 +2450,9 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         lineNumber = 0
                                         match = 0
                                         for ospfLineCheck in ospfList:
-                                            if ((ospfLineCheck[4] == ospfBFDState) and (ospfLineCheck[5] == ospfPriority) and (ospfLineCheck[6] == ospfMetric) and (ospfLineCheck[7] == ospfHello) 
+                                            if ((ospfLineCheck[4] == ospfBFDState) and (ospfLineCheck[5] == ospfPriority) and (ospfLineCheck[6] == ospfMetric) and (ospfLineCheck[7] == ospfHello)
                                                 and (ospfLineCheck[8] == ospfDead) and (ospfLineCheck[9] == ospfRetransmit) and (ospfLineCheck[10] == ospfAuth)):
-                                                
+
                                                 ospfList[lineNumber][11].extend(ospfAreaList)
                                                 match = 1
                                                 break
@@ -1907,7 +2470,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             # print(ospfList[lineNumber][10])
                             ospfList[lineNumber][11].sort(key=lambda x: x[0])
                             lineNumber = lineNumber + 1
-                        
+
                         # ospfList.sort(key=lambda x: x[10])
 
 
@@ -1920,7 +2483,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     ospfOutputLine = ospfOutputLine + ";"
 
                                 # ospfOutputLine = ospfOutputLine + "pid:"+str(ospfLine[0]) + "|type:"+str(ospfLine[1]) + "|mode:"+str(ospfLine[2]) + "|bfd:"+str(ospfLine[3]) + "|prio:"+str(ospfLine[4]) + "|metr:"+str(ospfLine[5]) + "|hello:"+str(ospfLine[6]) + "|dead:"+str(ospfLine[7]) + "|retr:"+str(ospfLine[8]) + "|auth:"+str(ospfLine[9])
-                                
+
                                 ospfOutputLine = ospfOutputLine + "pid:"+str(ospfLine[0])
                                 if ospfLine[1] != "": ospfOutputLine = ospfOutputLine + "|rid:"+str(ospfLine[1])
                                 ospfOutputLine = ospfOutputLine + "|type:"+str(ospfLine[2]) + "|mode:"+str(ospfLine[3]) + "|bfd:"+str(ospfLine[4])
@@ -1939,16 +2502,16 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     ospfOutputLine2 = ""
                                     for area in ospfLine[11]:
                                         if ospfOutputLine2 == "":
-                                            ospfOutputLine2 = str(area[0]) + str(area[1]) + str(area[2]) 
+                                            ospfOutputLine2 = str(area[0]) + str(area[1]) + str(area[2])
                                         else:
                                             ospfOutputLine2 = ospfOutputLine2 + " " + str(area[0]) + str(area[1]) + str(area[2])
-                                    
+
                                     ospfOutputLine = ospfOutputLine + ospfOutputLine2
-                                
+
                             if InterfacesParse[InterfacesDict["OSPFv2"][0]] != "": InterfacesParse[InterfacesDict["OSPFv2"][0]] = InterfacesParse[InterfacesDict["OSPFv2"][0]] + ";"
                             InterfacesParse[InterfacesDict["OSPFv2"][0]] = InterfacesParse[InterfacesDict["OSPFv2"][0]] + ospfOutputLine
 
-                            
+
                             # Print BFD timers for each OSPF process where this interface is enabled
                             if len(bfdList) > 0:
                                 bfdOutputLine = ""
@@ -1994,7 +2557,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             InterfacesParse[InterfacesDict["LDP"][0]] = InterfacesParse[InterfacesDict["LDP"][0]] + "|" + LDPIPv4AdmState
                         if LDPIPv6AdmState != "":
                             InterfacesParse[InterfacesDict["LDP"][0]] = InterfacesParse[InterfacesDict["LDP"][0]] + "|" + LDPIPv6AdmState
-                        
+
                         # print(InterfacesParse[InterfacesDict["LDP"][0]])
 
 
@@ -2030,7 +2593,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                     #########################################################################################################################################
                     #                                                    Post-processing for interfaces                                                     #
                     #########################################################################################################################################
-                    
+
                     # Sort VLANs for Ports
                     if re.search(r"(Port|LAG)",InterfacesParse[InterfacesDict["IfType"][0]]):
                         if re.search(r"\|",InterfacesParse[InterfacesDict["VLAN"][0]]):
@@ -2092,11 +2655,11 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         print("File "+str(os.path.split(inputPath)[1])+" contains duplicate interface lines: "+str(duplicate)+", skipping this file")
                         nextFile = 1
                         break
-                    
+
                     IfNumber = IfNumber + 1
                     InterfacesParse = [""] * len(InterfacesDict)
                     if debug: print("debug: obj1: "+str(obj1))
-                    
+
                     InterfacesParse[InterfacesDict["NodeID"][0]] = NodeID
                     InterfacesParse[InterfacesDict["Hostname"][0]] = Hostname
                     InterfacesParse[InterfacesDict["CLISyntax"][0]] = CLISyntax
@@ -2129,14 +2692,14 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
 
                         # Check if interface is a bundle
-                        if re.search(r'P|port-C|Channel',InterfacesParse[InterfacesDict["IfName"][0]]):
+                        if re.search(r'(P|p)ort-(C|C)hannel',InterfacesParse[InterfacesDict["IfName"][0]]):
                             InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]]
                             InterfacesParse[InterfacesDict["LAGID"][0]] = str(InterfacesParse[InterfacesDict["IfName"][0]].split("hannel")[1].split(".")[0])
                             InterfacesParse[InterfacesDict["IfType"][0]] = "LAG"
 
 
                     # Check if interface is a loopback
-                    if re.search(r"L|loopB|back",InterfacesParse[InterfacesDict["IfName"][0]]):
+                    if re.search(r"[Ll]oop[Bb]ack",InterfacesParse[InterfacesDict["IfName"][0]]):
                         InterfacesParse[InterfacesDict["IfType"][0]] = "Loopback"
 
                     # Check if interface is a BDI
@@ -2146,7 +2709,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         InterfacesParse[InterfacesDict["IfType"][0]] = "Bridge"
                         # Find port with wich ports this BDI is associated
                         for obj10 in cfg.find_objects(r"^interface"):
-                            
+
                             tempPortBinding = ""
                             tempVLAN = ""
                             tempEncap = ""
@@ -2154,7 +2717,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             for obj11 in obj10.re_search_children("service instance "):
                                 for obj12 in obj11.re_search_children("bridge-domain "):
                                     if InterfacesParse[InterfacesDict["BridgeID"][0]] == obj12.text.split("bridge-domain ")[1].split()[0]:
-                                        
+
                                         tempPortBinding = obj10.text.split("interface ")[1]
 
                                         if InterfacesParse[InterfacesDict["PortName"][0]] == "":
@@ -2166,13 +2729,13 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                             if re.search("second-dot1q ",obj13.text):
                                                 tempVLAN = (str(obj13.text.split("dot1q ")[1].split(" ")[0]) + "." + str(obj13.text.split("second-dot1q ")[1].split(" ")[0]))
                                                 tempEncap = "qinq"
-                                                
+
                                             else:
                                                 if re.search("dot1q ",obj13.text):
                                                     tempVLAN = str(obj13.text.split("dot1q ")[1].split(" ")[0])
                                                     tempEncap = "dot1q"
                                                     # tempPortBinding = tempPortBinding + ":" + obj13.text.split("dot1q ")[1].split(" ")[0]
-                                                else:    
+                                                else:
                                                     tempVLAN = "0"
                                                     tempEncap = "null"
                                                     # tempPortBinding = tempPortBinding + ":" + obj13.text.split("dot1q ")[1].split(" ")[0]
@@ -2235,14 +2798,14 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                     #                 InterfacesParse[InterfacesDict["Encap"][0]] = "null"
                     #                 InterfacesParse[InterfacesDict["VLAN"][0]] = "0"
                     #     break
-                    
+
                     # If encapsulation was not specified set it to default
                     if (((InterfacesParse[InterfacesDict["IfType"][0]] == "Port") or (InterfacesParse[InterfacesDict["IfType"][0]] == "LAG")) and len(obj1.re_search_children("service instance ")) == 0):
                         if InterfacesParse[InterfacesDict["Encap"][0]] == "":
                             InterfacesParse[InterfacesDict["Encap"][0]] = "null"
                         if InterfacesParse[InterfacesDict["VLAN"][0]] == "":
                             InterfacesParse[InterfacesDict["VLAN"][0]] = "0"
-                    
+
                     # Find LAG associated with current interface
                     for obj2 in obj1.re_search_children("channel-group "):
                         InterfacesParse[InterfacesDict["LAGID"][0]] = str(obj2.text.split("channel-group ")[1].split(" ")[0])
@@ -2251,8 +2814,8 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         else:
                             if re.search("passive",obj2.text):
                                 InterfacesParse[InterfacesDict["LAGMode"][0]] = "Passive"
-                                
-                        for obj3 in cfg.find_objects(r"^interface P|port-C|channel"+str(InterfacesParse[InterfacesDict["LAGID"][0]])):
+
+                        for obj3 in cfg.find_objects(r"^interface (P|p)ort-(C|c)hannel"+str(InterfacesParse[InterfacesDict["LAGID"][0]])):
                             InterfacesParse[InterfacesDict["ParentIfName"][0]] = obj3.text.split("interface ")[1]
                             break
                         break
@@ -2331,19 +2894,19 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         InterfacesParse[InterfacesDict["ServiceName"][0]] = str(obj2.text.split("vrf forwarding ")[1])
                         InterfacesParse[InterfacesDict["ServiceType"][0]] = "L3VPN"
 
-                    # Find L2 MTU associated with current interface 
+                    # Find L2 MTU associated with current interface
                     for obj2 in obj1.re_search_children(r"^ +mtu"):
                         InterfacesParse[InterfacesDict["L2MTU"][0]]  = str(obj2.text.split("mtu ")[1])
                         break
 
-                    # Find L3 MTU associated with current interface 
+                    # Find L3 MTU associated with current interface
                     for obj2 in obj1.re_search_children(r"^ +ip mtu"):
                         InterfacesParse[InterfacesDict["L3MTU"][0]]  = str(obj2.text.split("mtu ")[1])
                         break
 
                     # Find all IPv4 addresses associated with current interface
                     for obj2 in obj1.re_search_children("ip address "):
-                        rawInput = obj2.text.split("ip address ")[1].lstrip().rstrip()
+                        rawInput = obj2.text.split("ip address ")[1].split("secondary")[0].lstrip().rstrip()
                         rawInput = rawInput.replace(" ","/")
                         ipadd = ipaddress.ip_interface(str(rawInput))
                         if InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "":
@@ -2367,7 +2930,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = str(ipadd.network)
                         else:
                             InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = InterfacesParse[InterfacesDict["IPV6Subnet"][0]] + "|" + str(ipadd.network)
-                    
+
                     # Check if interface is a L3 interface
                     if ((InterfacesParse[InterfacesDict["IPV4Addr"][0]] != "") or (InterfacesParse[InterfacesDict["IPV6Addr"][0]] != "")):
                         if InterfacesParse[InterfacesDict["PortBinding"][0]] == "":
@@ -2566,12 +3129,12 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 ospfOutputLine2 = ""
                                 for area in ospfLine[11]:
                                     if ospfOutputLine2 == "":
-                                        ospfOutputLine2 = str(area[0]) + str(area[1]) 
+                                        ospfOutputLine2 = str(area[0]) + str(area[1])
                                     else:
                                         ospfOutputLine2 = ospfOutputLine2 + " " + str(area[0]) + str(area[1])
-                                
+
                                 ospfOutputLine = ospfOutputLine + ospfOutputLine2
-                            
+
                         InterfacesParse[InterfacesDict["OSPFv2"][0]] = ospfOutputLine
 
 
@@ -2596,7 +3159,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                     for obj10 in obj1.re_search_children(r"mpls ip"):
                         LDPIfAdmState = "if:En"
                         LDPIPv4AdmState = "ipv4:En"
-                        
+
                         if LDPIfAdmState != "":
                             InterfacesParse[InterfacesDict["LDP"][0]] = LDPIfAdmState
                         if LDPIPv4AdmState != "":
@@ -2604,14 +3167,14 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         if LDPIPv6AdmState != "":
                             InterfacesParse[InterfacesDict["LDP"][0]] = InterfacesParse[InterfacesDict["LDP"][0]] + "|" + LDPIPv6AdmState
 
-                        break                
+                        break
 
 
 
                     #########################################################################################################################################
                     #                                                    Post-processing for interfaces                                                     #
                     #########################################################################################################################################
-                    
+
                     # Sort VLANs for Ports
                     if re.search(r"(Port|LAG)",InterfacesParse[InterfacesDict["IfType"][0]]):
                         if re.search(r"\|",InterfacesParse[InterfacesDict["VLAN"][0]]):
@@ -2660,7 +3223,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         IfNumber = IfNumber + 1
                         InterfacesParse = [""] * len(InterfacesDict)
                         if debug: print("debug: obj2: "+str(obj2))
-                        
+
                         InterfacesParse[InterfacesDict["NodeID"][0]] = NodeID
                         InterfacesParse[InterfacesDict["Hostname"][0]] = Hostname
                         InterfacesParse[InterfacesDict["CLISyntax"][0]] = CLISyntax
@@ -2675,7 +3238,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         for obj3 in obj2.re_search_children("description "):
                             InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj3.text.split("description ")[1].replace("\"",""))
                             break
-                        
+
                         # Find encapsulation associated with current EVC
                         for obj3 in obj2.re_search_children(r"^ *encapsulation"):
                             if re.search(" second-dot1q ",obj3.text):
@@ -2698,7 +3261,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 InterfacesParse[InterfacesDict["BridgeID"][0]] = str(obj3.text.split("bridge-domain ")[1].split()[0])
                             else:
                                 InterfacesParse[InterfacesDict["BridgeID"][0]] = InterfacesParse[InterfacesDict["BridgeID"][0]] + "|" + str(obj3.text.split("bridge-domain ")[1].split()[0])
-                        
+
 
                         # Find a parent BDI interface if exists
                         for obj30 in cfg.find_objects(r"^interface "):
@@ -2718,7 +3281,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             for obj4 in obj3.re_search_children(r"^ *mtu "):
                                 if InterfacesParse[InterfacesDict["L2MTU"][0]] != "": InterfacesParse[InterfacesDict["L2MTU"][0]] = InterfacesParse[InterfacesDict["L2MTU"][0]] + "|"
                                 InterfacesParse[InterfacesDict["L2MTU"][0]] = InterfacesParse[InterfacesDict["L2MTU"][0]] + obj4.text.split("mtu ")[1].split()[0]
-                        
+
                         InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
                         InterfacesParseAll.append(InterfacesParse)
 
@@ -2729,7 +3292,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
             if (CLISyntax == "VRP"):
                 if debug: print("debug: Using Huawei VRP syntax to parse file")
                 # Find node's interfaces from config
-                for obj1 in cfg.find_objects(r"^interface"):       
+                for obj1 in cfg.find_objects(r"^interface"):
                     duplicate = []
                     for obj2 in cfg.find_objects(r"^interface"):
                         if obj1.text.split("interface ")[1].split(" ")[0] == obj2.text.split("interface ")[1].split(" ")[0]:
@@ -2739,11 +3302,11 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         print("File "+str(os.path.split(inputPath)[1])+" contains duplicate interface lines: "+str(duplicate)+", skipping this file")
                         nextFile = 1
                         break
-                    
+
                     IfNumber = IfNumber + 1
                     InterfacesParse = [""] * len(InterfacesDict)
                     if debug: print("debug: obj1: "+str(obj1))
-                    
+
                     InterfacesParse[InterfacesDict["NodeID"][0]] = NodeID
                     InterfacesParse[InterfacesDict["Hostname"][0]] = Hostname
                     InterfacesParse[InterfacesDict["CLISyntax"][0]] = CLISyntax
@@ -2774,12 +3337,12 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                                 InterfacesParse[InterfacesDict["PortType"][0]] = ""
 
                     # Check if interface is a bundle
-                    if re.search(r'^E|eth-T|trunk',InterfacesParse[InterfacesDict["IfName"][0]]):
+                    if re.search(r'[Ee]th-[Tt]runk',InterfacesParse[InterfacesDict["IfName"][0]]):
                         InterfacesParse[InterfacesDict["LAGID"][0]] = str(InterfacesParse[InterfacesDict["IfName"][0]].split("runk")[1].split(".")[0])
                         InterfacesParse[InterfacesDict["IfType"][0]] = "LAG"
 
                     # Check if interface is L2 VC interface
-                    if re.search(r'V|virtual-E|ethernet',InterfacesParse[InterfacesDict["IfName"][0]]):
+                    if re.search(r'[Vv]irtual-[Ee]thernet',InterfacesParse[InterfacesDict["IfName"][0]]):
                         InterfacesParse[InterfacesDict["ServiceType"][0]] = "L2VPN"
                         if InterfacesParse[InterfacesDict["IfType"][0]] == "":
                             InterfacesParse[InterfacesDict["IfType"][0]] = "L2VPN SAP"
@@ -2800,11 +3363,11 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         InterfacesParse[InterfacesDict["Encap"][0]] = str(obj2.text.split("vlan-type ")[1].split(" ")[0])
                         InterfacesParse[InterfacesDict["VLAN"][0]] = str(obj2.text.split("vlan-type ")[1].split(" ")[1])
                         break
-                    
+
                     # Find LAG associated with current interface
                     for obj2 in obj1.re_search_children("eth-trunk "):
                         InterfacesParse[InterfacesDict["LAGID"][0]] = str(obj2.text.split("eth-trunk")[1])
-                        for obj3 in cfg.find_objects(r"^interface Eth-Trunk"+str(InterfacesParse[InterfacesDict["LAGID"][0]]+"$")):
+                        for obj3 in cfg.find_objects(r"^interface [Ee]th-[Tt]runk"+str(InterfacesParse[InterfacesDict["LAGID"][0]]+"$")):
                             InterfacesParse[InterfacesDict["ParentIfName"][0]] = obj3.text.split("Eth-Trunk")[1]
                             break
                         break
@@ -2821,25 +3384,25 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         InterfacesParse[InterfacesDict["ServiceName"][0]] = str(obj2.text.split("vpn-instance ")[1])
                         InterfacesParse[InterfacesDict["ServiceType"][0]] = "L3VPN"
                         if InterfacesParse[InterfacesDict["IfType"][0]] == "":
-                            if re.search(r"L|loopB|back",InterfacesParse[InterfacesDict["IfName"][0]]):
+                            if re.search(r"[Ll]oop[Bb]ack",InterfacesParse[InterfacesDict["IfName"][0]]):
                                 InterfacesParse[InterfacesDict["IfType"][0]] = "L3VPN Loopback"
                             else:
                                 InterfacesParse[InterfacesDict["IfType"][0]] = "L3VPN SAP"
                                 InterfacesParse[InterfacesDict["IfMode"][0]] = "Access"
                             break
-                    
+
                     # Check if interface is a non-VRF loopback
                     if InterfacesParse[InterfacesDict["ServiceName"][0]] == "":
-                        if re.search(r"L|loopB|back",InterfacesParse[InterfacesDict["IfName"][0]]):
+                        if re.search(r"[Ll]oop[Bb]ack",InterfacesParse[InterfacesDict["IfName"][0]]):
                             InterfacesParse[InterfacesDict["IfType"][0]] = "Loopback"
                             InterfacesParse[InterfacesDict["IfMode"][0]] = "Network"
 
-                    # Find L2 MTU associated with current interface 
+                    # Find L2 MTU associated with current interface
                     for obj2 in obj1.re_search_children(r"^ +mtu"):
                         InterfacesParse[InterfacesDict["L2MTU"][0]]  = str(obj2.text.split("mtu ")[1])
                         break
 
-                    # Find L3 MTU associated with current interface 
+                    # Find L3 MTU associated with current interface
                     for obj2 in obj1.re_search_children(r"^ +ipv4 mtu"):
                         InterfacesParse[InterfacesDict["L3MTU"][0]]  = str(obj2.text.split("mtu ")[1])
                         break
@@ -2861,16 +3424,16 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = str(ipadd.network)
                             else:
                                 InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = InterfacesParse[InterfacesDict["IPV4Subnet"][0]] + "|"+ str(ipadd.network)
-                            
+
                             # print(rawInput, ipadd, InterfacesParse[InterfacesDict["IPV4Addr"][0]],InterfacesParse[InterfacesDict["IPV4Subnet"][0]])
                             # input("Stop")
 
-                            
+
                         # Mark interface as Network/Hybrid if it has any addresses assigned
                         if InterfacesParse[InterfacesDict["IfType"][0]] == "":
                             InterfacesParse[InterfacesDict["IfType"][0]] = "L3"
                             InterfacesParse[InterfacesDict["IfMode"][0]] = "Network"
-                
+
 
                     # Find all IPv6 addresses associated with current interface
                     for obj2 in obj1.re_search_children("ipv6 address "):
@@ -3003,7 +3566,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         else:
                             InterfacesParse[InterfacesDict["IfType"][0]] = "Port"
 
-                        
+
                         # Find description associated with current port
                         for obj3 in obj2.re_search_children("description "):
                             InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj3.text.split("description ")[1].replace("\"",""))
@@ -3051,28 +3614,28 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             # Get all VLANs associated with this port
                             # searchExpression = r"(sap " + InterfacesParse[InterfacesDict["IfName"][0]] + r"(:.*| )create|port " + InterfacesParse[InterfacesDict["IfName"][0]] + "(:|$))"
                             # (sap 1/1/14(:.*| )create|port 1/1/1(:|$))
-                            searchExpression1 = r"port " + InterfacesParse[InterfacesDict["IfName"][0]] + r"(:|$)" 
+                            searchExpression1 = r"port " + InterfacesParse[InterfacesDict["IfName"][0]] + r"(:|$)"
                             for obj19 in cfg.find_objects(r" *router"):
                                 for obj20 in obj19.re_search_children(r" *interface"):
                                     for obj21 in obj20.re_search_children(searchExpression1):
-                                        tempVLAN = ""                                
+                                        tempVLAN = ""
                                         if re.search(":",obj21.text):
                                             tempVLAN = obj21.text.split(":")[1].split(" ")[0]
                                         else:
                                             tempVLAN = "null"
-                                        
+
                                         if InterfacesParse[InterfacesDict["VLAN"][0]] != "": InterfacesParse[InterfacesDict["VLAN"][0]] = InterfacesParse[InterfacesDict["VLAN"][0]] + "|"
                                         InterfacesParse[InterfacesDict["VLAN"][0]] = InterfacesParse[InterfacesDict["VLAN"][0]] + tempVLAN
 
                             searchExpression2 = r"sap " + InterfacesParse[InterfacesDict["IfName"][0]] + r"(:.*| )create"
                             for obj22 in cfg.find_objects(searchExpression2):
                                 # print(obj20)
-                                tempVLAN = ""                                
+                                tempVLAN = ""
                                 if re.search(":",obj22.text):
                                     tempVLAN = obj22.text.split(":")[1].split(" ")[0]
                                 else:
                                     tempVLAN = "null"
-                                
+
                                 if InterfacesParse[InterfacesDict["VLAN"][0]] != "": InterfacesParse[InterfacesDict["VLAN"][0]] = InterfacesParse[InterfacesDict["VLAN"][0]] + "|"
                                 InterfacesParse[InterfacesDict["VLAN"][0]] = InterfacesParse[InterfacesDict["VLAN"][0]] + tempVLAN
 
@@ -3116,7 +3679,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         #########################################################################################################################################
                         #                                                    Post-processing for ports                                                     #
                         #########################################################################################################################################
-                    
+
                         # Sort VLANs for Ports
                         if re.search(r"Port",InterfacesParse[InterfacesDict["IfType"][0]]):
                             if re.search(r"\|",InterfacesParse[InterfacesDict["VLAN"][0]]):
@@ -3154,10 +3717,10 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             print("File "+str(os.path.split(inputPath)[1])+" contains duplicate port lines: "+str(duplicate)+", skipping this file")
                             nextFile = 1
                             break
-                    
+
                         IfNumber = IfNumber + 1
                         if debug: print("debug: obj2: "+str(obj2))
-                        
+
                         InterfacesParse = [""] * len(InterfacesDict)
                         InterfacesParse[InterfacesDict["NodeID"][0]] = NodeID
                         InterfacesParse[InterfacesDict["Hostname"][0]] = Hostname
@@ -3196,7 +3759,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             # print(obj3)
                             InterfacesParse[InterfacesDict["Encap"][0]] = obj3.text.split("encap-type ")[1]
                             break
-                        
+
                         # Get LACP mode
                         for obj3 in obj2.re_search_children("lacp"):
                             # print(obj3)
@@ -3210,35 +3773,35 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         # Get all VLANs associated with this LAG
                         # searchExpression = r"(sap " + InterfacesParse[InterfacesDict["IfName"][0]] + r"(:.*| )create|port " + InterfacesParse[InterfacesDict["IfName"][0]] + "(:|$))"
                         # (sap 1/1/14(:.*| )create|port 1/1/1(:|$))
-                        searchExpression1 = r"port " + InterfacesParse[InterfacesDict["IfName"][0]].replace(" ","-") + r"(:|$)" 
+                        searchExpression1 = r"port " + InterfacesParse[InterfacesDict["IfName"][0]].replace(" ","-") + r"(:|$)"
                         for obj19 in cfg.find_objects(r" *router"):
                             for obj20 in obj19.re_search_children(r" *interface"):
                                 for obj21 in obj20.re_search_children(searchExpression1):
-                                    tempVLAN = ""                                
+                                    tempVLAN = ""
                                     if re.search(":",obj21.text):
                                         tempVLAN = obj21.text.split(":")[1].split(" ")[0]
                                     else:
                                         tempVLAN = "null"
-                                    
+
                                     if InterfacesParse[InterfacesDict["VLAN"][0]] != "": InterfacesParse[InterfacesDict["VLAN"][0]] = InterfacesParse[InterfacesDict["VLAN"][0]] + "|"
                                     InterfacesParse[InterfacesDict["VLAN"][0]] = InterfacesParse[InterfacesDict["VLAN"][0]] + tempVLAN
 
                         searchExpression2 = r"sap " + InterfacesParse[InterfacesDict["IfName"][0]].replace(" ","-") + r"(:.*| )create"
                         for obj22 in cfg.find_objects(searchExpression2):
                             # print(obj20)
-                            tempVLAN = ""                                
+                            tempVLAN = ""
                             if re.search(":",obj22.text):
                                 tempVLAN = obj22.text.split(":")[1].split(" ")[0]
                             else:
                                 tempVLAN = "null"
-                            
+
                             if InterfacesParse[InterfacesDict["VLAN"][0]] != "": InterfacesParse[InterfacesDict["VLAN"][0]] = InterfacesParse[InterfacesDict["VLAN"][0]] + "|"
                             InterfacesParse[InterfacesDict["VLAN"][0]] = InterfacesParse[InterfacesDict["VLAN"][0]] + tempVLAN
 
                         #########################################################################################################################################
                         #                                                    Post-processing for LAGs                                                     #
                         #########################################################################################################################################
-                    
+
                         # Sort VLANs for LAGs
                         if re.search(r"LAG",InterfacesParse[InterfacesDict["IfType"][0]]):
                             if re.search(r"\|",InterfacesParse[InterfacesDict["VLAN"][0]]):
@@ -3273,10 +3836,10 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 print("File "+str(os.path.split(inputPath)[1])+" contains duplicate interface lines: "+str(duplicate)+", skipping this file")
                                 nextFile = 1
                                 break
-                        
+
                             IfNumber = IfNumber + 1
                             if debug: print("debug: obj3: "+str(obj3))
-                            
+
                             InterfacesParse = [""] * len(InterfacesDict)
                             InterfacesParse[InterfacesDict["NodeID"][0]] = NodeID
                             InterfacesParse[InterfacesDict["Hostname"][0]] = Hostname
@@ -3382,7 +3945,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 else:
                                     InterfacesParse[InterfacesDict["Encap"][0]] = "null"
                                     InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortBinding"][0]]
-                                
+
                                 if obj4.re_search(r"lag-"):
                                     # InterfacesParse[InterfacesDict["LAGID"][0]] = InterfacesParse[InterfacesDict["PortName"][0]].split("lag-")[1]
                                     # InterfacesParse[InterfacesDict["ParentIfName"][0]] = "lag " + InterfacesParse[InterfacesDict["LAGID"][0]]
@@ -3404,7 +3967,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 if len(obj10.text.split("ospf ")[1].split()) > 1:
                                     ospfRID = str(obj10.text.split("ospf ")[1].split()[1])
                                 ospfLine.append(ospfRID)
-                                
+
                                 # First we will look for the area where interface is primary
                                 ospfIfType1 = ""
                                 ospfIfType2 = "Bcast"
@@ -3571,9 +4134,9 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                             lineNumber = 0
                                             match = 0
                                             for ospfLineCheck in ospfList:
-                                                if ((ospfLineCheck[4] == ospfBFDState) and (ospfLineCheck[5] == ospfPriority) and (ospfLineCheck[6] == ospfMetric) and (ospfLineCheck[7] == ospfHello) 
+                                                if ((ospfLineCheck[4] == ospfBFDState) and (ospfLineCheck[5] == ospfPriority) and (ospfLineCheck[6] == ospfMetric) and (ospfLineCheck[7] == ospfHello)
                                                     and (ospfLineCheck[8] == ospfDead) and (ospfLineCheck[9] == ospfRetransmit) and (ospfLineCheck[10] == ospfAuth)):
-                                                    
+
                                                     ospfList[lineNumber][11].extend(ospfAreaList)
                                                     match = 1
                                                     break
@@ -3582,14 +4145,14 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                                             if match == 0:
                                                 ospfList.append(ospfLine)
-                            
+
                             # Sort all areas inside the ospfList
                             # print(ospfList)
                             lineNumber = 0
                             for ospfLineCheck in ospfList:
                                 ospfList[lineNumber][11].sort(key=lambda x: x[0])
                                 lineNumber = lineNumber + 1
-                            
+
                             # ospfList.sort(key=lambda x: x[10])
 
 
@@ -3601,7 +4164,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         ospfOutputLine = ospfOutputLine + ";"
 
                                     # ospfOutputLine = ospfOutputLine + "pid:"+str(ospfLine[0]) + "|type:"+str(ospfLine[1]) + "|mode:"+str(ospfLine[2]) + "|bfd:"+str(ospfLine[3]) + "|prio:"+str(ospfLine[4]) + "|metr:"+str(ospfLine[5]) + "|hello:"+str(ospfLine[6]) + "|dead:"+str(ospfLine[7]) + "|retr:"+str(ospfLine[8]) + "|auth:"+str(ospfLine[9])
-                                    
+
                                     ospfOutputLine = ospfOutputLine + "pid:"+str(ospfLine[0])
                                     if ospfLine[1] != "": ospfOutputLine = ospfOutputLine + "|rid:"+str(ospfLine[1])
                                     ospfOutputLine = ospfOutputLine + "|type:"+str(ospfLine[2]) + "|mode:"+str(ospfLine[3]) + "|bfd:"+str(ospfLine[4])
@@ -3623,9 +4186,9 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                                 ospfOutputLine2 = str(area[0]) + str(area[1]) + str(area[2])
                                             else:
                                                 ospfOutputLine2 = ospfOutputLine2 + " " + str(area[0]) + str(area[1]) + str(area[2])
-                                        
+
                                         ospfOutputLine = ospfOutputLine + ospfOutputLine2
-                                    
+
                                 InterfacesParse[InterfacesDict["OSPFv2"][0]] = ospfOutputLine
 
 
@@ -3682,7 +4245,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 isisL1Auth = ""
                                 isisL2Auth = ""
                                 isisIfState = "Dis"
-                                
+
                                 # Find current interface
                                 searchExpression = r"\""+ InterfacesParse[InterfacesDict["IfName"][0]] + r"\""
                                 for obj11 in obj10.re_search_children(searchExpression):
@@ -3749,23 +4312,23 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         for obj13 in obj12.re_search_children("priority "):
                                             isisL1Priority = str(obj13.text.split("priority ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                        
+
                                         for obj13 in obj12.re_search_children("metric "):
                                             isisL1Metric = str(obj13.text.split("metric ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                        
+
                                         for obj13 in obj12.re_search_children("hello-interval "):
                                             isisL1Hello = str(obj13.text.split("hello-interval ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                        
+
                                         for obj13 in obj12.re_search_children("hello-multiplier "):
                                             isisL1HelloMult = str(obj13.text.split("hello-multiplier ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                        
+
                                         for obj13 in obj12.re_search_children("hello-authentication-type "):
                                             isisL1Auth = str(obj13.text.split("hello-authentication-type ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                    
+
                                     isisLine.append(isisL1Priority)
                                     isisLine.append(isisL1Metric)
                                     isisLine.append(isisL1Hello)
@@ -3777,23 +4340,23 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         for obj13 in obj12.re_search_children("priority "):
                                             isisL2Priority = str(obj13.text.split("priority ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                        
+
                                         for obj13 in obj12.re_search_children("metric "):
                                             isisL2Metric = str(obj13.text.split("metric ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                        
+
                                         for obj13 in obj12.re_search_children("hello-interval "):
                                             isisL2Hello = str(obj13.text.split("hello-interval ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                        
+
                                         for obj13 in obj12.re_search_children("hello-multiplier "):
                                             isisL2HelloMult = str(obj13.text.split("hello-multiplier ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                        
+
                                         for obj13 in obj12.re_search_children("hello-authentication-type "):
                                             isisL2Auth = str(obj13.text.split("hello-authentication-type ")[1].split(" ")[0].lstrip().rstrip())
                                             break
-                                    
+
 
                                     isisLine.append(isisL2Priority)
                                     isisLine.append(isisL2Metric)
@@ -3830,7 +4393,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         isisOutputLine = isisOutputLine + "|isis_l2_tmr:" + str(isisLine[17]) + " " + str(isisLine[18])
                                     if isisLine[14] != "": isisOutputLine = isisOutputLine + "|l1_auth:" + str(isisLine[14])
                                     if isisLine[19] != "": isisOutputLine = isisOutputLine + "|l2_auth:" + str(isisLine[19])
-                                    
+
                                 InterfacesParse[InterfacesDict["ISIS"][0]] = isisOutputLine
 
 
@@ -3885,7 +4448,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             #     # Find current interface
                             #     searchExpression = r"\""+ InterfacesParse[InterfacesDict["IfName"][0]] + r"\""
                             #     for obj11 in obj10.re_search_children(searchExpression):
-                            
+
 
 
                             # print(InterfacesParse)
@@ -3912,10 +4475,10 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     print("File "+str(os.path.split(inputPath)[1])+" contains duplicate interface lines: "+str(duplicate)+", skipping this file")
                                     nextFile = 1
                                     break
-                            
+
                                 IfNumber = IfNumber + 1
                                 if debug: print("debug: obj4: "+str(obj4))
-                                
+
                                 InterfacesParse = [""] * len(InterfacesDict)
                                 InterfacesParse[InterfacesDict["NodeID"][0]] = NodeID
                                 InterfacesParse[InterfacesDict["Hostname"][0]] = Hostname
@@ -3927,15 +4490,15 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 InterfacesParse[InterfacesDict["ServiceID"][0]] = obj3.text.split("vprn ")[1].split(" name")[0] + ":" + obj3.text.split("customer ")[1].split(" create")[0]
                                 InterfacesParse[InterfacesDict["ServiceType"][0]] = "VPRN"
                                 InterfacesParse[InterfacesDict["ServiceName"][0]] = obj3.text.split("name ")[1].split(" customer")[0].replace("\"","")
-                                
+
                                 # Check if interface is a loopback interface
                                 for obj5 in obj4.re_search_children("loopback"):
                                     InterfacesParse[InterfacesDict["IfType"][0]] = "Loopback"
                                     break
-                                
+
                                 for obj10 in obj3.re_search_children(r"description"):
                                     InterfacesParse[InterfacesDict["ServiceDescr"][0]] = obj10.text.split("description ")[1].replace("\"","")
-                            
+
                                 # Find description associated with current interface
                                 for obj5 in obj4.re_search_children("description "):
                                     InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj5.text.split("description ")[1].replace("\"",""))
@@ -4015,7 +4578,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     else:
                                         InterfacesParse[InterfacesDict["Encap"][0]] = "Null"
                                         InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortBinding"][0]]
-                                    
+
                                     if obj5.re_search(r"lag"):
                                         InterfacesParse[InterfacesDict["LAGID"][0]] = InterfacesParse[InterfacesDict["PortName"][0]].split("lag-")[1]
                                         InterfacesParse[InterfacesDict["ParentIfName"][0]] = "lag " + InterfacesParse[InterfacesDict["LAGID"][0]]
@@ -4049,7 +4612,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         # Find relevant VPLS service
                                         for obj51 in obj50.re_search_children(r"vpls.*\""+vplsServiceName+r"\""):
                                             vplsServiceID = obj51.text.split("vpls ")[1].split(" name")[0] + ":" + obj51.text.split("customer ")[1].split(" create")[0]
-                                            
+
                                             vplsServiceDescr = ""
                                             for obj5 in obj51.re_search_children(r"^ *description"):
                                                 vplsServiceDescr = obj51.text.split("\"")[1].split()[0]
@@ -4061,7 +4624,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                                             if InterfacesParse[InterfacesDict["ServiceID"][0]] != "": InterfacesParse[InterfacesDict["ServiceID"][0]] = InterfacesParse[InterfacesDict["ServiceID"][0]] + "|"
                                             InterfacesParse[InterfacesDict["ServiceID"][0]] = InterfacesParse[InterfacesDict["ServiceID"][0]] + vplsServiceID
-                                            
+
                                             if InterfacesParse[InterfacesDict["ServiceName"][0]] != "": InterfacesParse[InterfacesDict["ServiceName"][0]] = InterfacesParse[InterfacesDict["ServiceName"][0]] + "|"
                                             InterfacesParse[InterfacesDict["ServiceName"][0]] = InterfacesParse[InterfacesDict["ServiceName"][0]] + vplsServiceName
 
@@ -4086,7 +4649,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                                 else:
                                                     InterfacesParse[InterfacesDict["Encap"][0]] = "Null"
                                                     InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortBinding"][0]]
-                                                
+
                                                 # if obj5.re_search(r"lag"):
                                                 #     InterfacesParse[InterfacesDict["LAGID"][0]] = InterfacesParse[InterfacesDict["PortName"][0]].split("lag-")[1]
                                                 #     InterfacesParse[InterfacesDict["ParentIfName"][0]] = "lag " + InterfacesParse[InterfacesDict["LAGID"][0]]
@@ -4119,7 +4682,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     if len(obj10.text.split("ospf ")) > 1:
                                         ospfRID = str(obj10.text.split("ospf ")[1].split(" ")[0])
                                     ospfLine.append(ospfRID)
-                                    
+
                                     # First we will look for the area where interface is primary
                                     ospfIfType1 = ""
                                     ospfIfType2 = "Bcast"
@@ -4285,9 +4848,9 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                                 lineNumber = 0
                                                 match = 0
                                                 for ospfLineCheck in ospfList:
-                                                    if ((ospfLineCheck[3] == ospfBFDState) and (ospfLineCheck[4] == ospfPriority) and (ospfLineCheck[5] == ospfMetric) and (ospfLineCheck[6] == ospfHello) 
+                                                    if ((ospfLineCheck[3] == ospfBFDState) and (ospfLineCheck[4] == ospfPriority) and (ospfLineCheck[5] == ospfMetric) and (ospfLineCheck[6] == ospfHello)
                                                         and (ospfLineCheck[7] == ospfDead) and (ospfLineCheck[8] == ospfRetransmit) and (ospfLineCheck[9] == ospfAuth)):
-                                                        
+
                                                         ospfList[lineNumber][10].extend(ospfAreaList)
                                                         match = 1
                                                         break
@@ -4296,14 +4859,14 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                                                 if match == 0:
                                                     ospfList.append(ospfLine)
-                                
+
                                 # Sort all areas inside the ospfList
                                 # print(ospfList)
                                 lineNumber = 0
                                 for ospfLineCheck in ospfList:
                                     ospfList[lineNumber][10].sort(key=lambda x: x[0])
                                     lineNumber = lineNumber + 1
-                                
+
                                 # ospfList.sort(key=lambda x: x[10])
 
 
@@ -4315,7 +4878,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                             ospfOutputLine = ospfOutputLine + ";"
 
                                         # ospfOutputLine = ospfOutputLine + "pid:"+str(ospfLine[0]) + "|type:"+str(ospfLine[1]) + "|mode:"+str(ospfLine[2]) + "|bfd:"+str(ospfLine[3]) + "|prio:"+str(ospfLine[4]) + "|metr:"+str(ospfLine[5]) + "|hello:"+str(ospfLine[6]) + "|dead:"+str(ospfLine[7]) + "|retr:"+str(ospfLine[8]) + "|auth:"+str(ospfLine[9])
-                                        
+
                                         ospfOutputLine = ospfOutputLine + "rid:"+str(ospfLine[0]) + "|type:"+str(ospfLine[1]) + "|mode:"+str(ospfLine[2]) + "|bfd:"+str(ospfLine[3])
                                         if ospfLine[4] != "": ospfOutputLine = ospfOutputLine + "|prio:" + str(ospfLine[4])
                                         if ospfLine[5] != "": ospfOutputLine = ospfOutputLine + "|metr:" + str(ospfLine[5])
@@ -4332,12 +4895,12 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                             ospfOutputLine2 = ""
                                             for area in ospfLine[10]:
                                                 if ospfOutputLine2 == "":
-                                                    ospfOutputLine2 = str(area[0]) + str(area[1]) + str(area[2]) 
+                                                    ospfOutputLine2 = str(area[0]) + str(area[1]) + str(area[2])
                                                 else:
                                                     ospfOutputLine2 = ospfOutputLine2 + " " + str(area[0]) + str(area[1]) + str(area[2])
-                                            
+
                                             ospfOutputLine = ospfOutputLine + ospfOutputLine2
-                                        
+
                                     InterfacesParse[InterfacesDict["OSPFv2"][0]] = ospfOutputLine
 
 
@@ -4407,10 +4970,10 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     print("File "+str(os.path.split(inputPath)[1])+" contains duplicate interface lines: "+str(duplicate)+", skipping this file")
                                     nextFile = 1
                                     break
-                            
+
                                 IfNumber = IfNumber + 1
                                 if debug: print("debug: obj4: "+str(obj4))
-                                
+
                                 InterfacesParse = [""] * len(InterfacesDict)
                                 InterfacesParse[InterfacesDict["NodeID"][0]] = NodeID
                                 InterfacesParse[InterfacesDict["Hostname"][0]] = Hostname
@@ -4439,7 +5002,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     for sdpLine in sdpList:
                                         if sdpOutputLine != "":
                                             sdpOutputLine = sdpOutputLine + ";"
-                                        
+
                                         sdpOutputLine = sdpOutputLine + "id:"+str(sdpLine[0]) + "|type:"+str(sdpLine[1]) + "|state:"+str(sdpLine[2]) + "|next-hop:"+str(sdpLine[3]) + "|vc-id:"+str(sdpLine[4]) + "|keepalive:"+str(sdpLine[5])
 
                                     InterfacesParse[InterfacesDict["ServiceSDP"][0]] = sdpOutputLine
@@ -4462,7 +5025,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 else:
                                     InterfacesParse[InterfacesDict["Encap"][0]] = "Null"
                                     InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortBinding"][0]]
-                                
+
                                 if obj4.re_search(r"lag"):
                                     InterfacesParse[InterfacesDict["LAGID"][0]] = InterfacesParse[InterfacesDict["PortName"][0]].split("lag-")[1]
 
@@ -4528,10 +5091,10 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     print("File "+str(os.path.split(inputPath)[1])+" contains duplicate interface lines: "+str(duplicate)+", skipping this file")
                                     nextFile = 1
                                     break
-                            
+
                                 IfNumber = IfNumber + 1
                                 if debug: print("debug: obj4: "+str(obj4))
-                                
+
                                 InterfacesParse = [""] * len(InterfacesDict)
                                 InterfacesParse[InterfacesDict["NodeID"][0]] = NodeID
                                 InterfacesParse[InterfacesDict["Hostname"][0]] = Hostname
@@ -4559,7 +5122,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     for sdpLine in sdpList:
                                         if sdpOutputLine != "":
                                             sdpOutputLine = sdpOutputLine + ";"
-                                        
+
                                         sdpOutputLine = sdpOutputLine + "id:"+str(sdpLine[0]) + "|type:"+str(sdpLine[1]) + "|state:"+str(sdpLine[2]) + "|next-hop:"+str(sdpLine[3]) + "|vc-id:"+str(sdpLine[4]) + "|keepalive:"+str(sdpLine[5])
 
                                     InterfacesParse[InterfacesDict["ServiceSDP"][0]] = sdpOutputLine
@@ -4582,10 +5145,10 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 else:
                                     InterfacesParse[InterfacesDict["Encap"][0]] = "Null"
                                     InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortBinding"][0]]
-                                
+
                                 if obj4.re_search(r"lag"):
                                     InterfacesParse[InterfacesDict["LAGID"][0]] = InterfacesParse[InterfacesDict["PortName"][0]].split("lag-")[1]
-                                
+
                                 InterfacesParse[InterfacesDict["ParentIfName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]]
 
                                 # Find QoS input policy associated with current interface
@@ -4617,11 +5180,11 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 #####################################################################################################################################################
 
             if nextFile == 0:
-   
+
                 # Getting all existing interfaces of this node from DB with relevant CLI Syntax
-                DBQuery="""SELECT * 
+                DBQuery="""SELECT *
                             FROM Interfaces"""+str(SyntaxDict[CLISyntax])+"""
-                            WHERE NodeID = '"""+str(NodeID)+"""' 
+                            WHERE NodeID = '"""+str(NodeID)+"""'
                             ORDER BY LastUpdatedTime DESC
                             """
                 if debugSQL: print("debug: DBQuery: "+str(DBQuery))
@@ -4670,7 +5233,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                 # Go through all interfaces parsed from file
                 for obj3 in InterfacesParseAll:
-                    
+
                     match = 0
                     if InterfacesDBAll is not None:
 
@@ -4693,20 +5256,20 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 DBQuery="""UPDATE Interfaces"""+str(SyntaxDict[CLISyntax])+"""
                                                         SET"""
                                 equal = 1
-                                
+
                                 for value2 in UpdatableIDs:
                                     if (obj4[InterfacesDict[value2][0]] != obj3[InterfacesDict[value2][0]]):
                                         equal = 0
                                         DBQuery = DBQuery + "                                            "
                                         DBQuery = DBQuery + value2 + """ = '"""+str(obj3[InterfacesDict[value2][0]])+"""',\n"""
                                         print("Interface "+str(obj4[InterfacesDict["IfName"][0]])+" value "+str(value2)+" changed to "+str(obj3[InterfacesDict[value2][0]]))
-                                
+
                                 DBQuery = DBQuery + "                                            LastUpdatedTime = '"""+str(datetime.datetime.today())+"""',
                                             LastUpdatedBy = '"""+str(getpass.getuser())+"""'
                                         WHERE
                                             IfID = '"""+obj4[InterfacesDict["IfID"][0]]+"""'
                                             """
-                                # Sending SQL query to update changed interface values 
+                                # Sending SQL query to update changed interface values
                                 if equal == 0:
                                     IfUpdated = IfUpdated + 1
                                     if debugSQL: print("debug: DBQuery: "+str(DBQuery))
@@ -4728,8 +5291,8 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         else:
                                             DBQuery = DBQuery + value3 + "\n"
                                         i = i + 1
-                                    
-                                    DBQuery = DBQuery + """                                                ) 
+
+                                    DBQuery = DBQuery + """                                                )
                                                             VALUES (\n"""
 
                                     i = 1
@@ -4740,7 +5303,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         else:
                                             DBQuery = DBQuery + "'"+str(obj4[InterfacesDict[value3][0]])+"'\n"
                                         i = i + 1
-                                    
+
                                     DBQuery = DBQuery + """                                                )\n"""
 
                                     if debugSQL: print("debug: "+str(DBQuery))
@@ -4752,7 +5315,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                     if debug: print("debug: Interface "+str(obj3[InterfacesDict["IfName"][0]])+" found in DB, no update needed")
 
                                 break
-                    
+
                     # Adding interface to DB if it was not found there previously
                     if match == 0:
                         if debug: print("debug: Interface "+str(obj3[InterfacesDict["IfName"][0]])+" not found in DB - creating")
@@ -4781,7 +5344,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                                 obj3[InterfacesDict["IfID"][0]] = obj10[InterfacesDict["IfID"][0]]
                                                 if debug: print("debug: Interface found for another syntax, creating new record in DB Interfaces"+str(SyntaxDict[CLISyntax])+" with previously used id: "+str(obj3[InterfacesDict["IfID"][0]]))
                                                 break
-                        
+
                         # Check if the same interface was previously deleted
                         # print(len(InterfacesDBHist))
                         if obj3[InterfacesDict["IfID"][0]] == "":
@@ -4792,7 +5355,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         obj3[InterfacesDict["IfID"][0]] = obj11[InterfacesDict["IfID"][0]]
                                         if debug: print("debug: Interface found from last historical record, creating new record in DB Interfaces"+str(SyntaxDict[CLISyntax])+" with previously used id: "+str(obj3[InterfacesDict["IfID"][0]]))
                                         break
-                        
+
                         # Check if ID is already present in the DB to prevent a conflict
                         conflict = 1
                         while conflict == 1:
@@ -4822,7 +5385,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                         break
                                     else:
                                         newID = str(uuid.uuid4())
-                                
+
                                 # print(DBResponse)
                                 if debug: print("debug: Generated ID conflicts with interface " + DBResponse[0][InterfacesDict["IfName"][0]] + ", creating a new random id for it: "+str(newID))
 
@@ -4871,7 +5434,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         IDMatched.append(obj3[InterfacesDict["IfID"][0]])
 
                         DBQuery="""INSERT INTO Interfaces"""+str(SyntaxDict[CLISyntax])+""" (\n"""
-                        
+
                         i = 1
                         for value3 in InterfacesDict:
                             DBQuery = DBQuery + "                                            "
@@ -4880,8 +5443,8 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             else:
                                 DBQuery = DBQuery + value3 + "\n"
                             i = i + 1
-                        
-                        DBQuery = DBQuery + """                                            ) 
+
+                        DBQuery = DBQuery + """                                            )
                                             VALUES (\n"""
 
                         i = 1
@@ -4898,7 +5461,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                         if debugSQL: print("debug: DBQuery: "+str(DBQuery))
                         if not DBUpdateDisable: outputCursor.execute(DBQuery)
                         outputDB.commit()
-                   
+
                 if debug: input("Existing interfaces are updated in the database. Press any key proceed.\r\n")
 
 
@@ -4907,9 +5470,9 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 #####################################################################################################################################################
 
                 # Getting all existing interfaces of this node from DB with relevant CLI Syntax
-                DBQuery="""SELECT * 
+                DBQuery="""SELECT *
                             FROM Interfaces"""+str(SyntaxDict[CLISyntax])+"""
-                            WHERE NodeID = '"""+str(NodeID)+"""' 
+                            WHERE NodeID = '"""+str(NodeID)+"""'
                             ORDER BY LastUpdatedTime DESC
                             """
                 if debugSQL: print("debug: DBQuery: "+str(DBQuery))
@@ -4926,12 +5489,12 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                             if obj3[InterfacesDict["IfID"][0]] == obj4:
                                 match = 1
                                 break
-                        
+
                         if  match == 0:
                             if debug: print("debug: Interface "+str(obj3[InterfacesDict["IfName"][0]])+" not found in parsed files, moving it to historical table")
                             IfDeleted = IfDeleted + 1
                             DBQuery="""DELETE FROM Interfaces"""+str(SyntaxDict[CLISyntax])+"""
-                                        WHERE 
+                                        WHERE
                                             IfID = '"""+obj3[InterfacesDict["IfID"][0]]+"""'
                                             """
                             if debugSQL: print("debug: "+str(DBQuery))
@@ -4953,8 +5516,8 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
                                 else:
                                     DBQuery = DBQuery + value3 + "\n"
                                 i = i + 1
-                            
-                            DBQuery = DBQuery + """                                                ) 
+
+                            DBQuery = DBQuery + """                                                )
                                                     VALUES (\n"""
 
                             i = 1
@@ -5002,7 +5565,7 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
 
     # Getting all existing nodes from the DB
     # if debugSQL: print("debug: DBResponse: "+str(DBResponse))
-    DBQuery="""SELECT * 
+    DBQuery="""SELECT *
                 FROM Nodes
                 ORDER BY Hostname ASC
                 """
@@ -5050,7 +5613,7 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
                 PeeringDBSrcAll.append(list(DBResponse))
 
         # Getting all existing routing from the DB - TBD
-    
+
     # Creating files
     if fileFormat == "csv":
         outputFile = open(("./"+outputPath),"w+",newline ='')
@@ -5274,13 +5837,13 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
             for value in InterfacesDict:
                 # Exclude cells that are useless in comparison
                 if ((value != "NodeID") and (value != "CLISyntax") and (value != "IfNumber") and (value != "ParentIfName") and (value != "IfName")
-                        and (value != "PortName") and (value != "PortBinding") and (value != "SFPSN") and (value != "TxLevel") and (value != "RxLevel") and(value != "BridgeID") 
+                        and (value != "PortName") and (value != "PortBinding") and (value != "SFPSN") and (value != "TxLevel") and (value != "RxLevel") and(value != "BridgeID")
                         and (value != "ServiceID") and (value != "ServiceDescr") and (value != "ServiceSDP") and (value != "CDP") and (value != "Comments") and (value != "LastUpdatedTime")
                         and (value != "LastUpdatedBy")):
                     Cell2Src = xlsxwriter.utility.xl_rowcol_to_cell(lineNumber, InterfacesDict[value][0])
                     Cell2Dst = xlsxwriter.utility.xl_rowcol_to_cell(lineNumber, InterfacesDict[value][0]+midHdrLenght+len(InterfacesDict))
                     Cell2List.append([Cell2Src,Cell2Dst])
-            
+
             DiffSrcFromula = str("=IF(AND("+Cell1Src+"<>\"\","+Cell1Dst+"<>\"\"),CONCATENATE(")
             DiffDstFromula = str("=IF(AND("+Cell1Src+"<>\"\","+Cell1Dst+"<>\"\"),CONCATENATE(")
             j = 0
@@ -5349,7 +5912,7 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
 
             # if lineNumber == 2: break
 
-        
+
     # Generating output values for destination interface not matching any source interface
     for outputLineDst in InterfacesDBDstAll:
         if outputLineDst[InterfacesDict["IfID"][0]] not in IDMatched:
@@ -5369,13 +5932,13 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
             for value in InterfacesDict:
                 # Exclude cells that are useless in comparison
                 if ((value != "NodeID") and (value != "CLISyntax") and (value != "IfNumber") and (value != "ParentIfName") and (value != "IfName")
-                        and (value != "PortName") and (value != "PortBinding") and (value != "SFPSN") and (value != "TxLevel") and (value != "RxLevel") and(value != "BridgeID") 
+                        and (value != "PortName") and (value != "PortBinding") and (value != "SFPSN") and (value != "TxLevel") and (value != "RxLevel") and(value != "BridgeID")
                         and (value != "ServiceID") and (value != "ServiceDescr") and (value != "ServiceSDP") and (value != "CDP") and (value != "Comments") and (value != "LastUpdatedTime")
                         and (value != "LastUpdatedBy")):
                     Cell2Src = xlsxwriter.utility.xl_rowcol_to_cell(lineNumber, InterfacesDict[value][0])
                     Cell2Dst = xlsxwriter.utility.xl_rowcol_to_cell(lineNumber, InterfacesDict[value][0]+midHdrLenght+len(InterfacesDict))
                     Cell2List.append([Cell2Src,Cell2Dst])
-            
+
             DiffSrcFromula = str("=IF(AND("+Cell1Src+"<>\"\","+Cell1Dst+"<>\"\"),CONCATENATE(")
             DiffDstFromula = str("=IF(AND("+Cell1Src+"<>\"\","+Cell1Dst+"<>\"\"),CONCATENATE(")
             j = 0
@@ -5418,7 +5981,7 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
                         Interfaces2Worksheet.write_string(lineNumber, valueNumber, str(value), lineDst_format)
                 # if debug: print("writing value "+str(value)+" in column "+str(valueNumber)+" on row "+str(lineNumber))
                 valueNumber = valueNumber + 1
-                
+
             if fileFormat == "csv": outputFile.write("\r\n")
             lineNumber = lineNumber + 1
 
@@ -5439,7 +6002,7 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
                     outputFile.write(str(value)+","+str(value))
                 else:
                     outputFile.write(","+str(value)+","+str(value))
-                
+
                 # Exclude cells that are useless in comparison
                 if ((value != "NodeID") and (value != "IfID") and (value != "CLISyntax") and (value != "IfNumber") and (value != "ParentIfName") and (value != "IfName") and (value != "PortName")
                             and (value != "SFPSN") and (value != "TxLevel") and (value != "RxLevel") and(value != "BridgeID") and (value != "ServiceID") and (value != "PortBinding")
@@ -5493,7 +6056,7 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
                                     if fileFormat == "csv":
                                         valueSrc = valueSrc.replace(",","")
                                         valueDst = valueDst.replace(",","")
-                                        
+
                                         if valueNumberSource == 0:
                                             outputFile.write(str(valueSrc)+","+str(valueDst))
                                         else:
@@ -5506,7 +6069,7 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
                                                             and (value != "SFPSN") and (value != "TxLevel") and (value != "RxLevel") and(value != "BridgeID") and (value != "ServiceID") and (value != "PortBinding")
                                                             and (value != "ServiceDescr") and (value != "ServiceSDP") and (value != "CDP") and (value != "Comments") and (value != "LastUpdatedTime")
                                                             and (value != "LastUpdatedBy")):
-                                                    
+
                                                     outputFile.write(","+str(MatchFromula.replace(",",";")))
                                                 break
 
@@ -5523,7 +6086,7 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
                                                             and (value != "SFPSN") and (value != "TxLevel") and (value != "RxLevel") and(value != "BridgeID") and (value != "ServiceID") and (value != "PortBinding")
                                                             and (value != "ServiceDescr") and (value != "ServiceSDP") and (value != "CDP") and (value != "Comments") and (value != "LastUpdatedTime")
                                                             and (value != "LastUpdatedBy")):
-                                                    
+
                                                     InterfacesComparisonWorksheet.write_formula(lineNumber, valueNumberPrint+2, MatchFromula, lineMatch_format)
                                                     valueNumberPrint = valueNumberPrint + 1
                                                 break
@@ -5534,7 +6097,7 @@ def outputFunc(inputDB,outputPath,fileFormat,targSyntax):
                                     break
 
                                 valueNumberDestination = valueNumberDestination + 1
-                                
+
                     valueNumberSource = valueNumberSource + 1
 
                 if match == 1:
@@ -5605,7 +6168,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
             print("Trying Telnet to port " + str(port))
             try:
                 connectionCursor = telnetlib.Telnet(host=str(hostAddr), port=str(port), timeout=5)
-                
+
                 if connectionCursor != "":
                     # print("connectionCursor " + str(connectionCursor))
                     output1 = connectionCursor.expect([b'((U|u)ser)?name|(L|l)ogin'], timeout=3)
@@ -5642,26 +6205,29 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                 break
             except:
                 print("   Connection error: ", sys.exc_info()[0])
-            
+
             if TelnetConnectionState != 0: break
 
     if (( connectionCursor != "" ) and ((TelnetConnectionState == 1) or (SSHConnectionState == 1))):
 
-        if (os.path.isfile("./" + outputPath + "/debugText.txt")):
-            os.remove("./" + outputPath + "/debugText.txt")
+        # if (os.path.isfile("./" + outputPath + "/debugText.txt")):
+        #     os.remove("./" + outputPath + "/debugText.txt")
 
-        with open("./" + outputPath + "/debugText.txt", 'w') as debugTextFile:
-            debugTextFile.write("")
+        with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+            debugTextFile.write("\n\n#####\tDebug text for node " + str(hostAddr) + ". Created on " + str(datetime.datetime.today()) + ".\t#####\n\n")
 
         # Determine SW version and CLI syntax
         CLISyntax = ""
 
         # Issuing a Cisco/Nokia style command
-        versionLines = []
-        versionLines.append("#####\tExecuting \"" + str(CommandsDict["IOS"][0][0]) + "\" with " + str(CommandsDict["IOS"][0][1]) + " second(s) timeout\t#####")
-        output = execCLICommand(connectionCursor, protocol, CommandsDict["IOS"][0][0], CommandsDict["IOS"][0][1])
-        versionLines.extend(output[1])
-        versionLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+        for attempt in range(0,2):
+            versionLines = []
+            versionLines.append("#####\tExecuting \"" + str(CommandsDict["IOS"][0][0]) + "\" with " + str(CommandsDict["IOS"][0][1]) + " second(s) timeout\t#####")
+            print("Executing command \"" + str(CommandsDict["IOS"][0][0]) + "\"")
+            output = execCLICommand(connectionCursor, protocol, CommandsDict["IOS"][0][0], CommandsDict["IOS"][0][1])
+            versionLines.extend(output[1])
+            versionLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+            if output[0] == 0: break
 
         # Trying to find shell prompt
         shellPrompt = ""
@@ -5674,30 +6240,34 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                 if shellPrompt != "":
                     print("Found shell prompt: "+shellPrompt)
                     break
-        
+
         # Trying to find CLI syntax of Cisco/Nokia node
         for line in versionLines:
             searchExpression = r'.*Cisco IOS XR'
             if re.match(searchExpression,line):
                 CLISyntax = "IOS-XR"
                 break
-            searchExpression = r'.*Cisco IOS(-| XE)? '
+            searchExpression = r'.*Cisco IOS((-| )XE)? '
             if re.match(searchExpression,line):
                 CLISyntax = "IOS"
-                break 
+                break
             searchExpression = r'.*TiMOS-'
             if re.match(searchExpression,line):
                 CLISyntax = "SR-OS"
                 break
-        
+
 
         if CLISyntax == "":
             # Issuing a Huawei style command
-            versionLines = []
-            versionLines.append("#####\tExecuting \"" + str(CommandsDict["VRP"][0][0]) + "\" with " + str(CommandsDict["VRP"][0][1]) + " second(s) timeout\t#####")
-            output = execCLICommand(connectionCursor, protocol, CommandsDict["VRP"][0][0], CommandsDict["VRP"][0][1])
-            versionLines.extend(output[1])
-            versionLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+
+            for attempt in range(0,2):
+                versionLines = []
+                versionLines.append("#####\tExecuting \"" + str(CommandsDict["VRP"][0][0]) + "\" with " + str(CommandsDict["VRP"][0][1]) + " second(s) timeout\t#####")
+                print("Executing command \"" + str(CommandsDict["VRP"][0][0]) + "\"")
+                output = execCLICommand(connectionCursor, protocol, CommandsDict["VRP"][0][0], CommandsDict["VRP"][0][1])
+                versionLines.extend(output[1])
+                versionLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+                if output[0] == 0: break
 
 
             # Trying to find CLI syntax of Hiawei node
@@ -5722,10 +6292,13 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         if CLISyntax == "IOS":
             if re.search(r'>',shellPrompt):
 
-                enableLines.append("#####\tExecuting \"enable\" with 20 second(s) timeout\t#####")
-                output = execCLICommand(connectionCursor, protocol, "enable\n" + password2, 20)
-                enableLines.extend(output[1])
-                enableLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+                for attempt in range(0,2):
+                    enableLines.append("#####\tExecuting \"enable\" with 20 second(s) timeout\t#####")
+                    print("Executing command \"enable\"")
+                    output = execCLICommand(connectionCursor, protocol, "enable\n" + password2, 20)
+                    enableLines.extend(output[1])
+                    enableLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+                    if output[0] == 0: break
 
                 # if debug:
                 #     with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
@@ -5740,11 +6313,14 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                         match = 1
                         break
                 if match == 1:
-                    versionLines = []
-                    versionLines.append("#####\tExecuting \"" + str(CommandsDict["IOS"][0][0]) + "\" with " + str(CommandsDict["IOS"][0][1]) + " second(s) timeout\t#####\n")
-                    output = execCLICommand(connectionCursor, protocol, CommandsDict["IOS"][0][0], CommandsDict["IOS"][0][1])
-                    versionLines.extend(output[1])
-                    versionLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+                    for attempt in range(0,2):
+                        versionLines = []
+                        versionLines.append("#####\tExecuting \"" + str(CommandsDict["IOS"][0][0]) + "\" with " + str(CommandsDict["IOS"][0][1]) + " second(s) timeout\t#####\n")
+                        print("Executing command \"" + str(CommandsDict["IOS"][0][0]) + "\"")
+                        output = execCLICommand(connectionCursor, protocol, CommandsDict["IOS"][0][0], CommandsDict["IOS"][0][1])
+                        versionLines.extend(output[1])
+                        versionLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+                        if output[0] == 0: break
 
                     print("Using new shell prompt: "+shellPrompt)
 
@@ -5758,23 +6334,29 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
 
 
         ################################################### Disable terminal paging ###################################################
-        termLengthLines = []
-        termLengthLines.append("#####\tExecuting \"" + str(CommandsDict[CLISyntax][1][0]) + "\" with " + str(CommandsDict[CLISyntax][1][1]) + " second(s) timeout\t#####")
-        output = execCLICommand(connectionCursor, protocol, CommandsDict[CLISyntax][1][0], CommandsDict[CLISyntax][1][1])
-        termLengthLines.extend(output[1])
-        termLengthLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+        for attempt in range(0,2):
+            termLengthLines = []
+            termLengthLines.append("#####\tExecuting \"" + str(CommandsDict[CLISyntax][1][0]) + "\" with " + str(CommandsDict[CLISyntax][1][1]) + " second(s) timeout\t#####")
+            print("Executing command \"" + str(CommandsDict[CLISyntax][1][0]) + "\"")
+            output = execCLICommand(connectionCursor, protocol, CommandsDict[CLISyntax][1][0], CommandsDict[CLISyntax][1][1])
+            termLengthLines.extend(output[1])
+            termLengthLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+            if output[0] == 0: break
 
         ################################################### Show current configuration ###################################################
-        configLines = []
-        configLines.append("#####\tExecuting \"" + str(CommandsDict[CLISyntax][2][0]) + "\" with " + str(CommandsDict[CLISyntax][2][1]) + " second(s) timeout\t#####")
-        output = execCLICommand(connectionCursor, protocol, CommandsDict[CLISyntax][2][0], CommandsDict[CLISyntax][2][1])
-        configLines.extend(output[1])
-        configLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+        for attempt in range(0,2):
+            configLines = []
+            configLines.append("#####\tExecuting \"" + str(CommandsDict[CLISyntax][2][0]) + "\" with " + str(CommandsDict[CLISyntax][2][1]) + " second(s) timeout\t#####")
+            print("Executing command \"" + str(CommandsDict[CLISyntax][2][0]) + "\"")
+            output = execCLICommand(connectionCursor, protocol, CommandsDict[CLISyntax][2][0], CommandsDict[CLISyntax][2][1])
+            configLines.extend(output[1])
+            configLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+            if output[0] == 0: break
 
         ################################################### Parse configuration ###################################################
         configLinesToParser = []
         for line in configLines:                            # Cleaning configLines before parsing
-            if not re.match(r'^ *[#!]',line):               # Remove all comments        
+            if not re.match(r'^ *[#!]',line):               # Remove all comments
                 if not re.match(r'echo "',line):            # Remove SR-OS echo lines
                     if not re.match(r'^$',line):            # Remove empty lines
                         if CLISyntax == "SR-OS":
@@ -5788,14 +6370,14 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         # Syntax: Cisco IOS/IOS-XE/IOS-XR
         if ((CLISyntax == "IOS") or (CLISyntax == "IOS-XR")):
             for obj1 in cfg.find_objects("^hostname"):       # Find node's Hostname from config
-                if debug: print("debug: obj1: "+str(obj1))
+                # if debug: print("debug: obj1: "+str(obj1))
                 Hostname = obj1.text.split(" ")[1]
                 if debug: print("debug: Found Hostname in configuration file and updated to: "+Hostname)
                 break
         # Syntax: Huawei VRP
         if (CLISyntax == "VRP"):
             for obj1 in cfg.find_objects("^sysname"):       # Find node's Hostname from config
-                if debug: print("debug: obj1: "+str(obj1))
+                # if debug: print("debug: obj1: "+str(obj1))
                 Hostname = obj1.text.split(" ")[1]
                 if debug: print("debug: Found Hostname in configuration file and updated to: "+Hostname)
                 break
@@ -5803,7 +6385,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         if (CLISyntax == "SR-OS"):
             for obj1 in cfg.find_objects(" *name"):       # Find node's Hostname from config
                 print(obj1)
-                if debug: print("debug: obj1: "+str(obj1))
+                # if debug: print("debug: obj1: "+str(obj1))
                 Hostname = obj1.text.split(" \"")[1].split("\"")[0]
                 if debug: print("debug: Found Hostname in configuration file and updated to: "+Hostname)
                 break
@@ -5819,9 +6401,9 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         # Syntax: Cisco IOS-XR
         if (CLISyntax == "IOS-XR"):
             for obj1 in cfg.find_objects("^interface Loopback0"):       # Find node's system/loopback0 address from config
-                if debug: print("debug: obj1: "+str(obj1))
+                # if debug: print("debug: obj1: "+str(obj1))
                 for obj2 in obj1.re_search_children("ipv4 address "):    #Find all IPv4 addresses associated with current interface (IOS-XR syntax)
-                    if debug: print("debug: obj2: "+str(obj2))
+                    # if debug: print("debug: obj2: "+str(obj2))
                     if re.search(r"/",obj2.text):
                         SysAddr = obj2.text.split("ipv4 address ")[1].split("/")[0]
                     else:
@@ -5832,9 +6414,9 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         # Syntax: Cisco IOS/IOS-XE
         if (CLISyntax == "IOS"):
             for obj1 in cfg.find_objects("^interface Loopback0"):       # Find node's system/loopback0 address from config
-                if debug: print("debug: obj1: "+str(obj1))
+                # if debug: print("debug: obj1: "+str(obj1))
                 for obj2 in obj1.re_search_children("ip address "):    #Find all IPv4 addresses associated with current interface (IOS/IOS-XE syntax)
-                    if debug: print("debug: obj2: "+str(obj2))
+                    # if debug: print("debug: obj2: "+str(obj2))
                     if re.search("/",obj2.text):
                         SysAddr = obj2.text.split("ip address ")[1].split("/")[0]
                     else:
@@ -5845,9 +6427,9 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         # Syntax: Huawei VRP
         if (CLISyntax == "VRP"):
             for obj1 in cfg.find_objects("^interface LoopBack0"):       # Find node's system/loopback0 address from config
-                if debug: print("debug: obj1: "+str(obj1))
+                # if debug: print("debug: obj1: "+str(obj1))
                 for obj2 in obj1.re_search_children("ip address "):    #Find all IPv4 addresses associated with current interface (VRP syntax)
-                    if debug: print("debug: obj2: "+str(obj2))
+                    # if debug: print("debug: obj2: "+str(obj2))
                     SysAddr = obj2.text.split("address ")[1].split(" ")[0]
                     if debug: print("debug: SysAddr: "+str(SysAddr))
                     break
@@ -5855,16 +6437,16 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         # Syntax: ALU/Nokia SR-OS
         if (CLISyntax == "SR-OS"):
             for obj1 in cfg.find_objects("^ *interface \"system\""):       # Find node's system/loopback0 address from config
-                if debug: print("debug: obj1: "+str(obj1))
+                # if debug: print("debug: obj1: "+str(obj1))
                 for obj2 in obj1.re_search_children("address "):    #Find all IPv4 addresses associated with current interface (SR-OS syntax)
-                    if debug: print("debug: obj2: "+str(obj2))
+                    # if debug: print("debug: obj2: "+str(obj2))
                     SysAddr = obj2.text.split("address ")[1].split("/")[0]
                     if debug: print("debug: SysAddr: "+str(SysAddr))
                     break
                 break
 
         ################################################### Create an output file for this node ###################################################
-        
+
         outputFilePath = outputPath + "/" + Hostname + "_" + SysAddr + "_" + CLISyntax + "_" + datetime.datetime.today().strftime("%Y-%m-%d_%H-%M-%S") +".txt"
         if (os.path.isfile(outputFilePath)):
             os.remove(outputFilePath)
@@ -5878,133 +6460,887 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
             outputFile.write("\n".join(str(item) for item in termLengthLines))
             outputFile.write("\n".join(str(item) for item in configLines))
 
-        ################################################### Calculate peer addresses ###################################################
-        
-        peerAddressList = []
-        # Syntax: Cisco IOS-XR
+        ################################################### Parse interfaces and addresses from config ###################################################
+
+        InterfacesParseAll = []
+
         if (CLISyntax == "IOS-XR"):
-            for obj1 in cfg.find_objects(r"^ *interface "):       # Find node's interfaces from config
-                ifName = obj1.text.split("interface ")[1].split()[0]
-                if not obj1.re_search_children(r"vrf "):
-                    if not obj1.re_search_children(r"^ *shutdown"):
-                        for obj3 in obj1.re_search_children("ipv4 address "):    #Find all IPv4 addresses associated with current interface (IOS-XR syntax)
-                            # if debug: print("debug: obj3: "+str(obj3))
-                            rawInput = obj3.text.split("ipv4 address ")[1].lstrip().rstrip()
+            # Perform 3 runs: 1st detects all IP/IPv6 interfaces, 2nd detects all other LAGs/BDIs, 3rd detects all ports left
+            for run in range(0,2):
+                for obj1 in cfg.find_objects(r"^interface"):
+                    # Looking for GRT interfaces only
+                    if (( not obj1.re_search_children(r"vrf |xconnect |l2vpn") ) and ( not re.search(r"l2transport",obj1.text))):
+                        InterfacesParse = [""] * len(InterfacesDict)
+
+                        if re.search(" preconfigure ",obj1.text): continue
+
+                        InterfacesParse[InterfacesDict["IfName"][0]] = obj1.text.split("interface ")[1].split()[0]
+
+                        # Find description associated with current interface
+                        for obj2 in obj1.re_search_children("description "):
+                            InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj2.text.split("description ")[1].replace("\"",""))
+                            break
+
+                        # Find all IPv4 addresses associated with current interface
+                        for obj2 in obj1.re_search_children("ipv4 address "):
+                            rawInput = obj2.text.split("ipv4 address ")[1].lstrip().rstrip()
                             rawInput = rawInput.replace(" ","/")
                             ipadd = ipaddress.ip_interface(str(rawInput))
-                            # if debug: print("debug: len(list(ipadd.network)): "+str(len(list(ipadd.network))))
-                            # Filtering only /29 networks or smaller
-                            if len(list(ipadd.network)) <= 8:
-                                tempPeerAddressList = list(ipadd.network)
-                                if len(tempPeerAddressList) > 2:
-                                    tempPeerAddressList.pop(0)
-                                    tempPeerAddressList.pop(-1)
-                                if ipadd.ip in tempPeerAddressList:
-                                    tempPeerAddressList.pop(tempPeerAddressList.index(ipadd.ip))
+                            if InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV4Addr"][0]] = str(ipadd)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV4Addr"][0]] = InterfacesParse[InterfacesDict["IPV4Addr"][0]] + "|" + str(ipadd)
+                            if InterfacesParse[InterfacesDict["IPV4Subnet"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = str(ipadd.network)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = InterfacesParse[InterfacesDict["IPV4Subnet"][0]] + "|"+ str(ipadd.network)
 
-                                for addressSrc in tempPeerAddressList:
+                        # Find all IPv6 addresses associated with current interface
+                        for obj2 in obj1.re_search_children("ipv6 address "):
+                            rawInput = obj2.text.split("ipv6 address ")[1].lstrip().rstrip()
+                            ipadd = ipaddress.ip_interface(str(line))
+                            if InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV6Addr"][0]] = str(ipadd)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV6Addr"][0]] = InterfacesParse[InterfacesDict["IPV6Addr"][0]] + "|" + str(ipadd)
+                            if InterfacesParse[InterfacesDict["IPV6Subnet"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = str(ipadd.network)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = InterfacesParse[InterfacesDict["IPV6Subnet"][0]] + "|" + str(ipadd.network)
+
+                        # Check if interface is a bundle
+                        if not re.search(r'[Bb]undle-[Ee]ther',InterfacesParse[InterfacesDict["IfName"][0]]):
+                            if re.search(r'\.',InterfacesParse[InterfacesDict["IfName"][0]]):
+                                InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]].split(".")[0]
+                            else:
+                                InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]]
+                        else:
+                            if re.search(r'\.',InterfacesParse[InterfacesDict["IfName"][0]]):
+                                tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("ther")[1].split(".")[0])
+                            else:
+                                tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("ther")[1])
+
+                            # Find ports associated with this LAG
+                            for obj20 in cfg.find_objects(r"^interface"):
+                                if (( not re.search(r'[Bb]undle-[Ee]ther',obj20.text) ) and ( not re.search(r'\.',obj20.text) )):
+                                    searchExpression = r"^ *bundle id " + tempLAGID + r"[a-zA-Z ]*$"
+                                    for obj21 in obj20.re_search_children(searchExpression):
+                                        if InterfacesParse[InterfacesDict["PortName"][0]] != "":
+                                            InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + "|"
+                                        InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + obj20.text.split("interface ")[1].split()[0]
+                                        break
+
+
+                        # Addind only IP/IPv6 interfaces
+                        if run == 0:
+                            if (( InterfacesParse[InterfacesDict["IPV4Addr"][0]] != "" ) or (InterfacesParse[InterfacesDict["IPV6Addr"][0]] != "" )):
+                                InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                                # print(InterfacesParse)
+                                InterfacesParseAll.append(InterfacesParse)
+                        # Addind all other LAGs
+                        if run == 1:
+                            if (( InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "" ) and (InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "" )):
+                                if re.search(r'[Bb]undle-[Ee]ther',InterfacesParse[InterfacesDict["IfName"][0]]):
+
                                     match = 0
-                                    for addressDst in peerAddressList:
-                                        if addressSrc == addressDst[1]:
+                                    for line in InterfacesParseAll:
+                                        if InterfacesParse[InterfacesDict["PortName"][0]] == line[InterfacesDict["PortName"][0]]:
                                             match = 1
-                                            break
+
                                     if match == 0:
-                                        peerAddressList.append([ ifName, addressSrc ])
-            pass
-        # Syntax: Cisco IOS/IOS-XE
+                                        InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                                        # print(InterfacesParse)
+                                        InterfacesParseAll.append(InterfacesParse)
+
+                        # Addind all other ports
+                        if run == 1:
+                            if (( InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "" ) and (InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "" )):
+                                if not re.search(r'[Bb]undle-[Ee]ther',InterfacesParse[InterfacesDict["IfName"][0]]):
+
+                                    match = 0
+                                    for line in InterfacesParseAll:
+                                        if InterfacesParse[InterfacesDict["PortName"][0]] in line[InterfacesDict["PortName"][0]]:
+                                            match = 1
+
+                                    if match == 0:
+                                        InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                                        # print(InterfacesParse)
+                                        InterfacesParseAll.append(InterfacesParse)
+
         if (CLISyntax == "IOS"):
-            for obj1 in cfg.find_objects(r"^ *interface "):       # Find node's interfaces from config
-                ifName = obj1.text.split("interface ")[1].split()[0]
-                if not obj1.re_search_children(r"vrf forwarding "):
-                    if not obj1.re_search_children(r"^ *shutdown"):
-                        for obj3 in obj1.re_search_children("ip address "):    #Find all IPv4 addresses associated with current interface (IOS/IOS-XE syntax)
-                            # if debug: print("debug: obj3: "+str(obj3))
-                            rawInput = obj3.text.split("ip address ")[1].lstrip().rstrip()
+            # Perform 3 runs: 1st detects all IP/IPv6 interfaces, 2nd detects all other LAGs/BDIs, 3rd detects all ports left
+            for run in range(0,2):
+                for obj1 in cfg.find_objects(r"^interface"):
+                    # Looking for non-VRF interfaces only
+                    if (( not obj1.re_search_children(r"vrf |xconnect |l2vpn") ) and ( not re.search(r"l2transport",obj1.text))):
+                        InterfacesParse = [""] * len(InterfacesDict)
+
+                        InterfacesParse[InterfacesDict["IfName"][0]] = obj1.text.split("interface ")[1].split()[0]
+
+                        # Find description associated with current interface
+                        for obj2 in obj1.re_search_children("description "):
+                            InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj2.text.split("description ")[1].replace("\"",""))
+                            break
+
+                        # Find all IPv4 addresses associated with current interface
+                        for obj2 in obj1.re_search_children("ip address "):
+                            rawInput = obj2.text.split("ip address ")[1].split("secondary")[0].lstrip().rstrip()
                             rawInput = rawInput.replace(" ","/")
                             ipadd = ipaddress.ip_interface(str(rawInput))
-                            # if debug: print("debug: len(list(ipadd.network)): "+str(len(list(ipadd.network))))
-                            # Filtering only /29 networks or smaller
-                            if len(list(ipadd.network)) <= 8:
-                                tempPeerAddressList = list(ipadd.network)
-                                if len(tempPeerAddressList) > 2:
-                                    tempPeerAddressList.pop(0)
-                                    tempPeerAddressList.pop(-1)
-                                if ipadd.ip in tempPeerAddressList:
-                                    tempPeerAddressList.pop(tempPeerAddressList.index(ipadd.ip))
+                            if InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV4Addr"][0]] = str(ipadd)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV4Addr"][0]] = InterfacesParse[InterfacesDict["IPV4Addr"][0]] + "|" + str(ipadd)
+                            if InterfacesParse[InterfacesDict["IPV4Subnet"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = str(ipadd.network)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = InterfacesParse[InterfacesDict["IPV4Subnet"][0]] + "|"+ str(ipadd.network)
 
-                                for addressSrc in tempPeerAddressList:
+                        # Find all IPv6 addresses associated with current interface
+                        for obj2 in obj1.re_search_children("ipv6 address "):
+                            rawInput = obj2.text.split("ipv6 address ")[1].lstrip().rstrip()
+                            ipadd = ipaddress.ip_interface(str(line))
+                            if InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV6Addr"][0]] = str(ipadd)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV6Addr"][0]] = InterfacesParse[InterfacesDict["IPV6Addr"][0]] + "|" + str(ipadd)
+                            if InterfacesParse[InterfacesDict["IPV6Subnet"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = str(ipadd.network)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = InterfacesParse[InterfacesDict["IPV6Subnet"][0]] + "|" + str(ipadd.network)
+
+                        # Check if interface is not a bundle or BDI
+                        if not re.search(r'([Pp]ort-[Cc]hannel)|BDI',InterfacesParse[InterfacesDict["IfName"][0]]):
+                            if re.search(r'\.',InterfacesParse[InterfacesDict["IfName"][0]]):
+                                InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]].split(".")[0]
+                            else:
+                                InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]]
+                        else:
+                            # Check if interface is a BDI
+                            if re.search(r'BDI',InterfacesParse[InterfacesDict["IfName"][0]]):
+                                tempBridgeID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("BDI")[1].split(".")[0])
+                                # Find ports associated with this Bridge
+                                for obj20 in cfg.find_objects(r"^interface"):
+                                    # Find bridge-domain IDs and respective VLANs associated with current interface
+                                    for obj11 in obj20.re_search_children("service instance "):
+                                        for obj12 in obj11.re_search_children("bridge-domain "):
+                                            if tempBridgeID == obj12.text.split("bridge-domain ")[1].split()[0]:
+                                                # Check if found interface is a bundle
+                                                if re.search(r'[Pp]ort-[Cc]hannel',obj20.text.split("interface")[1]):
+                                                    if re.search(r'\.',obj20.text.split("interface")[1]):
+                                                        tempLAGID = str(obj20.text.split("interface")[1].split("nnel")[1].split(".")[0])
+                                                    else:
+                                                        tempLAGID = str(obj20.text.split("interface")[1].split("nnel")[1])
+
+                                                        # Find ports associated with this LAG
+                                                        for obj30 in cfg.find_objects(r"^interface"):
+                                                            if (( not re.search(r'[Pp]ort-[Cc]hannel',obj30.text) ) and ( not re.search(r'\.',obj30.text) )):
+                                                                searchExpression = r"^ *channel-group " + tempLAGID + r"[a-zA-Z ]*$"
+                                                                for obj31 in obj30.re_search_children(searchExpression):
+                                                                    if InterfacesParse[InterfacesDict["PortName"][0]] != "":
+                                                                        InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + "|"
+                                                                    InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + obj20.text.split("interface ")[1].split()[0]
+                                                                    break
+                                                else:
+                                                    if InterfacesParse[InterfacesDict["PortName"][0]] != "":
+                                                        InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + "|"
+                                                    InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + obj20.text.split("interface ")[1].split()[0]
+                            else:
+                                # Check if interface is a bundle
+                                if re.search(r'[Pp]ort-[Cc]hannel',InterfacesParse[InterfacesDict["IfName"][0]]):
+                                    if re.search(r'\.',InterfacesParse[InterfacesDict["IfName"][0]]):
+                                        tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("nnel")[1].split(".")[0])
+                                    else:
+                                        tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("nnel")[1])
+
+                                    # Find ports associated with this LAG
+                                    for obj20 in cfg.find_objects(r"^interface"):
+                                        if (( not re.search(r'[Pp]ort-[Cc]hannel',obj20.text) ) and ( not re.search(r'\.',obj20.text) )):
+                                            searchExpression = r"^ *channel-group " + tempLAGID + r"[a-zA-Z ]*$"
+                                            for obj21 in obj20.re_search_children(searchExpression):
+                                                if InterfacesParse[InterfacesDict["PortName"][0]] != "":
+                                                    InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + "|"
+                                                InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + obj20.text.split("interface ")[1].split()[0]
+                                                break
+
+                        # Addind only IP/IPv6 interfaces
+                        if run == 0:
+                            if (( InterfacesParse[InterfacesDict["IPV4Addr"][0]] != "" ) or (InterfacesParse[InterfacesDict["IPV6Addr"][0]] != "" )):
+                                InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                                # print(InterfacesParse)
+                                InterfacesParseAll.append(InterfacesParse)
+                        # Addind all other BDIs/LAGs
+                        if run == 1:
+                            if (( InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "" ) and (InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "" )):
+                                if re.search(r'([Pp]ort-[Cc]hannel)|BDI',InterfacesParse[InterfacesDict["IfName"][0]]):
+
                                     match = 0
-                                    for addressDst in peerAddressList:
-                                        if addressSrc == addressDst[1]:
+                                    for line in InterfacesParseAll:
+                                        if InterfacesParse[InterfacesDict["PortName"][0]] == line[InterfacesDict["PortName"][0]]:
                                             match = 1
-                                            break
-                                    if match == 0:
-                                        peerAddressList.append([ ifName, addressSrc ])
 
-            pass
-        # Syntax: Huawei VRP
+                                    if match == 0:
+                                        InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                                        # print(InterfacesParse)
+                                        InterfacesParseAll.append(InterfacesParse)
+
+                        # Addind all other ports
+                        if run == 1:
+                            if (( InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "" ) and (InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "" )):
+                                if not re.search(r'([Pp]ort-[Cc]hannel)|BDI',InterfacesParse[InterfacesDict["IfName"][0]]):
+
+                                    match = 0
+                                    for line in InterfacesParseAll:
+                                        if InterfacesParse[InterfacesDict["PortName"][0]] in line[InterfacesDict["PortName"][0]]:
+                                            match = 1
+
+                                    if match == 0:
+                                        InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                                        # print(InterfacesParse)
+                                        InterfacesParseAll.append(InterfacesParse)
+
         if (CLISyntax == "VRP"):
-            for obj1 in cfg.find_objects(r"^ *interface "):       # Find node's interfaces from config
-                ifName = obj1.text.split("interface ")[1].split()[0]
-                if not obj1.re_search_children(r"vrf forwarding "):
-                    if not obj1.re_search_children(r"^ *shutdown"):
-                        for obj3 in obj1.re_search_children("ip address "):    #Find all IPv4 addresses associated with current interface (VRP syntax)
-                            # if debug: print("debug: obj3: "+str(obj3))
-                            rawInput = obj3.text.split("ip address ")[1].lstrip().rstrip()
-                            rawInput = rawInput.replace(" ","/")
-                            ipadd = ipaddress.ip_interface(str(rawInput))
-                            # if debug: print("debug: len(list(ipadd.network)): "+str(len(list(ipadd.network))))
-                            # Filtering only /29 networks or smaller
-                            if len(list(ipadd.network)) <= 8:
-                                tempPeerAddressList = list(ipadd.network)
-                                if len(tempPeerAddressList) > 2:
-                                    tempPeerAddressList.pop(0)
-                                    tempPeerAddressList.pop(-1)
-                                if ipadd.ip in tempPeerAddressList:
-                                    tempPeerAddressList.pop(tempPeerAddressList.index(ipadd.ip))
+            # Perform 3 runs: 1st detects all IP/IPv6 interfaces, 2nd detects all other LAGs/BDIs, 3rd detects all ports left
+            for run in range(0,2):
+                for obj1 in cfg.find_objects(r"^interface"):
+                    # Looking for GRT interfaces only
+                    if not obj1.re_search_children("ip binding vpn-instance"):
+                        InterfacesParse = [""] * len(InterfacesDict)
 
-                                for addressSrc in tempPeerAddressList:
+                        InterfacesParse[InterfacesDict["IfName"][0]] = obj1.text.split("interface ")[1].split()[0]
+
+                        # Find description associated with current interface
+                        for obj2 in obj1.re_search_children("description "):
+                            InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj2.text.split("description ")[1].replace("\"",""))
+                            break
+
+                        # Find all IPv4 addresses associated with current interface
+                        for obj2 in obj1.re_search_children("ip address "):
+                            if re.search("ip address unnumbered interface", obj2.text):
+                                InterfacesParse[InterfacesDict["ParentIfName"][0]] = obj2.text.split("unnumbered interface ")[1]
+                                InterfacesParse[InterfacesDict["IPV4Addr"][0]] = InterfacesParse[InterfacesDict["ParentIfName"][0]]
+                            else:
+                                rawInput = obj2.text.split("ip address ")[1].lstrip().rstrip()
+                                rawInput = rawInput.replace(" ","/")
+                                ipadd = ipaddress.ip_interface(str(rawInput))
+                                if InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "":
+                                    InterfacesParse[InterfacesDict["IPV4Addr"][0]] = str(ipadd)
+                                else:
+                                    InterfacesParse[InterfacesDict["IPV4Addr"][0]] = InterfacesParse[InterfacesDict["IPV4Addr"][0]] + "|" + str(ipadd)
+                                if InterfacesParse[InterfacesDict["IPV4Subnet"][0]] == "":
+                                    InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = str(ipadd.network)
+                                else:
+                                    InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = InterfacesParse[InterfacesDict["IPV4Subnet"][0]] + "|"+ str(ipadd.network)
+
+                        # Find all IPv6 addresses associated with current interface
+                        for obj2 in obj1.re_search_children("ipv6 address "):
+                            rawInput = obj2.text.split("ipv6 address ")[1].lstrip().rstrip()
+                            ipadd = ipaddress.ip_interface(str(line))
+                            if InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV6Addr"][0]] = str(ipadd)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV6Addr"][0]] = InterfacesParse[InterfacesDict["IPV6Addr"][0]] + "|" + str(ipadd)
+                            if InterfacesParse[InterfacesDict["IPV6Subnet"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = str(ipadd.network)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = InterfacesParse[InterfacesDict["IPV6Subnet"][0]] + "|" + str(ipadd.network)
+
+                        # Check if interface is a bundle
+                        if not re.search(r'[Ee]th-[Tt]runk',InterfacesParse[InterfacesDict["IfName"][0]]):
+                            if re.search(r'\.',InterfacesParse[InterfacesDict["IfName"][0]]):
+                                InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]].split(".")[0]
+                            else:
+                                InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]]
+                        else:
+                            if re.search(r'\.',InterfacesParse[InterfacesDict["IfName"][0]]):
+                                tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("nnel")[1].split(".")[0])
+                            else:
+                                tempLAGID = str(InterfacesParse[InterfacesDict["IfName"][0]].split("nnel")[1])
+
+                            # Find ports associated with this LAG
+                            for obj20 in cfg.find_objects(r"^interface"):
+                                if (( not re.search(r'[Ee]th-[Tt]runk',obj20.text) ) and ( not re.search(r'\.',obj20.text) )):
+                                    searchExpression = r"^ *eth-trunk " + tempLAGID + r"[a-zA-Z ]*$"
+                                    for obj21 in obj20.re_search_children(searchExpression):
+                                        if InterfacesParse[InterfacesDict["PortName"][0]] != "":
+                                            InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + "|"
+                                        InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + obj20.text.split("interface ")[1].split()[0]
+                                        break
+
+                        # Addind only IP/IPv6 interfaces
+                        if run == 0:
+                            if (( InterfacesParse[InterfacesDict["IPV4Addr"][0]] != "" ) or (InterfacesParse[InterfacesDict["IPV6Addr"][0]] != "" )):
+                                InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                                # print(InterfacesParse)
+                                InterfacesParseAll.append(InterfacesParse)
+                        # Addind all other LAGs
+                        if run == 1:
+                            if (( InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "" ) and (InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "" )):
+                                if re.search(r'[Ee]th-[Tt]runk',InterfacesParse[InterfacesDict["IfName"][0]]):
+
                                     match = 0
-                                    for addressDst in peerAddressList:
-                                        if addressSrc == addressDst[1]:
+                                    for line in InterfacesParseAll:
+                                        if InterfacesParse[InterfacesDict["PortName"][0]] == line[InterfacesDict["PortName"][0]]:
                                             match = 1
-                                            break
+
                                     if match == 0:
-                                        peerAddressList.append([ ifName, addressSrc ])
-            pass
-        # Syntax: ALU/Nokia SR-OS
+                                        InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                                        # print(InterfacesParse)
+                                        InterfacesParseAll.append(InterfacesParse)
+
+                        # Addind all other ports
+                        if run == 1:
+                            if (( InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "" ) and (InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "" )):
+                                if not re.search(r'[Ee]th-[Tt]runk',InterfacesParse[InterfacesDict["IfName"][0]]):
+
+                                    match = 0
+                                    for line in InterfacesParseAll:
+                                        if InterfacesParse[InterfacesDict["PortName"][0]] in line[InterfacesDict["PortName"][0]]:
+                                            match = 1
+
+                                    if match == 0:
+                                        InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                                        # print(InterfacesParse)
+                                        InterfacesParseAll.append(InterfacesParse)
+
         if (CLISyntax == "SR-OS"):
             for obj1 in cfg.find_objects(r"^configure"):
                 for obj2 in obj1.re_search_children(r"router Base"):
-                    for obj3 in obj2.re_search_children(r"interface"):          # Find node's interfaces from config
-                        ifName = obj3.text.split("interface ")[1].replace("\"","")
-                        if not obj3.re_search_children(r"^ *shutdown"):
-                            for obj4 in obj3.re_search_children("address "):    #Find all IPv4 addresses associated with current interface (SR-OS syntax)
-                                # if debug: print("debug: obj3: "+str(obj3))
-                                rawInput = obj4.text.split("address ")[1].lstrip().rstrip()
-                                rawInput = rawInput.replace(" ","/")
-                                ipadd = ipaddress.ip_interface(str(rawInput))
-                                # if debug: print("debug: len(list(ipadd.network)): "+str(len(list(ipadd.network))))
-                                # Filtering only /29 networks or smaller
-                                if len(list(ipadd.network)) <= 8:
-                                    tempPeerAddressList = list(ipadd.network)
-                                    if len(tempPeerAddressList) > 2:
-                                        tempPeerAddressList.pop(0)
-                                        tempPeerAddressList.pop(-1)
-                                    if ipadd.ip in tempPeerAddressList:
-                                        tempPeerAddressList.pop(tempPeerAddressList.index(ipadd.ip))
+                    # Looking for IP interfaces
+                    for obj3 in obj2.re_search_children(r"interface"):
+                        InterfacesParse = [""] * len(InterfacesDict)
+                        InterfacesParse[InterfacesDict["IfName"][0]] = obj3.text.split("interface ")[1].replace("\"","")
 
-                                    for addressSrc in tempPeerAddressList:
-                                        match = 0
-                                        for addressDst in peerAddressList:
-                                            if addressSrc == addressDst[1]:
-                                                match = 1
-                                                break
-                                        if match == 0:
-                                            peerAddressList.append([ ifName, addressSrc ])
+                        # Find description associated with current interface
+                        for obj4 in obj3.re_search_children("description "):
+                            InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj4.text.split("description ")[1].replace("\"",""))
+                            break
+
+                        # Find all IPv4 addresses associated with current interface
+                        for obj4 in obj3.re_search_children(r"^ *address "):
+                            rawInput = obj4.text.split("address ")[1].lstrip().rstrip()
+                            rawInput = rawInput.replace(" ","/")
+                            ipadd = ipaddress.ip_interface(str(rawInput))
+                            if InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV4Addr"][0]] = str(ipadd)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV4Addr"][0]] = InterfacesParse[InterfacesDict["IPV4Addr"][0]] + "|" + str(ipadd)
+                            if InterfacesParse[InterfacesDict["IPV4Subnet"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = str(ipadd.network)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV4Subnet"][0]] = InterfacesParse[InterfacesDict["IPV4Subnet"][0]] + "|"+ str(ipadd.network)
+
+                        # Find all IPv6 addresses associated with current interface
+                        for obj4 in obj3.re_search_children(r"^ *ipv6 address "):
+                            rawInput = obj4.text.split("ipv6 address ")[1].lstrip().rstrip()
+                            ipadd = ipaddress.ip_interface(str(line))
+                            if InterfacesParse[InterfacesDict["IPV6Addr"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV6Addr"][0]] = str(ipadd)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV6Addr"][0]] = InterfacesParse[InterfacesDict["IPV6Addr"][0]] + "|" + str(ipadd)
+                            if InterfacesParse[InterfacesDict["IPV6Subnet"][0]] == "":
+                                InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = str(ipadd.network)
+                            else:
+                                InterfacesParse[InterfacesDict["IPV6Subnet"][0]] = InterfacesParse[InterfacesDict["IPV6Subnet"][0]] + "|" + str(ipadd.network)
+
+                        # Find port/LAG associated with current interface
+                        for obj4 in obj3.re_search_children(r"^ *port"):
+                            # print(obj4.text)
+                            InterfacesParse[InterfacesDict["PortBinding"][0]] = obj4.text.split("port ")[1]
+                            if not obj4.re_search(r"lag-"):
+                                if obj4.re_search(r":"):
+                                    InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortBinding"][0]].split(":")[0]
+                                else:
+                                    InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortBinding"][0]]
+
+                            else:
+                                if obj4.re_search(r":"):
+                                    tempLAGID = InterfacesParse[InterfacesDict["PortBinding"][0]].split("lag-")[1].split(":")[0]
+                                else:
+                                    tempLAGID = InterfacesParse[InterfacesDict["PortBinding"][0]].split("lag-")[1]
+
+                                searchExpression = r"^ +lag " + tempLAGID + r" *$"
+                                for obj20 in obj1.re_search_children(searchExpression):
+                                    for obj21 in obj20.re_search_children(r"^ *port"):
+                                        if InterfacesParse[InterfacesDict["PortName"][0]] != "":
+                                            InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + "|"
+
+                                        InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["PortName"][0]] + obj21.text.split("port ")[1]
+
+                        InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                        InterfacesParseAll.append(InterfacesParse)
+
+                # Looking for LAGs not assigned to any IP interfaces
+                for obj2 in obj1.re_search_children(r" +lag +"):
+                    InterfacesParse = [""] * len(InterfacesDict)
+                    InterfacesParse[InterfacesDict["IfName"][0]] = obj2.text.lstrip().rstrip()
+
+                    # Find description associated with current LAG
+                    for obj3 in obj2.re_search_children("description "):
+                        InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj3.text.split("description ")[1].replace("\"",""))
+                        break
+
+                    for obj20 in obj2.re_search_children(r" +port "):
+                        tempInterfacesParse = InterfacesParse.copy()
+                        tempInterfacesParse[InterfacesDict["PortName"][0]] = str(obj20.text.split("port ")[1].split(" ")[0])
+
+                        match = 0
+                        for line in InterfacesParseAll:
+                            if tempInterfacesParse[InterfacesDict["PortName"][0]] in line[InterfacesDict["PortName"][0]].split("|"):
+                                match = 1
+
+                        if match == 0:
+                            tempInterfacesParse = [element.rstrip().lstrip() for element in tempInterfacesParse]
+                            InterfacesParseAll.append(tempInterfacesParse)
+
+                # Looking for ports not assigned to any LAG or interface
+                for obj2 in obj1.re_search_children(r" +port +"):
+                    InterfacesParse = [""] * len(InterfacesDict)
+
+                    InterfacesParse[InterfacesDict["IfName"][0]] = obj2.text.split("port ")[1]
+                    InterfacesParse[InterfacesDict["PortName"][0]] = InterfacesParse[InterfacesDict["IfName"][0]]
+
+                    # Find description associated with current port
+                    for obj3 in obj2.re_search_children("description "):
+                        InterfacesParse[InterfacesDict["IfDescr"][0]] = str(obj3.text.split("description ")[1].replace("\"",""))
+                        break
+
+                    match = 0
+                    for line in InterfacesParseAll:
+                        if InterfacesParse[InterfacesDict["PortName"][0]] in line[InterfacesDict["PortName"][0]].split("|"):
+                            match = 1
+
+                    if match == 0:
+                        InterfacesParse = [element.rstrip().lstrip() for element in InterfacesParse]
+                        InterfacesParseAll.append(InterfacesParse)
+
+                    # # Find LAG associated with this port
+                    # for obj10 in obj1.re_search_children(r" +lag +"):
+                    #     searchExpression = r" +port " + InterfacesParse[InterfacesDict["IfName"][0]] + r" *$"
+                    #     for obj11 in obj10.re_search_children(searchExpression):
+                    #         InterfacesParse[InterfacesDict["LAGID"][0]] = obj10.text.split("lag ")[1]
+                    #         break
+
+                    # if InterfacesParse[InterfacesDict["LAGID"][0]] == "":
+
+
             pass
 
-        print(peerAddressList)
+        # with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+        #     debugTextFile.write("\t".join(str(item) for item in InterfacesDict))
+        #     debugTextFile.write("\n")
+        #     for interfaceLine in InterfacesParseAll:
+        #         debugTextFile.write("\t".join(str(item) for item in interfaceLine))
+        #         debugTextFile.write("\n")
+
+        ################################################### Calculate neighbors from P-t-P (/30,/31) IP subnets ###################################################
+
+        PeeringParseAll = []
+
+        for interfaceLine in InterfacesParseAll:
+
+            # print(interfaceLine[InterfacesDict["IPV4Addr"][0]])
+            # Calculating peer IPv4 address for IPv4 subnet on interface
+            for address in interfaceLine[InterfacesDict["IPV4Addr"][0]].split("|"):
+                if address == "": continue
+                rawInput = address
+                ipadd = ipaddress.ip_interface(str(rawInput))
+                # Filtering only /30 and /31 networks
+                if ( len(list(ipadd.network.hosts())) == 2 ):
+                    tempNetworkList = list(ipadd.network.hosts())
+                    tempNetworkMask = ipadd.network.prefixlen
+                    tempPeerIPV4AddrList = []
+                    for address in tempNetworkList:
+                        tempPeerIPV4AddrList.append(str(address) + "/" + str(ipadd.network.prefixlen))
+                    # Removing own adress from list
+                    if str(ipadd) in tempPeerIPV4AddrList:
+                        tempPeerIPV4AddrList.pop(tempPeerIPV4AddrList.index(str(ipadd)))
+
+                    # Creating a peer record for all adresses in IPv4 subnet on interface
+                    for tempPeerIPV4Addr in tempPeerIPV4AddrList:
+                        PeeringParse = [""] * len(PeeringDict)
+
+                        if len(tempPeerIPV4AddrList) == 1:
+                            PeeringParse[PeeringDict["PeeringType"][0]] = "P2P IPv4"
+                        else:
+                            PeeringParse[PeeringDict["PeeringType"][0]] = "IPv4 subnet"
+
+                        PeeringParse[PeeringDict["Hostname"][0]] = Hostname
+                        PeeringParse[PeeringDict["SysAddr"][0]] = SysAddr
+                        PeeringParse[PeeringDict["CLISyntax"][0]] = CLISyntax
+                        PeeringParse[PeeringDict["IfName"][0]] = interfaceLine[InterfacesDict["IfName"][0]]
+                        PeeringParse[PeeringDict["IfDescr"][0]] = interfaceLine[InterfacesDict["IfDescr"][0]]
+                        PeeringParse[PeeringDict["PortBinding"][0]] = interfaceLine[InterfacesDict["PortBinding"][0]]
+                        PeeringParse[PeeringDict["IPV4Addr"][0]] = interfaceLine[InterfacesDict["IPV4Addr"][0]]
+                        PeeringParse[PeeringDict["IPV4Subnet"][0]] = interfaceLine[InterfacesDict["IPV4Subnet"][0]]
+                        PeeringParse[PeeringDict["IPV6Addr"][0]] = interfaceLine[InterfacesDict["IPV6Addr"][0]]
+                        PeeringParse[PeeringDict["IPV6Subnet"][0]] = interfaceLine[InterfacesDict["IPV6Subnet"][0]]
+                        PeeringParse[PeeringDict["IPV4AddrRemote"][0]] = str(tempPeerIPV4Addr)
+                        PeeringParse[PeeringDict["IPV4SubnetRemote"][0]] = interfaceLine[InterfacesDict["IPV4Subnet"][0]]
+
+                        for tempPortName in interfaceLine[InterfacesDict["PortName"][0]].split("|"):
+                            tempPeeringParse = PeeringParse.copy()
+                            tempPeeringParse[PeeringDict["PortName"][0]] = tempPortName
+
+                            PeeringParseAll.append(tempPeeringParse)
+
+        ################################################### Parse BGP peering from config ###################################################
+
+        # PeeringParseAll.clear()
+        BGPPeeringParseAll = []
+
+        # Syntax: Cisco IOS-XR
+        if (CLISyntax == "IOS-XR"):
+            for obj1 in cfg.find_objects(r"^router bgp"):
+                tempAS = obj1.text.split("router bgp")[1].split()[0]
+                # Looking for neighbor-groups first
+                tempNBGroupList = []
+                for obj2 in obj1.re_search_children("neighbor-group "):
+                    tempNBGroupLine = [""] * 4   # for storing Group name, remote AS and source interface
+                    tempNBGroupLine[0] = obj2.text.split("neighbor-group ")[1].split()[0]
+                    for obj3 in obj2.re_search_children("description "):
+                        tempNBGroupLine[1] = obj3.text.split("description ")[1].replace("\"","")
+                        break
+                    for obj3 in obj2.re_search_children("remote-as "):
+                        tempNBGroupLine[2] = obj3.text.split("remote-as ")[1].split()[0]
+                        break
+                    for obj3 in obj2.re_search_children("update-source "):
+                        tempNBGroupLine[3] = obj3.text.split("update-source ")[1].split()[0]
+                        break
+                    if tempNBGroupLine not in tempNBGroupList:
+                        tempNBGroupList.append(tempNBGroupLine)
+                for obj2 in obj1.re_search_children("neighbor "):
+                    BGPPeeringParse = [""] * len(PeeringDict)
+
+                    # Set local System Address & hostname
+                    BGPPeeringParse[PeeringDict["SysAddr"][0]] = SysAddr
+                    BGPPeeringParse[PeeringDict["Hostname"][0]] = Hostname
+                    BGPPeeringParse[PeeringDict["CLISyntax"][0]] = CLISyntax
+
+                    # Set peer address as SysAddrRemote
+                    BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = obj2.text.split("neighbor ")[1].split()[0]
+                    # Set local AS
+                    BGPPeeringParse[PeeringDict["AS"][0]] = tempAS
+
+                    # Get peer group
+                    tempGroupName = ""
+                    for obj3 in obj2.re_search_children("use neighbor-group "):
+                        tempGroupName = obj3.text.split("use neighbor-group ")[1].split()[0]
+                        break
+
+                    # Define peer description
+                    for obj3 in obj2.re_search_children("description "):
+                        BGPPeeringParse[PeeringDict["PeerDescr"][0]] = obj3.text.split("description ")[1].replace("\"","")
+                        break
+                    if (( BGPPeeringParse[PeeringDict["PeerDescr"][0]] == "" ) and ( tempGroupName != "" )):
+                        for line in tempNBGroupList:
+                            if line[0] == tempGroupName:
+                                if line[1] != "":
+                                    BGPPeeringParse[PeeringDict["PeerDescr"][0]] = line[1]
+                                else:
+                                    BGPPeeringParse[PeeringDict["PeerDescr"][0]] = "Group: " + tempGroupName
+
+                    # Define peer remote AS
+                    for obj3 in obj2.re_search_children("remote-as "):
+                        BGPPeeringParse[PeeringDict["ASRemote"][0]] = obj3.text.split("remote-as ")[1].split()[0]
+                        break
+                    if (( BGPPeeringParse[PeeringDict["ASRemote"][0]] == "" ) and ( tempGroupName != "" )):
+                        for line in tempNBGroupList:
+                            if line[0] == tempGroupName:
+                                BGPPeeringParse[PeeringDict["ASRemote"][0]] = line[2]
+
+                    if BGPPeeringParse[PeeringDict["AS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
+                        BGPPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
+                    else:
+                        BGPPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
+
+                    # Define peer source interface
+                    for obj3 in obj2.re_search_children("update-source "):
+                        BGPPeeringParse[PeeringDict["IfName"][0]] = obj3.text.split("update-source ")[1].split()[0]
+                        break
+                    if (( BGPPeeringParse[PeeringDict["IfName"][0]] == "" ) and ( tempGroupName != "" )):
+                        for line in tempNBGroupList:
+                            if line[0] == tempGroupName:
+                                BGPPeeringParse[PeeringDict["IfName"][0]] = line[3]
+
+                    BGPPeeringParseAll.append(BGPPeeringParse)
+
+        # Syntax: Cisco IOS
+        if (CLISyntax == "IOS"):
+            for obj1 in cfg.find_objects(r"^router bgp"):
+                tempAS = obj1.text.split("router bgp")[1].split()[0]
+                # Looking for neighbor-groups first
+                tempNBGroupList = []
+                for obj2 in obj1.re_search_children(r"neighbor .* peer-group *$"):
+
+                    # Check if group was already added to the list
+                    match = 0
+                    for line in tempNBGroupList:
+                        if obj2.text.split("neighbor ")[1].split(" peer-group")[0] == line[0]:
+                            match = 1
+                            break
+                    if match == 1:
+                        continue
+
+                    tempNBGroupLine = [""] * 4   # for storing Group name, remote AS and source interface
+                    tempNBGroupLine[0] = obj2.text.split("neighbor ")[1].split(" peer-group")[0]
+
+                    searchExpression = r"neighbor " + tempNBGroupLine[0]
+                    for obj3 in obj1.re_search_children(searchExpression):
+                        if re.search(r"description",obj3.text):
+                            tempNBGroupLine[1] = obj3.text.split("description ")[1].replace("\"","")
+                            continue
+                        if re.search(r"remote-as",obj3.text):
+                            tempNBGroupLine[2] = obj3.text.split("remote-as ")[1].split()[0]
+                            continue
+                        if re.search(r"update-source",obj3.text):
+                            tempNBGroupLine[3] = obj3.text.split("update-source ")[1].split()[0]
+                            continue
+
+                    if tempNBGroupLine not in tempNBGroupList:
+                        tempNBGroupList.append(tempNBGroupLine)
+
+
+                for obj2 in obj1.re_search_children(r"neighbor \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"):
+
+                    # Check if group was already added to the list
+                    match = 0
+                    for line in BGPPeeringParseAll:
+                        if obj2.text.split("neighbor ")[1].split()[0] == line[PeeringDict["IPV4AddrRemote"][0]]:
+                            match = 1
+                            break
+                    if match == 1:
+                        continue
+
+                    BGPPeeringParse = [""] * len(PeeringDict)
+
+                    # Set local System Address & hostname
+                    BGPPeeringParse[PeeringDict["SysAddr"][0]] = SysAddr
+                    BGPPeeringParse[PeeringDict["Hostname"][0]] = Hostname
+                    BGPPeeringParse[PeeringDict["CLISyntax"][0]] = CLISyntax
+
+                    # Set peer address as SysAddrRemote
+                    BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = obj2.text.split("neighbor ")[1].split()[0]
+                    # Set local AS
+                    BGPPeeringParse[PeeringDict["AS"][0]] = tempAS
+
+                    # Get peer group
+                    tempGroupName = ""
+                    searchExpression = r"neighbor " + BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]] + r" peer-group"
+                    for obj3 in obj1.re_search_children(searchExpression):
+                        tempGroupName = obj3.text.split("peer-group ")[1].split()[0]
+                        break
+
+                    # Get peer parameters
+                    searchExpression = r"neighbor " + BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]]
+                    for obj3 in obj1.re_search_children(searchExpression):
+                        if re.search(r"description",obj3.text):
+                            BGPPeeringParse[PeeringDict["PeerDescr"][0]] = obj3.text.split("description ")[1].replace("\"","")
+                            continue
+                        if re.search(r"remote-as",obj3.text):
+                            BGPPeeringParse[PeeringDict["ASRemote"][0]] = obj3.text.split("remote-as ")[1].split()[0]
+                            continue
+                        if re.search(r"update-source",obj3.text):
+                            BGPPeeringParse[PeeringDict["IfName"][0]] = obj3.text.split("update-source ")[1].split()[0]
+                            continue
+
+                    # Get parameters from group if they are missing
+                    if (( BGPPeeringParse[PeeringDict["PeerDescr"][0]] == "" ) and ( tempGroupName != "" )):
+                        for line in tempNBGroupList:
+                            if line[0] == tempGroupName:
+                                if line[1] != "":
+                                    BGPPeeringParse[PeeringDict["PeerDescr"][0]] = line[1]
+                                else:
+                                    BGPPeeringParse[PeeringDict["PeerDescr"][0]] = "Group: " + tempGroupName
+
+                    if (( BGPPeeringParse[PeeringDict["ASRemote"][0]] == "" ) and ( tempGroupName != "" )):
+                        for line in tempNBGroupList:
+                            if line[0] == tempGroupName:
+                                BGPPeeringParse[PeeringDict["ASRemote"][0]] = line[2]
+
+                    if BGPPeeringParse[PeeringDict["AS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
+                        BGPPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
+                    else:
+                        BGPPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
+
+                    if (( BGPPeeringParse[PeeringDict["IfName"][0]] == "" ) and ( tempGroupName != "" )):
+                        for line in tempNBGroupList:
+                            if line[0] == tempGroupName:
+                                BGPPeeringParse[PeeringDict["IfName"][0]] = line[3]
+
+                    BGPPeeringParseAll.append(BGPPeeringParse)
+
+        # Syntax: Huawei VRP
+        if (CLISyntax == "VRP"):
+            # TBD
+            pass
+
+        # Syntax: Nokia/ALU SR-OS
+        if (CLISyntax == "SR-OS"):
+            for obj1 in cfg.find_objects(r"^configure"):
+                tempAS = ""
+                for obj2 in obj1.re_search_children(r"router Base"):
+                    # Get local AS number
+                    for obj3 in obj2.re_search_children(r"autonomous-system"):
+                        tempAS = obj3.text.split("autonomous-system ")[1].split()[0]
+                        break
+
+                    for obj3 in obj2.re_search_children(r"^ *bgp"):
+                        # Looking for neighbor-groups first
+                        for obj4 in obj3.re_search_children(r"^ *group"):
+
+                            tempNBGroupLine = [""] * 5   # for storing Group name, remote AS and source interface
+                            tempNBGroupLine[0] = obj4.text.split("group")[1].replace("\"","")
+
+                            for obj5 in obj4.re_search_children(r"description"):
+                                tempNBGroupLine[1] = obj5.text.split("description ")[1].replace("\"","")
+                                break
+                            for obj5 in obj4.re_search_children(r"peer-as"):
+                                tempNBGroupLine[2] = obj5.text.split("peer-as ")[1].split()[0]
+                                break
+                            for obj5 in obj4.re_search_children(r"local-address"):
+                                tempNBGroupLine[3] = obj5.text.split("local-address ")[1].split()[0]
+                                break
+                            for obj5 in obj4.re_search_children(r"type"):
+                                if obj5.text.split("type ")[1].split()[0].lstrip().rstrip() == "external":
+                                    tempNBGroupLine[4] = "eBGP"
+                                else:
+                                    if obj5.text.split("type ")[1].split()[0].lstrip().rstrip() == "internal":
+                                        tempNBGroupLine[4] = "iBGP"
+                                break
+
+                            # Looking for neighbors in current group
+                            for obj5 in obj4.re_search_children(r"neighbor \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"):
+
+                                BGPPeeringParse = [""] * len(PeeringDict)
+
+                                # Set local System Address & hostname
+                                BGPPeeringParse[PeeringDict["SysAddr"][0]] = SysAddr
+                                BGPPeeringParse[PeeringDict["Hostname"][0]] = Hostname
+                                BGPPeeringParse[PeeringDict["CLISyntax"][0]] = CLISyntax
+
+                                # Set peer address as SysAddrRemote
+                                BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = obj5.text.split("neighbor ")[1].split()[0]
+                                # Set local AS
+                                BGPPeeringParse[PeeringDict["AS"][0]] = tempAS
+
+                                for obj6 in obj5.re_search_children(r"description"):
+                                    tempNBGroupLine[1] = obj6.text.split("description ")[1].replace("\"","")
+                                    break
+                                for obj6 in obj5.re_search_children(r"peer-as"):
+                                    tempNBGroupLine[2] = obj6.text.split("peer-as ")[1].split()[0]
+                                    break
+                                for obj6 in obj5.re_search_children(r"local-address "):
+                                    tempNBGroupLine[3] = obj6.text.split("local-address ")[1].split()[0]
+                                    break
+                                for obj6 in obj5.re_search_children(r"type"):
+                                    if obj6.text.split("type ")[1].split()[0].lstrip().rstrip() == "external":
+                                        tempNBGroupLine[4] = "eBGP"
+                                    else:
+                                        if obj6.text.split("type ")[1].split()[0].lstrip().rstrip() == "internal":
+                                            tempNBGroupLine[4] = "iBGP"
+                                    break
+
+                                # Get parameters from group if they are missing
+                                if BGPPeeringParse[PeeringDict["PeerDescr"][0]] == "":
+                                    if tempNBGroupLine[1] != "":
+                                        BGPPeeringParse[PeeringDict["PeerDescr"][0]] = tempNBGroupLine[1]
+                                    else:
+                                        BGPPeeringParse[PeeringDict["PeerDescr"][0]] = "Group: " + tempNBGroupLine[0]
+
+                                if BGPPeeringParse[PeeringDict["ASRemote"][0]] == "":
+                                    BGPPeeringParse[PeeringDict["ASRemote"][0]] = tempNBGroupLine[2]
+
+                                if BGPPeeringParse[PeeringDict["IfName"][0]] == "":
+                                    BGPPeeringParse[PeeringDict["IfName"][0]] = tempNBGroupLine[3]
+
+                                if BGPPeeringParse[PeeringDict["PeeringType"][0]] == "":
+                                    BGPPeeringParse[PeeringDict["PeeringType"][0]] = tempNBGroupLine[4]
+
+                                if BGPPeeringParse[PeeringDict["PeeringType"][0]] == "":
+                                    if BGPPeeringParse[PeeringDict["AS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
+                                        BGPPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
+                                    else:
+                                        BGPPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
+
+                                if (( BGPPeeringParse[PeeringDict["IfName"][0]] == "" ) and ( BGPPeeringParse[PeeringDict["PeeringType"][0]] == "iBGP" )):
+                                    BGPPeeringParse[PeeringDict["IfName"][0]] = "system"
+
+                                if (( BGPPeeringParse[PeeringDict["ASRemote"][0]] == "" ) and ( BGPPeeringParse[PeeringDict["PeeringType"][0]] == "iBGP" )):
+                                    BGPPeeringParse[PeeringDict["ASRemote"][0]] = tempAS
+
+                                BGPPeeringParseAll.append(BGPPeeringParse)
+
+                        # Looking for neighbors outside of groups
+                        for obj5 in obj3.re_search_children(r"neighbor \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}"):
+
+                            BGPPeeringParse = [""] * len(PeeringDict)
+
+                            # Set local System Address & hostname
+                            BGPPeeringParse[PeeringDict["SysAddr"][0]] = SysAddr
+                            BGPPeeringParse[PeeringDict["Hostname"][0]] = Hostname
+                            BGPPeeringParse[PeeringDict["CLISyntax"][0]] = CLISyntax
+
+                            # Set peer address as SysAddrRemote
+                            BGPPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = obj5.text.split("neighbor ")[1].split()[0]
+                            # Set local AS
+                            BGPPeeringParse[PeeringDict["AS"][0]] = tempAS
+
+                            for obj6 in obj5.re_search_children(r"description"):
+                                tempNBGroupLine[1] = obj6.text.split("description ")[1].replace("\"","")
+                                break
+                            for obj6 in obj5.re_search_children(r"peer-as"):
+                                tempNBGroupLine[2] = obj6.text.split("peer-as ")[1].split()[0]
+                                break
+                            for obj6 in obj5.re_search_children(r"local-address "):
+                                tempNBGroupLine[3] = obj6.text.split("local-address ")[1].split()[0]
+                                break
+                            for obj6 in obj5.re_search_children(r"type"):
+                                if obj6.text.split("type ")[1].split()[0].lstrip().rstrip() == "external":
+                                    tempNBGroupLine[4] = "eBGP"
+                                else:
+                                    if obj6.text.split("type ")[1].split()[0].lstrip().rstrip() == "internal":
+                                        tempNBGroupLine[4] = "iBGP"
+                                break
+
+                            # Get parameters from group if they are missing
+                            if BGPPeeringParse[PeeringDict["PeerDescr"][0]] == "":
+                                if tempNBGroupLine[1] != "":
+                                    BGPPeeringParse[PeeringDict["PeerDescr"][0]] = tempNBGroupLine[1]
+                                else:
+                                    BGPPeeringParse[PeeringDict["PeerDescr"][0]] = "Group: " + tempNBGroupLine[0]
+
+                            if BGPPeeringParse[PeeringDict["ASRemote"][0]] == "":
+                                BGPPeeringParse[PeeringDict["ASRemote"][0]] = tempNBGroupLine[2]
+
+                            if BGPPeeringParse[PeeringDict["IfName"][0]] == "":
+                                BGPPeeringParse[PeeringDict["IfName"][0]] = tempNBGroupLine[3]
+
+                            if BGPPeeringParse[PeeringDict["PeeringType"][0]] == "":
+                                BGPPeeringParse[PeeringDict["PeeringType"][0]] = tempNBGroupLine[4]
+
+                            if BGPPeeringParse[PeeringDict["PeeringType"][0]] == "":
+                                if BGPPeeringParse[PeeringDict["AS"][0]] == BGPPeeringParse[PeeringDict["ASRemote"][0]]:
+                                    BGPPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
+                                else:
+                                    BGPPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
+
+                            if (( BGPPeeringParse[PeeringDict["IfName"][0]] == "" ) and ( BGPPeeringParse[PeeringDict["PeeringType"][0]] == "iBGP" )):
+                                BGPPeeringParse[PeeringDict["IfName"][0]] = "system"
+
+                            if (( BGPPeeringParse[PeeringDict["ASRemote"][0]] == "" ) and ( BGPPeeringParse[PeeringDict["PeeringType"][0]] == "iBGP" )):
+                                BGPPeeringParse[PeeringDict["ASRemote"][0]] = tempAS
+
+                            BGPPeeringParseAll.append(BGPPeeringParse)
+
+
+        # with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+        #     debugTextFile.write("\t".join(str(item) for item in PeeringDict))
+        #     debugTextFile.write("\n")
+        # for peeringLine in BGPPeeringParseAll:
+        #     with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+        #         debugTextFile.write("\t".join(str(item) for item in peeringLine))
+        #         debugTextFile.write("\n")
 
         ################################################### Define variables for show commands to execute ###################################################
         # Syntax: Cisco IOS-XR
@@ -6040,7 +7376,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
                 # Find card numbers
                 for obj2 in obj1.re_search_children(r" +card +"):
                     # if debug: print("debug: obj2: "+str(obj2))
-                    cardList.append(obj2.text.split("card ")[1].split()[0])                    
+                    cardList.append(obj2.text.split("card ")[1].split()[0])
                 # Find port numbers
                 for obj2 in obj1.re_search_children(r" +port +"):
                     # if debug: print("debug: obj2: "+str(obj2))
@@ -6101,7 +7437,7 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         tempCommandList = []
         iteration = 0
         tempCommandList.append([])
-        for commandNumber in range(3,len(CommandsDict[CLISyntax]) - 1):
+        for commandNumber in range(3,len(CommandsDict[CLISyntax])):
             tempCommandList[iteration].append(CommandsDict[CLISyntax][commandNumber])
         stop = 0
         while stop == 0:
@@ -6164,38 +7500,1974 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         for command in tempCommandList[iteration]:
             if not re.search(r"\{.*\}",command[0]):
                 commadList.append(command)
-        
+
         ################################################### Execute show commands ###################################################
 
-        # for command in commadList:
-        #     commandExecLines = []
-        #     commandExecLines.append("#####\tExecuting \"" + str(command[0]) + "\" over " + protocol + " with " + str(command[1]) + " second(s) timeout\t#####")
-        #     output = execCLICommand(connectionCursor, protocol, command[0], command[1])
-        #     commandExecLines.extend(output[1])
-        #     commandExecLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+        execOutput = []
 
-        #     with open(outputFilePath, 'a') as outputFile:
-        #         outputFile.write("\n".join(str(item) for item in commandExecLines))
+        for command in commadList:
+            for attempt in range(0,2):
+                commandExecLines = []
+                commandExecLines.append("#####\tExecuting \"" + str(command[0]) + "\" over " + protocol + " with " + str(command[1]) + " second(s) timeout\t#####")
+                print("Executing command \"" + str(command[0]) + "\"")
+                output = execCLICommand(connectionCursor, protocol, command[0], command[1])
+                commandExecLines.extend(output[1])
+                commandExecLines.append("\n#####\tExecuted with code " + str(output[0]) + " in " + str(round(output[2],2)) + " second(s)\t#####\n\n")
+                if output[0] == 0: break
+
+            execOutput.extend(commandExecLines)
+
+            with open(outputFilePath, 'a') as outputFile:
+                outputFile.write("\n".join(str(item) for item in commandExecLines))
 
             # if debug:
             #     with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
             #         debugTextFile.write("\n".join(str(item) for item in commandExecLines))
 
         print("Show commands executed, adding data to the output file.")
+        execTime = time.time() - startTime
+        with open(outputFilePath, 'a') as outputFile:
+            outputFile.write("#####\tData collection finished in " + str(round(execTime,2)) + " second(s)\t#####\n\n")
+
+        startTime = time.time()
+
+        ################################################### Define what values to print from all peering information ###################################################
+
+        printPeeringValueList = []
+        for value in PeeringDict:
+            # Exclude cells that are not required to print
+            if ((value != "PeeringID") and (value != "PeeringAdmState") and (value != "PeeringState") and (value != "NodeID") and (value != "IfID")
+                    and (value != "IPV6Addr") and (value != "IPV6Subnet") and (value != "NodeIDRemote") and (value != "IfIDRemote") and (value != "IPV6AddrRemote") and(value != "IPV6SubnetRemote")
+                    and (value != "LastUpdatedTime") and (value != "LastUpdatedBy")):
+                printPeeringValueList.append(value)
+ 
+       ################################################### Print peering information for P2P subnets ###################################################
+
+        # Write P2P subnet data to a file (for diagnostic purposes)
+        with open(outputFilePath, 'a') as outputFile:
+            outputFile.write("#####\tNeihgboring data section\t#####\n\n")
+            if len(PeeringParseAll) > 0:
+                outputFile.write("Found following neighbors from attached P2P IP subnets (/30,/31) config:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        outputFile.write(str(value))
+                    else:
+                        outputFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                outputFile.write("\n")
+                # Print data
+                for peeringLine in PeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            outputFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            outputFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    outputFile.write("\n")
+                outputFile.write("\n")
+
+        # # Write BGP data to a file (for diagnostic purposes)
+        # with open(outputFilePath, 'a') as outputFile:
+        #     if len(BGPPeeringParseAll) > 0:
+        #         outputFile.write("Found following neighbors from BGP config:\n\n")
+        #         outputFile.write("\t".join(str(item) for item in PeeringDict))
+        #         outputFile.write("\n")
+        #         for peeringLine in BGPPeeringParseAll:
+        #             outputFile.write("\t".join(str(item) for item in peeringLine))
+        #             outputFile.write("\n")
+        #     outputFile.write("\n")
+
+       ################################################### organize output of show commands into a separate lists ###################################################
+
+        redirectOutputTo = "default"
+        CDPNeighborsLines = []
+        LLDPNeighborsLines = []
+        OSPFv2NeighborsLines = []
+        ISISNeighborsLines = []
+        LDPNeighborsLines = []
+        BGPNeighborsLines = []
+
+        lineNumber = 0
+        for line in execOutput:
+            lineNumber = lineNumber + 1
+            # Match CDP neighbors output
+            # Syntax: Cisco IOS/IOS-XE/IOS-XR
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +c(d(p)?)? +ne(i(g(h(b(o(r(s)?)?)?)?)?)?)? +de(t(a(i(l)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "CDPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found CDP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "CDPNeighborsLines"
+                CDPNeighborsLines.append(line)
+                continue
+            # Match LLDP neighbors output
+            # Syntax: Cisco IOS/IOS-XE/IOS-XR
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +ll(d(p)?)? +ne(i(g(h(b(o(r(s)?)?)?)?)?)?)? +de(t(a(i(l)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "LLDPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found LLDP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "LLDPNeighborsLines"
+                LLDPNeighborsLines.append(line)
+                continue
+            # Syntax: Huawei VRP
+            searchExpression = re.escape(shellPrompt)+r"[ ]*dis(p(l(a(y)?)?)?)? +ll(d(p)?)? +ne(i(g(h(b(o(r(s)?)?)?)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "LLDPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found LLDP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "LLDPNeighborsLines"
+                LLDPNeighborsLines.append(line)
+                continue
+            # Syntax: ALU/Nokia SR-OS
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +p(o(r(t)?)?)? .* et(h(e(r(n(e(t)?)?)?)?)?)? +ll(d(p)?)? +re(m(o(t(e(-(i(n(f(o)?)?)?)?)?)?)?)?)? +de(t(a(i(l)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "LLDPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found LLDP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "LLDPNeighborsLines"
+                LLDPNeighborsLines.append(line)
+                continue
+            # Match OSPFv2 neighbors output
+            # Syntax: Cisco IOS/IOS-XE/IOS-XR
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +(ip +)?os(p(f)?)? +ne(i(g(h(b(o(r(s)?)?)?)?)?)?)? +de(t(a(i(l)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "OSPFv2NeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found OSPFv2 neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "OSPFv2NeighborsLines"
+                OSPFv2NeighborsLines.append(line)
+                continue
+            # Syntax: Huawei VRP
+            searchExpression = re.escape(shellPrompt)+r"[ ]*dis(p(l(a(y)?)?)?)? +os(p(f)?)? +pe(e(r)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "OSPFv2NeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found OSPFv2 neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "OSPFv2NeighborsLines"
+                OSPFv2NeighborsLines.append(line)
+                continue
+            # Syntax: ALU/Nokia SR-OS
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +ro(u(t(e(r)?)?)?)? +os(p(f)?)? +al(l)? +ne(i(g(h(b(o(r(s)?)?)?)?)?)?)? +de(t(a(i(l)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "OSPFv2NeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found OSPFv2 neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "OSPFv2NeighborsLines"
+                OSPFv2NeighborsLines.append(line)
+                continue
+            # Match ISIS neighbors output
+            # Syntax: Cisco IOS/IOS-XE/IOS-XR
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +is(i(s)?)? +(ne(i(g(h(b(o(r(s)?)?)?)?)?)?)?|ad(j(a(c(e(n(c(y)?)?)?)?)?)?)?) +de(t(a(i(l)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "ISISNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found ISIS neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "ISISNeighborsLines"
+                ISISNeighborsLines.append(line)
+                continue
+            # Syntax: Huawei VRP
+            searchExpression = re.escape(shellPrompt)+r"[ ]*dis(p(l(a(y)?)?)?)? +is(i(s)?)? +pe(e(r)?)? +ve(r(b(o(s(e)?)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "ISISNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found ISIS neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "ISISNeighborsLines"
+                ISISNeighborsLines.append(line)
+            # Syntax: ALU/Nokia SR-OS
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +ro(u(t(e(r)?)?)?)? +is(i(s)?)? +al(l)? +ad(j(a(c(e(n(c(y)?)?)?)?)?)?)? +de(t(a(i(l)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "ISISNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found ISIS neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "ISISNeighborsLines"
+                ISISNeighborsLines.append(line)
+                continue
+            # Match LDP neighbors output
+            # Syntax: Cisco IOS/IOS-XE/IOS-XR
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +mp(l(s)?)? +l(d(p)?)? +ne(i(g(h(b(o(r(s)?)?)?)?)?)?)? +de(t(a(i(l)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "LDPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found LDP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "LDPNeighborsLines"
+                LDPNeighborsLines.append(line)
+                continue
+            # Syntax: Huawei VRP
+            searchExpression = re.escape(shellPrompt)+r"[ ]*dis(p(l(a(y)?)?)?)? +mp(l(s)?)? +l(d(p)?)? +pe(e(r)?)? +ve(r(b(o(s(e)?)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "LDPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found LDP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "LDPNeighborsLines"
+                LDPNeighborsLines.append(line)
+                continue
+            # Syntax: ALU/Nokia SR-OS
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +ro(u(t(e(r)?)?)?)? +l(d(p)?)? +se(s(s(i(o(n)?)?)?)?)? +de(t(a(i(l)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "LDPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found LDP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "LDPNeighborsLines"
+                LDPNeighborsLines.append(line)
+                continue
+            # Match BGP neighbors output
+            # Syntax: Cisco IOS/IOS-XE/IOS-XR
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +(ip +)?bg(p)? +ne(i(g(h(b(o(r(s)?)?)?)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "BGPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found BGP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "BGPNeighborsLines"
+                BGPNeighborsLines.append(line)
+                continue
+            # Syntax: Huawei VRP
+            searchExpression = re.escape(shellPrompt)+r"[ ]*dis(p(l(a(y)?)?)?)? +bg(p)? +pe(e(r)?)? +ve(r(b(o(s(e)?)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "BGPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found BGP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "BGPNeighborsLines"
+                BGPNeighborsLines.append(line)
+                continue
+            # Syntax: ALU/Nokia SR-OS
+            searchExpression = re.escape(shellPrompt)+r"[ ]*sh(o(w)?)? +ro(u(t(e(r)?)?)?)? +bg(p)? +ne(i(g(h(b(o(r(s)?)?)?)?)?)?)?"
+            if re.search(re.compile(searchExpression),line):
+                # if redirectOutputTo != "BGPNeighborsLines":
+                #     if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                # if debug: print("debug: Found BGP neighbors beginning at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "BGPNeighborsLines"
+                BGPNeighborsLines.append(line)
+                continue
+
+            # Match unknown command output
+            # Syntax: all
+            searchExpression = r"^"+re.escape(shellPrompt)
+            if re.search(re.compile(searchExpression),line):
+                # if debug: print("debug: Found unknown output beginning at line "+str(lineNumber)+": "+line)
+                # if redirectOutputTo != "default":
+                    # if debug: print("debug: "+ redirectOutputTo +" output ends at line "+str(lineNumber)+": "+line)
+                redirectOutputTo = "default"
+                continue
+
+            # Redirect already classified output to appropriate list
+            if redirectOutputTo == "CDPNeighborsLines":
+                CDPNeighborsLines.append(line)
+                continue
+            if redirectOutputTo == "LLDPNeighborsLines":
+                LLDPNeighborsLines.append(line)
+                continue
+            if redirectOutputTo == "OSPFv2NeighborsLines":
+                OSPFv2NeighborsLines.append(line)
+                continue
+            if redirectOutputTo == "ISISNeighborsLines":
+                ISISNeighborsLines.append(line)
+                continue
+            if redirectOutputTo == "LDPNeighborsLines":
+                LDPNeighborsLines.append(line)
+                continue
+            if redirectOutputTo == "BGPNeighborsLines":
+                BGPNeighborsLines.append(line)
+                continue
+
+        ################################################### Update/enrich peering info from output of show commands ###################################################
+
+        ################################################### CDP output ###################################################
+
+        # PeeringParseAll.clear()
+        tempPeeringParseAll = []
+
+        CDPNeighborsText = "\n".join(CDPNeighborsLines)
+        CDPNeighborsText = CDPNeighborsText + "\n"
+
+        # Syntax: Cisco IOS-XR
+        if (CLISyntax == "IOS-XR"):
+            # Look for CDP entries to find neighbor information
+            neighborDelimiter = "-------------------------"
+            for neighborText in CDPNeighborsText.split(neighborDelimiter):
+                # print(neighborText)
+                tempPeeringParse = [""] * len(PeeringDict)
+
+                tempPeeringParse[PeeringDict["PeeringType"][0]] = "CDP"
+
+                # Collecting data for current neighbor
+                for line in neighborText.split("\n"):
+
+                    # Check for local interface name in CDP output
+                    if re.search(r"Interface *:",line):
+                        tempPeeringParse[PeeringDict["PortName"][0]] = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                    # Check for remote interface name in CDP output
+                    if re.search(r"\(outgoing port\) *:",line):
+                        tempPeeringParse[PeeringDict["PortNameRemote"][0]] = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                        continue
+
+                    # Check for remote system name in CDP output
+                    if re.search(r"SysName *:",line):
+                        tempHostname = line.split(":")[1].lstrip().rstrip().split(".")[0]
+                        if tempHostname != "":
+                            tempPeeringParse[PeeringDict["HostnameRemote"][0]] = tempHostname
+                        continue
+                    # Check for remote system ID in CDP output
+                    if tempPeeringParse[PeeringDict["HostnameRemote"][0]] == "":
+                        if re.search(r"Device ID *:",line):
+                            tempHostname = line.split(":")[1].lstrip().rstrip().split(".")[0]
+                            if tempHostname != "":
+                                tempPeeringParse[PeeringDict["HostnameRemote"][0]] = tempHostname
+                        continue
+
+                    # Check for remote IP adresses in CDP output
+                    if re.search(r"IPv4 address *:",line):
+                        rawInput = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                        ipadd = ipaddress.ip_address(str(rawInput))
+
+                        if ( str(ipadd) not in tempPeeringParse[PeeringDict["SysAddrRemote"][0]].split("|") ):
+                            if (( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" )):
+                                tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + "|"
+                            tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + str(ipadd)
+                        continue
+
+                    # Check for remote CLI syntax in CDP output
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*Cisco IOS XR',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS-XR"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*Cisco IOS((-| )XE)? ',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*TiMOS-',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "SR-OS"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*VRP \(R\) software',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "VRP"
+                            continue
+
+                if tempPeeringParse[PeeringDict["PortName"][0]] == "":
+                    continue
+                else:
+                    tempPeeringParseAll.append(tempPeeringParse)
 
 
+        # Syntax: Cisco IOS/IOS-XE
+        if (CLISyntax == "IOS"):
+            # Look for CDP entries to find neighbor information
+            neighborDelimiter = "-------------------------"
+            for neighborText in CDPNeighborsText.split(neighborDelimiter):
+                # print(neighborText)
+                tempPeeringParse = [""] * len(PeeringDict)
+
+                tempPeeringParse[PeeringDict["PeeringType"][0]] = "CDP"
+
+                # Collecting data for current neighbor
+                for line in neighborText.split("\n"):
+
+                    # Check for local interface name in CDP output
+                    if re.search(r"Interface *:",line):
+                        tempPeeringParse[PeeringDict["PortName"][0]] = line.split(":")[1].split(",")[0].lstrip().rstrip()
+                    # Check for remote interface name in CDP output
+                    if re.search(r"\(outgoing port\) *:",line):
+                        tempPeeringParse[PeeringDict["PortNameRemote"][0]] = line.split("):")[1].lstrip().rstrip().split(" ")[0]
+                        continue
+
+                    # Check for remote system name in CDP output
+                    if re.search(r"SysName *:",line):
+                        tempHostname = line.split(":")[1].lstrip().rstrip().split(".")[0]
+                        if tempHostname != "":
+                            tempPeeringParse[PeeringDict["HostnameRemote"][0]] = tempHostname
+                        continue
+                    # Check for remote system ID in CDP output
+                    if tempPeeringParse[PeeringDict["HostnameRemote"][0]] == "":
+                        if re.search(r"Device ID *:",line):
+                            tempHostname = line.split(":")[1].lstrip().rstrip().split(".")[0]
+                            if tempHostname != "":
+                                tempPeeringParse[PeeringDict["HostnameRemote"][0]] = tempHostname
+                        continue
+
+                    # Check for remote IP adresses in CDP output
+                    if re.search(r"IP address *:",line):
+                        rawInput = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                        ipadd = ipaddress.ip_address(str(rawInput))
+
+                        if ( str(ipadd) not in tempPeeringParse[PeeringDict["SysAddrRemote"][0]].split("|") ):
+                            if (( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" )):
+                                tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + "|"
+                            tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + str(ipadd)
+                        continue
+
+                    # Check for remote CLI syntax in CDP output
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*Cisco IOS XR',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS-XR"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*Cisco IOS((-| )XE)? ',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*TiMOS-',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "SR-OS"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*VRP \(R\) software',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "VRP"
+                            continue
+
+                if tempPeeringParse[PeeringDict["PortName"][0]] == "":
+                    continue
+                else:
+                    tempPeeringParseAll.append(tempPeeringParse)
+
+        # if debug:
+        #     # Write summary neighbors data to a file for debug purposes
+        #     with open(outputFilePath, 'a') as outputFile:
+        #         if len(PeeringParseAll) > 0:
+        #             outputFile.write("DEBUG: Summary neighbor information from all sources is shown below:\n\n")
+        #             outputFile.write("\t".join(str(item) for item in PeeringDict))
+        #             outputFile.write("\n")
+        #             for peeringLine in PeeringParseAll:
+        #                 outputFile.write("\t".join(str(item) for item in peeringLine))
+        #                 outputFile.write("\n")
+        #         outputFile.write("\n")
+
+        # Enrich peering table with parsed data from CDP
+        for tempPeeringParse in tempPeeringParseAll:
+            # Updating data for existing neighbors
+            lineIndex = 0
+            match1 = 0
+            for peeringLine in PeeringParseAll:
+                if tempPeeringParse[PeeringDict["PortName"][0]] == peeringLine[PeeringDict["PortName"][0]]:
+                    match1 = 1
+                    if tempPeeringParse[PeeringDict["PeeringType"][0]] not in peeringLine[PeeringDict["PeeringType"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                    if tempPeeringParse[PeeringDict["PortNameRemote"][0]] not in peeringLine[PeeringDict["PortNameRemote"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] + tempPeeringParse[PeeringDict["PortNameRemote"][0]]
+
+                    if tempPeeringParse[PeeringDict["HostnameRemote"][0]] not in peeringLine[PeeringDict["HostnameRemote"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] + tempPeeringParse[PeeringDict["HostnameRemote"][0]]
+
+                    if tempPeeringParse[PeeringDict["HostnameRemote"][0]] not in peeringLine[PeeringDict["HostnameRemote"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] + tempPeeringParse[PeeringDict["HostnameRemote"][0]]
+
+                    if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
+                        PeeringParseAll[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                        PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = "Remote system IP updated from CDP"
+                    elif tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                        if "CDP" not in PeeringParseAll[lineIndex][PeeringDict["Comments"][0]]:
+                            PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] + "|CDP"
 
 
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] not in peeringLine[PeeringDict["CLISyntaxRemote"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] + tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]]
+
+                lineIndex = lineIndex + 1
+
+            # Look for other interfaces that were not included in peering table earlier if there are matching ports
+            for interfaceLine in InterfacesParseAll:
+                match2 = 0
+                # Checking if this interface is already in peering table
+                for peeringLine in PeeringParseAll:
+                    if peeringLine[PeeringDict["IfName"][0]] == interfaceLine[InterfacesDict["IfName"][0]]:
+                        match2 = 1
+                        break
+                if match2 == 1:
+                    continue
+
+                if tempPeeringParse[PeeringDict["PortName"][0]] in interfaceLine[InterfacesDict["PortName"][0]].split("|"):
+                    match1 = 1
+                    PeeringParse = [""] * len(PeeringDict)
+
+                    PeeringParse[PeeringDict["PeeringType"][0]] = "CDP"
+                    PeeringParse[PeeringDict["Hostname"][0]] = Hostname
+                    PeeringParse[PeeringDict["SysAddr"][0]] = SysAddr
+                    PeeringParse[PeeringDict["CLISyntax"][0]] = CLISyntax
+                    PeeringParse[PeeringDict["IfName"][0]] = interfaceLine[InterfacesDict["IfName"][0]]
+                    PeeringParse[PeeringDict["IfDescr"][0]] = interfaceLine[InterfacesDict["IfDescr"][0]]
+                    PeeringParse[PeeringDict["PortBinding"][0]] = interfaceLine[InterfacesDict["PortBinding"][0]]
+                    PeeringParse[PeeringDict["IPV4Addr"][0]] = interfaceLine[InterfacesDict["IPV4Addr"][0]]
+                    PeeringParse[PeeringDict["IPV4Subnet"][0]] = interfaceLine[InterfacesDict["IPV4Subnet"][0]]
+                    PeeringParse[PeeringDict["IPV6Addr"][0]] = interfaceLine[InterfacesDict["IPV6Addr"][0]]
+                    PeeringParse[PeeringDict["IPV6Subnet"][0]] = interfaceLine[InterfacesDict["IPV6Subnet"][0]]
+
+
+                    for tempPortName in interfaceLine[InterfacesDict["PortName"][0]].split("|"):
+                        tempPeeringParse2 = PeeringParse.copy()
+
+                        if tempPeeringParse[PeeringDict["PortName"][0]] == tempPortName:
+                            tempPeeringParse2[PeeringDict["PortName"][0]] = tempPortName
+                            tempPeeringParse2[PeeringDict["PortNameRemote"][0]] = tempPeeringParse[PeeringDict["PortNameRemote"][0]]
+                            tempPeeringParse2[PeeringDict["HostnameRemote"][0]] = tempPeeringParse[PeeringDict["HostnameRemote"][0]]
+                            if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                                tempPeeringParse2[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                                tempPeeringParse2[PeeringDict["Comments"][0]] = "Remote system IP updated from CDP"
+                            tempPeeringParse2[PeeringDict["CLISyntaxRemote"][0]] = tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]]
+
+                        PeeringParseAll.append(tempPeeringParse2)
+
+            if match1 == 0:
+                print("Error: CDP peer " + tempPeeringParse[PeeringDict["PortName"][0]] + " is not found in peering and interface tables")
+
+       ################################################### Print peering information from CDP ###################################################
+
+        # Write CDP data to a file (for diagnostic purposes)
+        with open(outputFilePath, 'a') as outputFile:
+            if len(tempPeeringParseAll) > 0:
+                outputFile.write("Found following neighbors from CDP:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        outputFile.write(str(value))
+                    else:
+                        outputFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                outputFile.write("\n")
+                # Print data
+                for peeringLine in tempPeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            outputFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            outputFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    outputFile.write("\n")
+                outputFile.write("\n")
+
+       ################################################### Print summary peering information from all sources to debug file ###################################################
+
+        # Write summary neighbors data to a file
+        with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+            if len(PeeringParseAll) > 0:
+                debugTextFile.write("Summary neighbor information from all sources (after CDP enrichment) is shown below:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        debugTextFile.write(str(value))
+                    else:
+                        debugTextFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                debugTextFile.write("\n")
+                # Print data
+                for peeringLine in PeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            debugTextFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            debugTextFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    debugTextFile.write("\n")
+                debugTextFile.write("\n")
+
+
+        ################################################### LLDP output ###################################################
+
+        # PeeringParseAll.clear()
+        tempPeeringParseAll = []
+
+        LLDPNeighborsText = "\n".join(LLDPNeighborsLines)
+        LLDPNeighborsText = LLDPNeighborsText + "\n"
+
+        # Syntax: Cisco IOS-XR
+        if (CLISyntax == "IOS-XR"):
+            # Look for LLDP entries to find neighbor information
+            neighborDelimiter = "------------------------------------------------"
+            for neighborText in LLDPNeighborsText.split(neighborDelimiter):
+                # print(neighborText)
+                tempPeeringParse = [""] * len(PeeringDict)
+
+                tempPeeringParse[PeeringDict["PeeringType"][0]] = "LLDP"
+
+                # Collecting data for current neighbor
+                for line in re.split(r"\r*\n",neighborText):
+
+                    # Check for local interface name in LLDP output
+                    if re.search(r"Local Interface *:",line):
+                        tempPeeringParse[PeeringDict["PortName"][0]] = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                    # Check for remote interface name in LLDP output
+                    if re.search(r"Port id *:",line):
+                        tempPeeringParse[PeeringDict["PortNameRemote"][0]] = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                        continue
+
+                    if re.search(r"Port Description *:",line):
+                        tempPeeringParse[PeeringDict["PortDescrRemote"][0]] = line.split(": ")[1]
+                        continue
+
+                    # Check for remote system name in LLDP output
+                    if re.search(r"System Name *:",line):
+                        tempHostname = line.split(":")[1].lstrip().rstrip().split(".")[0]
+                        if tempHostname != "":
+                            tempPeeringParse[PeeringDict["HostnameRemote"][0]] = tempHostname
+                        continue
+
+                    # Check for remote IP adresses in LLDP output
+                    if re.search(r"IPv4 address *:",line):
+                        rawInput = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                        ipadd = ipaddress.ip_address(str(rawInput))
+
+                        if ( str(ipadd) not in tempPeeringParse[PeeringDict["SysAddrRemote"][0]].split("|") ):
+                            if (( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" )):
+                                tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + "|"
+                            tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + str(ipadd)
+                        continue
+
+                    # Check for remote CLI syntax in LLDP output
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*Cisco IOS XR',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS-XR"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*Cisco IOS((-| )XE)? ',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*TiMOS-',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "SR-OS"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*VRP \(R\) software',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "VRP"
+                            continue
+
+                if tempPeeringParse[PeeringDict["PortName"][0]] == "":
+                    continue
+                else:
+                    tempPeeringParseAll.append(tempPeeringParse)
+
+
+        # Syntax: Cisco IOS/IOS-XE
+        if (CLISyntax == "IOS"):
+            # Look for LLDP entries to find neighbor information
+            neighborDelimiter = "------------------------------------------------"
+            for neighborText in LLDPNeighborsText.split(neighborDelimiter):
+                # print(neighborText)
+                tempPeeringParse = [""] * len(PeeringDict)
+
+                tempPeeringParse[PeeringDict["PeeringType"][0]] = "LLDP"
+
+                # Collecting data for current neighbor
+                for line in re.split(r"\r*\n",neighborText):
+
+                    # Check for local interface name in LLDP output
+                    if re.search(r"Local Interface *:",line):
+                        tempPeeringParse[PeeringDict["PortName"][0]] = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                    # Check for remote interface name in LLDP output
+                    if re.search(r"Port id *:",line):
+                        tempPeeringParse[PeeringDict["PortNameRemote"][0]] = line.split(": ")[1].lstrip().rstrip().split(" ")[0]
+                        continue
+
+                    if re.search(r"Port Description *:",line):
+                        tempPeeringParse[PeeringDict["PortDescrRemote"][0]] = line.split(": ")[1]
+                        continue
+
+                    # Check for remote system name in LLDP output
+                    if re.search(r"System Name *:",line):
+                        tempHostname = line.split(": ")[1].lstrip().rstrip().split(".")[0]
+                        if tempHostname != "":
+                            tempPeeringParse[PeeringDict["HostnameRemote"][0]] = tempHostname
+                        continue
+                    # Check for remote system ID in LLDP output
+                    if tempPeeringParse[PeeringDict["HostnameRemote"][0]] == "":
+                        if re.search(r"Device ID *:",line):
+                            tempHostname = line.split(":")[1].lstrip().rstrip().split(".")[0]
+                            if tempHostname != "":
+                                tempPeeringParse[PeeringDict["HostnameRemote"][0]] = tempHostname
+                        continue
+
+                    # Check for remote IP adresses in LLDP output
+                    if re.search(r"IPv4 address *:",line):
+                        rawInput = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                        ipadd = ipaddress.ip_address(str(rawInput))
+
+                        if ( str(ipadd) not in tempPeeringParse[PeeringDict["SysAddrRemote"][0]].split("|") ):
+                            if (( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" )):
+                                tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + "|"
+                            tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + str(ipadd)
+                        continue
+
+                    # Check for remote CLI syntax in LLDP output
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*Cisco IOS XR',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS-XR"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*Cisco IOS((-| )XE)? ',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*TiMOS-',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "SR-OS"
+                            continue
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                        if re.search(r'.*VRP \(R\) software',line):
+                            tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "VRP"
+                            continue
+
+                if tempPeeringParse[PeeringDict["PortName"][0]] == "":
+                    continue
+                else:
+                    tempPeeringParseAll.append(tempPeeringParse)
+
+        # Syntax: Huawei VRP
+        if (CLISyntax == "VRP"):
+            # Look for LLDP entries to find neighbor information
+            interfaceDelimiter = r"\r*\n\r*\n\r*\n"
+            for interfaceText in re.split(interfaceDelimiter,LLDPNeighborsText):
+                # Check for local interface name in LLDP output
+                tempPortName = ""
+                for line in interfaceText.split("\n"):
+                    if re.search(r"has \d+ neighbor(s)? *:",line):
+                        tempPortName = line.split(" ")[0]
+                        break
+                # Check for neighbor parameters if local interface was found
+                if tempPortName != "":
+                    neighborDelimiter = r"Neighbor \d+ *: *"
+                    # Check if interface has neighbors
+                    if len(re.split(neighborDelimiter,interfaceText)) == 1:
+                        continue
+
+                    for neighborText in re.split(neighborDelimiter,interfaceText):
+                        # Skip text if it has no remote port id
+                        if not re.search(r"PortId",neighborText):
+                            continue
+
+                        tempPeeringParse = [""] * len(PeeringDict)
+                        tempPeeringParse[PeeringDict["PeeringType"][0]] = "LLDP"
+
+                        # Collecting data for current neighbor
+                        for line in re.split(r"\r*\n",neighborText):
+                            tempPeeringParse[PeeringDict["PortName"][0]] = tempPortName
+
+                            # Check for remote interface name in LLDP output
+                            if re.search(r"PortId *:",line):
+                                tempPeeringParse[PeeringDict["PortNameRemote"][0]] = line.split(":")[1].lstrip().rstrip().split(",")[0]
+                                continue
+                            # Check for remote interface name in LLDP output
+                            if re.search(r"PortDesc *:",line):
+                                tempPeeringParse[PeeringDict["PortDescrRemote"][0]] = line.split(":")[1].lstrip().rstrip()
+                                continue
+
+                            # Check for remote system name in LLDP output
+                            if re.search(r"SysName *:",line):
+                                tempHostname = line.split(":")[1].lstrip().rstrip().split(".")[0]
+                                if tempHostname != "":
+                                    tempPeeringParse[PeeringDict["HostnameRemote"][0]] = tempHostname
+                                    continue
+
+                            # Check for remote IP adresses in LLDP output
+                            if re.search(r"ipV4 *:",line):
+                                rawInput = line.split("ipV4:")[1].lstrip().rstrip().split(" ")[0]
+                                ipadd = ipaddress.ip_address(str(rawInput))
+
+                                if ( str(ipadd) not in tempPeeringParse[PeeringDict["SysAddrRemote"][0]].split("|") ):
+                                    if (( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" )):
+                                        tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + "|"
+                                    tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + str(ipadd)
+                                continue
+
+                            # Check for remote CLI syntax in LLDP output
+                            if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                                if re.search(r'.*Cisco IOS XR',line):
+                                    tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS-XR"
+                                    continue
+                            if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                                if re.search(r'.*Cisco IOS((-| )XE)? ',line):
+                                    tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS"
+                                    continue
+                            if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                                if re.search(r'.*TiMOS-',line):
+                                    tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "SR-OS"
+                                    continue
+                            if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                                if re.search(r'.*VRP \(R\) software',line):
+                                    tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "VRP"
+                                    continue
+
+                        tempPeeringParseAll.append(tempPeeringParse)
+
+        # Syntax: ALU/Nokia SR-OS
+        if (CLISyntax == "SR-OS"):
+            # Look for LLDP entries to find neighbor information
+            interfaceDelimiter = r"=+"
+            # for interfaceText in LLDPNeighborsText.split(interfaceDelimiter):
+            for interfaceText in re.split(interfaceDelimiter,LLDPNeighborsText):
+                # Check for local interface name in LLDP output
+                tempPortName = ""
+                for line in interfaceText.split("\n"):
+                    if re.search(r"Port .* Remote Peer Information",line):
+                        tempPortName = line.split(" ")[1]
+                        break
+                # Check for neighbor parameters if local interface was found
+                if tempPortName != "":
+                    neighborDelimiter = r"Remote Peer Index "
+                    # Check if interface has neighbors
+                    if len(re.split(neighborDelimiter,interfaceText)) == 1:
+                        continue
+
+                    for neighborText in re.split(neighborDelimiter,interfaceText):
+                        # Skip text if it has no remote port id
+                        if not re.search(r"Port Id",neighborText):
+                            continue
+
+                        # Get peer number
+                        tempPeerNumber = neighborText.split(" ")[0]
+
+                        tempPeeringParse = [""] * len(PeeringDict)
+                        tempPeeringParse[PeeringDict["PeeringType"][0]] = "LLDP"
+                        tempPeeringParse[PeeringDict["PortName"][0]] = tempPortName
+
+                        tempSysDecr = ""
+                        CurrentValue = ""
+                        # Collecting data for current neighbor
+                        for line in re.split(r"\r*\n",neighborText):
+                            if re.search(r" *:",line):
+                                CurrentValue = ""
+                                # Check for remote interface name in LLDP output
+                                if re.search(r"Port Id *:",line):
+                                    tempPeeringParse[PeeringDict["PortNameRemote"][0]] = line.split(": ")[1].lstrip().rstrip().split(",")[0]
+                                    continue
+                                # Check for remote interface name in LLDP output
+                                if re.search(r"Port Description *:",line):
+                                    tempPeeringParse[PeeringDict["PortDescrRemote"][0]] = line.split(": ")[1]
+                                    CurrentValue = "PortDescrRemote"
+                                    continue
+
+                                # Check for remote system name in LLDP output
+                                if re.search(r"System Name *:",line):
+                                    tempHostname = line.split(": ")[1].lstrip().rstrip().split(".")[0]
+                                    if tempHostname != "":
+                                        tempPeeringParse[PeeringDict["HostnameRemote"][0]] = tempHostname
+                                    continue
+                                # Check for remote system description in LLDP output
+                                if re.search(r"System Description *:",line):
+                                    tempSysDecr = line.split(": ")[1].lstrip().rstrip().split(".")[0]
+                                    CurrentValue = "tempSysDecr"
+                                    continue
+                            else:
+                                if CurrentValue == "PortDescrRemote":
+                                    tempPeeringParse[PeeringDict[CurrentValue][0]] = tempPeeringParse[PeeringDict[CurrentValue][0]] + line.split("                        ")[1]
+                                if CurrentValue == "tempSysDecr":
+                                    tempSysDecr = tempSysDecr + line.split("                        ")[1]
+
+                        # Check for remote CLI syntax in LLDP output
+                        if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                            if re.search(r'.*Cisco IOS XR',tempSysDecr):
+                                tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS-XR"
+                        if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                            if re.search(r'.*Cisco IOS((-| )XE)? ',tempSysDecr):
+                                tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "IOS"
+                        if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                            if re.search(r'.*TiMOS-',tempSysDecr):
+                                tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "SR-OS"
+                        if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] == "":
+                            if re.search(r'.*VRP \(R\) software',tempSysDecr):
+                                tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = "VRP"
+
+                        for neighborText2 in re.split(neighborDelimiter,interfaceText):
+                            # Check if peer numbers match
+                            if neighborText2.split(" ")[0] == tempPeerNumber:
+
+                                # Check for remote IP adresses in LLDP output
+                                match = 0
+                                for line in re.split(r"\r*\n",neighborText2):
+                                    if re.search(r"Address SubType *:.*IPv4",line):
+                                        match = 1
+                                        continue
+                                    if (( match == 1 ) and ( re.search(r"Address *:",line) )):
+                                        match = 0
+                                        rawInput = line.split(":")[1].lstrip().rstrip().split(" ")[0]
+                                        ipadd = ipaddress.ip_address(str(rawInput))
+
+                                        if ( str(ipadd) not in tempPeeringParse[PeeringDict["SysAddrRemote"][0]].split("|") ):
+                                            if (( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" )):
+                                                tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + "|"
+                                            tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]] + str(ipadd)
+
+                        tempPeeringParseAll.append(tempPeeringParse)
+
+        # if debug:
+        #     # Write summary neighbors data to a file for debug purposes
+        #     with open(outputFilePath, 'a') as outputFile:
+        #         if len(PeeringParseAll) > 0:
+        #             outputFile.write("DEBUG: Summary neighbor information from all sources is shown below:\n\n")
+        #             outputFile.write("\t".join(str(item) for item in PeeringDict))
+        #             outputFile.write("\n")
+        #             for peeringLine in PeeringParseAll:
+        #                 outputFile.write("\t".join(str(item) for item in peeringLine))
+        #                 outputFile.write("\n")
+        #         outputFile.write("\n")
+
+        # Enrich peering table with parsed data from LLDP
+        for tempPeeringParse in tempPeeringParseAll:
+            # Updating data for existing neighbors
+            lineIndex = 0
+            match1 = 0
+            for peeringLine in PeeringParseAll:
+                if tempPeeringParse[PeeringDict["PortName"][0]] == peeringLine[PeeringDict["PortName"][0]]:
+                    match1 = 1
+                    if tempPeeringParse[PeeringDict["PeeringType"][0]] not in peeringLine[PeeringDict["PeeringType"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                    if tempPeeringParse[PeeringDict["PortNameRemote"][0]] not in peeringLine[PeeringDict["PortNameRemote"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["PortNameRemote"][0]] + tempPeeringParse[PeeringDict["PortNameRemote"][0]]
+
+                    if tempPeeringParse[PeeringDict["PortDescrRemote"][0]] not in peeringLine[PeeringDict["PortDescrRemote"][0]].split("|#|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["PortDescrRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["PortDescrRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["PortDescrRemote"][0]] + "|#|"
+                        PeeringParseAll[lineIndex][PeeringDict["PortDescrRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["PortDescrRemote"][0]] + tempPeeringParse[PeeringDict["PortDescrRemote"][0]]
+
+                    if tempPeeringParse[PeeringDict["HostnameRemote"][0]] not in peeringLine[PeeringDict["HostnameRemote"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] + tempPeeringParse[PeeringDict["HostnameRemote"][0]]
+
+                    if tempPeeringParse[PeeringDict["HostnameRemote"][0]] not in peeringLine[PeeringDict["HostnameRemote"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] + tempPeeringParse[PeeringDict["HostnameRemote"][0]]
+
+                    if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
+                        PeeringParseAll[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                        PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = "Remote system IP updated from LLDP"
+                    elif tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                        if "LLDP" not in PeeringParseAll[lineIndex][PeeringDict["Comments"][0]]:
+                            PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] + "|LLDP"
+
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] not in peeringLine[PeeringDict["CLISyntaxRemote"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] + tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]]
+
+                lineIndex = lineIndex + 1
+
+            # Look for other interfaces that were not included in peering table earlier if there are matching ports
+            for interfaceLine in InterfacesParseAll:
+                match2 = 0
+                # Checking if this interface is already in peering table
+                for peeringLine in PeeringParseAll:
+                    if peeringLine[PeeringDict["IfName"][0]] == interfaceLine[InterfacesDict["IfName"][0]]:
+                        match2 = 1
+                        break
+                if match2 == 1:
+                    continue
+
+                if tempPeeringParse[PeeringDict["PortName"][0]] in interfaceLine[InterfacesDict["PortName"][0]].split("|"):
+                    match1 = 1
+                    PeeringParse = [""] * len(PeeringDict)
+
+                    PeeringParse[PeeringDict["PeeringType"][0]] = "LLDP"
+                    PeeringParse[PeeringDict["Hostname"][0]] = Hostname
+                    PeeringParse[PeeringDict["SysAddr"][0]] = SysAddr
+                    PeeringParse[PeeringDict["CLISyntax"][0]] = CLISyntax
+                    PeeringParse[PeeringDict["IfName"][0]] = interfaceLine[InterfacesDict["IfName"][0]]
+                    PeeringParse[PeeringDict["IfDescr"][0]] = interfaceLine[InterfacesDict["IfDescr"][0]]
+                    PeeringParse[PeeringDict["PortBinding"][0]] = interfaceLine[InterfacesDict["PortBinding"][0]]
+                    PeeringParse[PeeringDict["IPV4Addr"][0]] = interfaceLine[InterfacesDict["IPV4Addr"][0]]
+                    PeeringParse[PeeringDict["IPV4Subnet"][0]] = interfaceLine[InterfacesDict["IPV4Subnet"][0]]
+                    PeeringParse[PeeringDict["IPV6Addr"][0]] = interfaceLine[InterfacesDict["IPV6Addr"][0]]
+                    PeeringParse[PeeringDict["IPV6Subnet"][0]] = interfaceLine[InterfacesDict["IPV6Subnet"][0]]
+
+
+                    for tempPortName in interfaceLine[InterfacesDict["PortName"][0]].split("|"):
+                        tempPeeringParse2 = PeeringParse.copy()
+
+                        if tempPeeringParse[PeeringDict["PortName"][0]] == tempPortName:
+                            tempPeeringParse2[PeeringDict["PortName"][0]] = tempPortName
+                            tempPeeringParse2[PeeringDict["PortNameRemote"][0]] = tempPeeringParse[PeeringDict["PortNameRemote"][0]]
+                            tempPeeringParse2[PeeringDict["PortDescrRemote"][0]] = tempPeeringParse[PeeringDict["PortDescrRemote"][0]]
+                            tempPeeringParse2[PeeringDict["HostnameRemote"][0]] = tempPeeringParse[PeeringDict["HostnameRemote"][0]]
+                            if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                                tempPeeringParse2[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                                tempPeeringParse2[PeeringDict["Comments"][0]] = "Remote system IP updated from LLDP"
+                            tempPeeringParse2[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                            tempPeeringParse2[PeeringDict["CLISyntaxRemote"][0]] = tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]]
+
+                        PeeringParseAll.append(tempPeeringParse2)
+
+            if match1 == 0:
+                print("Error: LLPD peer " + tempPeeringParse[PeeringDict["PortName"][0]] + " is not found in peering and interface tables")
+
+       ################################################### Print peering information from LLDP ###################################################
+
+        # Write LLDP data to a file (for diagnostic purposes)
+        with open(outputFilePath, 'a') as outputFile:
+            if len(tempPeeringParseAll) > 0:
+                outputFile.write("Found following neighbors from LLDP:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        outputFile.write(str(value))
+                    else:
+                        outputFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                outputFile.write("\n")
+                # Print data
+                for peeringLine in tempPeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            outputFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            outputFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    outputFile.write("\n")
+                outputFile.write("\n")
+
+       ################################################### Print summary peering information from all sources to debug file ###################################################
+
+        # Write summary neighbors data to a file
+        with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+            if len(PeeringParseAll) > 0:
+                debugTextFile.write("Summary neighbor information from all sources (after LLDP enrichment) is shown below:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        debugTextFile.write(str(value))
+                    else:
+                        debugTextFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                debugTextFile.write("\n")
+                # Print data
+                for peeringLine in PeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            debugTextFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            debugTextFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    debugTextFile.write("\n")
+                debugTextFile.write("\n")
+
+
+        ################################################### OSPFv2 output ###################################################
+
+        # PeeringParseAll.clear()
+        tempPeeringParseAll = []
+
+        OSPFv2NeighborsText = "\n".join(OSPFv2NeighborsLines)
+        OSPFv2NeighborsText = OSPFv2NeighborsText + "\n"
+
+        # Syntax: Cisco IOS-XR
+        if (CLISyntax == "IOS-XR"):
+            # Look for OSPFv2 entries to find neighbor information
+            neighborDelimiter = r"\r*\n\r*\n Neighbor "
+            for neighborText in re.split(neighborDelimiter,OSPFv2NeighborsText):
+                # Skip text if it has no neighbor specified
+                if not re.search(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",neighborText):
+                    continue
+
+                tempPeeringParse = [""] * len(PeeringDict)
+                tempPeeringParse[PeeringDict["PeeringType"][0]] = "OSPFv2"
+
+                # Collecting data for current neighbor
+                for line in re.split(r"\r*\n",neighborText):
+
+                    # Get local interface name in OSPFv2 output
+                    if re.search(r"via interface ",line):
+                        tempPeeringParse[PeeringDict["IfName"][0]] = line.split("via interface ")[1].split(" ")[0].lstrip().rstrip()
+                        continue
+
+                    # Get remote IPv4 address OSPFv2 output
+                    if re.search(r"interface address",line):
+                        tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = line.split("interface address ")[1].split(" ")[0].lstrip().rstrip()
+                    # Get remote system address OSPFv2 output
+                        tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = line.split(",")[0].lstrip().rstrip()
+                        continue
+
+                match = 0
+                for line in tempPeeringParseAll:
+                    if tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == line[PeeringDict["IPV4AddrRemote"][0]]:
+                        match = 1
+                if match == 0:
+                    # print(tempPeeringParse)
+                    tempPeeringParseAll.append(tempPeeringParse)
+
+
+        # Syntax: Cisco IOS/IOS-XE
+        if (CLISyntax == "IOS"):
+            # Look for OSPFv2 entries to find neighbor information
+            neighborDelimiter = r"\r*\n Neighbor "
+            for neighborText in re.split(neighborDelimiter,OSPFv2NeighborsText):
+                # Skip text if it has no neighbor specified
+                if not re.search(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",neighborText):
+                    continue
+
+                tempPeeringParse = [""] * len(PeeringDict)
+                tempPeeringParse[PeeringDict["PeeringType"][0]] = "OSPFv2"
+
+                # Collecting data for current neighbor
+                for line in re.split(r"\r*\n",neighborText):
+
+                    # Get local interface name in OSPFv2 output
+                    if re.search(r"via interface ",line):
+                        tempPeeringParse[PeeringDict["IfName"][0]] = line.split("via interface ")[1].split(" ")[0].lstrip().rstrip()
+                        continue
+
+                    # Get remote IPv4 address OSPFv2 output
+                    if re.search(r"interface address",line):
+                        tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = line.split("interface address ")[1].split(",")[0].lstrip().rstrip()
+                    # Get remote system address OSPFv2 output
+                        tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = line.split(",")[0].lstrip().rstrip()
+                        continue
+
+                match = 0
+                for line in tempPeeringParseAll:
+                    if tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == line[PeeringDict["IPV4AddrRemote"][0]]:
+                        match = 1
+                if match == 0:
+                    # print(tempPeeringParse)
+                    tempPeeringParseAll.append(tempPeeringParse)
+
+        # Syntax: Huawei VRP
+        if (CLISyntax == "VRP"):
+            # Look for OSPFv2 entries to find neighbor information
+            interfaceDelimiter = r"Area .* interface "
+            for interfaceText in re.split(interfaceDelimiter,OSPFv2NeighborsText):
+
+                tempIfName = ""
+                tempIPV4Addr = ""
+                for line in interfaceText.split("\n"):
+                    if re.search(r".*'s neighbors",line):
+                        # Get local interface name in OSPFv2 output
+                        tempIfName = line.split("(")[1].split(")")[0]
+                        # Get local IPv4 address OSPFv2 output
+                        tempIPV4Addr = line.split("(")[0]
+                        break
+
+                if tempIfName != "":
+                    neighborDelimiter = r"Router ID: "
+                    for neighborText in re.split(neighborDelimiter,interfaceText):
+                        # Skip text if it has no neighbor specified
+                        if not re.search(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} *Address:",neighborText):
+                            continue
+
+                        tempPeeringParse = [""] * len(PeeringDict)
+                        tempPeeringParse[PeeringDict["PeeringType"][0]] = "OSPFv2"
+                        tempPeeringParse[PeeringDict["IfName"][0]] = tempIfName
+
+                        # Collecting data for current neighbor
+                        for line in re.split(r"\r*\n",neighborText):
+                            # Get remote system address OSPFv2 output
+                            if re.search(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3} *Address:",line):
+                                tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = line.split(" ")[0].lstrip().rstrip()
+                                # Get remote IPv4 address OSPFv2 output
+                                tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = line.split("Address: ")[1].split(" ")[0].lstrip().rstrip()
+                                continue
+
+                        match = 0
+                        for line in tempPeeringParseAll:
+                            if tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == line[PeeringDict["IPV4AddrRemote"][0]]:
+                                match = 1
+                        if match == 0:
+                            # print(tempPeeringParse)
+                            tempPeeringParseAll.append(tempPeeringParse)
+
+        # Syntax: ALU/Nokia SR-OS
+        if (CLISyntax == "SR-OS"):
+            # Look for OSPFv2 entries to find neighbor information
+            neighborDelimiter = r"Neighbor Rtr Id : "
+            for neighborText in re.split(neighborDelimiter,OSPFv2NeighborsText):
+                # Skip text if it has no neighbor specified
+                if not re.search(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",neighborText):
+                    continue
+
+                tempPeeringParse = [""] * len(PeeringDict)
+                tempPeeringParse[PeeringDict["PeeringType"][0]] = "OSPFv2"
+
+                # Collecting data for current neighbor
+                for line in re.split(r"\r*\n",neighborText):
+
+                    # Get local interface name in OSPFv2 output
+                    if re.search(r"  Interface: ",line):
+                        tempPeeringParse[PeeringDict["IfName"][0]] = line.split("  Interface: ")[1].split(" ")[0].lstrip().rstrip()
+                        # Get remote system address OSPFv2 output
+                        tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = line.split("  Interface: ")[0].lstrip().rstrip()
+                        continue
+
+                    # Get local IPv4 address OSPFv2 output
+                    if re.search(r"Local IF IP Addr *:",line):
+                        tempPeeringParse[PeeringDict["IPV4Addr"][0]] = line.split(": ")[1].split(" ")[0].lstrip().rstrip()
+                        continue
+                    # Get remote IPv4 address OSPFv2 output
+                    if re.search(r"Neighbor IP Addr *:",line):
+                        tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = line.split(": ")[1].split(" ")[0].lstrip().rstrip()
+                        continue
+
+                match = 0
+                for line in tempPeeringParseAll:
+                    if tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == line[PeeringDict["IPV4AddrRemote"][0]]:
+                        match = 1
+                if match == 0:
+                    # print(tempPeeringParse)
+                    tempPeeringParseAll.append(tempPeeringParse)
+
+        # if debug:
+        #     # Write summary neighbors data to a file for debug purposes
+        #     with open(outputFilePath, 'a') as outputFile:
+        #         if len(PeeringParseAll) > 0:
+        #             outputFile.write("DEBUG: Summary neighbor information from all sources is shown below:\n\n")
+        #             outputFile.write("\t".join(str(item) for item in PeeringDict))
+        #             outputFile.write("\n")
+        #             for peeringLine in PeeringParseAll:
+        #                 outputFile.write("\t".join(str(item) for item in peeringLine))
+        #                 outputFile.write("\n")
+        #         outputFile.write("\n")
+
+        # Enrich peering table with parsed data from OSPFv2
+        for tempPeeringParse in tempPeeringParseAll:
+            # Updating data for existing neighbors
+            lineIndex = 0
+            match1 = 0
+            for peeringLine in PeeringParseAll:
+
+                # Getting adresses for local subnet
+                tempIPV4SubnetList = []
+                if str(peeringLine[PeeringDict["IPV4Subnet"][0]]) != "":
+                    for prefix in peeringLine[PeeringDict["IPV4Subnet"][0]].split("|"):
+                        tempIPV4Subnet = ipaddress.ip_interface(str(prefix))
+                        for address in tempIPV4Subnet.network.hosts():
+                            tempIPV4SubnetList.append(str(address))
+
+                # Check if remote addresses match
+                # if (( tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == peeringLine[PeeringDict["IPV4AddrRemote"][0]].split("/")[0] ) or ( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] == peeringLine[PeeringDict["SysAddrRemote"][0]] )):
+                if (( tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == peeringLine[PeeringDict["IPV4AddrRemote"][0]].split("/")[0] )):
+                    match1 = 1
+                    if tempPeeringParse[PeeringDict["PeeringType"][0]] not in peeringLine[PeeringDict["PeeringType"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                        if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
+                            PeeringParseAll[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                            PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = "Remote system IP updated from OSPF"
+                        elif tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                            if "OSPF" not in PeeringParseAll[lineIndex][PeeringDict["Comments"][0]]:
+                                PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] + "|OSPF"
+                else:
+                    # Check if local interfaces match or remote address belongs to local interface's subnet
+                    if (( tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] in tempIPV4SubnetList ) and ( tempPeeringParse[PeeringDict["IfName"][0]] == peeringLine[PeeringDict["IfName"][0]] )):
+                        match1 = 1
+                        # Check if peer address is empty
+                        if peeringLine[PeeringDict["IPV4AddrRemote"][0]] == "":
+                            peeringLine[PeeringDict["IPV4AddrRemote"][0]] = tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]]
+                            if tempPeeringParse[PeeringDict["PeeringType"][0]] not in peeringLine[PeeringDict["PeeringType"][0]].split("|"):
+                                if PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] != "":
+                                    PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + "|"
+                                PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                            if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
+                                PeeringParseAll[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                                PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = "Remote system IP updated from OSPF"
+                            elif tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                                if "OSPF" not in PeeringParseAll[lineIndex][PeeringDict["Comments"][0]]:
+                                    PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] + "|OSPF"
+                        else:
+                            # Create duplicate line with another peer address
+                            tempPeeringLine = peeringLine.copy()
+                            tempPeeringLine[PeeringDict["IPV4AddrRemote"][0]] = tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]]
+                            if tempPeeringParse[PeeringDict["PeeringType"][0]] not in tempPeeringLine[PeeringDict["PeeringType"][0]].split("|"):
+                                if tempPeeringLine[PeeringDict["PeeringType"][0]] != "":
+                                    tempPeeringLine[PeeringDict["PeeringType"][0]] = tempPeeringLine[PeeringDict["PeeringType"][0]] + "|"
+                                tempPeeringLine[PeeringDict["PeeringType"][0]] = tempPeeringLine[PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                            if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
+                                tempPeeringLine[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                                tempPeeringLine[lineIndex][PeeringDict["Comments"][0]] = "Remote system IP updated from OSPF"
+                            elif tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                                if "OSPF" not in tempPeeringLine[lineIndex][PeeringDict["Comments"][0]]:
+                                    tempPeeringLine[lineIndex][PeeringDict["Comments"][0]] = PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] + "|OSPF"
+
+                            PeeringParseAll.insert(lineIndex,tempPeeringLine)
+
+                lineIndex = lineIndex + 1
+
+            if match1 == 0:
+                # Look for other interfaces that were not included in peering table earlier if there are matching ports
+                for interfaceLine in InterfacesParseAll:
+
+                    # Getting adresses for local subnet
+                    tempIPV4SubnetList = []
+                    if str(interfaceLine[InterfacesDict["IPV4Subnet"][0]]) != "":
+                        for prefix in interfaceLine[InterfacesDict["IPV4Subnet"][0]].split("|"):
+                            tempIPV4Subnet = ipaddress.ip_interface(str(prefix))
+                            for address in tempIPV4Subnet.network.hosts():
+                                tempIPV4SubnetList.append(str(address))
+
+                    # if tempPeeringParse[PeeringDict["PortName"][0]] in interfaceLine[InterfacesDict["PortName"][0]].split("|"):
+                    if tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] in tempIPV4SubnetList:
+
+                        match1 = 1
+                        PeeringParse = [""] * len(PeeringDict)
+
+                        PeeringParse[PeeringDict["PeeringType"][0]] = "OSPFv2"
+                        PeeringParse[PeeringDict["Hostname"][0]] = Hostname
+                        PeeringParse[PeeringDict["SysAddr"][0]] = SysAddr
+                        PeeringParse[PeeringDict["CLISyntax"][0]] = CLISyntax
+                        PeeringParse[PeeringDict["IfName"][0]] = interfaceLine[InterfacesDict["IfName"][0]]
+                        PeeringParse[PeeringDict["IfDescr"][0]] = interfaceLine[InterfacesDict["IfDescr"][0]]
+                        PeeringParse[PeeringDict["PortBinding"][0]] = interfaceLine[InterfacesDict["PortBinding"][0]]
+                        PeeringParse[PeeringDict["IPV4Addr"][0]] = interfaceLine[InterfacesDict["IPV4Addr"][0]]
+                        PeeringParse[PeeringDict["IPV4Subnet"][0]] = interfaceLine[InterfacesDict["IPV4Subnet"][0]]
+                        PeeringParse[PeeringDict["IPV6Addr"][0]] = interfaceLine[InterfacesDict["IPV6Addr"][0]]
+                        PeeringParse[PeeringDict["IPV6Subnet"][0]] = interfaceLine[InterfacesDict["IPV6Subnet"][0]]
+                        if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                            PeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                            PeeringParse[PeeringDict["Comments"][0]] = "Remote system IP updated from OSPF"
+                        PeeringParse[PeeringDict["IPV4AddrRemote"][0]] = tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]]
+                        PeeringParse[PeeringDict["IPV4SubnetRemote"][0]] = interfaceLine[InterfacesDict["IPV4Subnet"][0]]
+
+
+                        for tempPortName in interfaceLine[InterfacesDict["PortName"][0]].split("|"):
+                            tempPeeringParse2 = PeeringParse.copy()
+
+                            tempPeeringParse2[PeeringDict["PortName"][0]] = tempPortName
+                            PeeringParseAll.append(tempPeeringParse2)
+
+            if match1 == 0:
+                print("Error: OSPFv2 peer " + tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] + " is not found in peering and interface tables")
+
+
+       ################################################### Print peering information from OSPF ###################################################
+
+        # Write OSPFv2 data to a file (for diagnostic purposes)
+        with open(outputFilePath, 'a') as outputFile:
+            if len(tempPeeringParseAll) > 0:
+                outputFile.write("Found following neighbors from OSPFv2:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        outputFile.write(str(value))
+                    else:
+                        outputFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                outputFile.write("\n")
+                # Print data
+                for peeringLine in tempPeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            outputFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            outputFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    outputFile.write("\n")
+                outputFile.write("\n")
+
+       ################################################### Print summary peering information from all sources to debug file ###################################################
+
+        # Write summary neighbors data to a file
+        with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+            if len(PeeringParseAll) > 0:
+                debugTextFile.write("Summary neighbor information from all sources (after OSPF enrichment) is shown below:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        debugTextFile.write(str(value))
+                    else:
+                        debugTextFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                debugTextFile.write("\n")
+                # Print data
+                for peeringLine in PeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            debugTextFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            debugTextFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    debugTextFile.write("\n")
+                debugTextFile.write("\n")
+
+
+        ################################################### BGP output ###################################################
+
+        # PeeringParseAll.clear()
+        tempPeeringParseAll = []
+
+        BGPNeighborsText = "\n".join(BGPNeighborsLines)
+        BGPNeighborsText = BGPNeighborsText + "\n"
+
+        # Syntax: Cisco IOS-XR
+        if (CLISyntax == "IOS-XR"):
+            # Look for BGP entries to find neighbor information
+            neighborDelimiter = r"\r*\n\r*\nBGP neighbor is "
+            for neighborText in re.split(neighborDelimiter,BGPNeighborsText):
+                # Skip text if it has no neighbor specified
+                if not re.search(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",neighborText):
+                    continue
+
+                tempPeeringParse = [""] * len(PeeringDict)
+
+                tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = re.split(r"\r*\n",neighborText)[0]
+
+                # Collecting data for current neighbor
+                for line in re.split(r"\r*\n",neighborText):
+
+                    if re.search(r"Remote AS ",line):
+                        tempPeeringParse[PeeringDict["ASRemote"][0]] = line.split("Remote AS ")[1].split(",")[0].lstrip().rstrip()
+                        tempPeeringParse[PeeringDict["AS"][0]] = line.split("local AS ")[1].split(",")[0].lstrip().rstrip()
+                        if len(line.split(", ")) >= 3:
+                            if line.split(", ")[2].split(" link")[0].lstrip().rstrip() == "external":
+                                tempPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
+                            elif line.split(", ")[2].split(" link")[0].lstrip().rstrip() == "internal":
+                                tempPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
+                        continue
+
+                    if re.search(r"Description: ",line):
+                        tempPeeringParse[PeeringDict["PeerDescr"][0]] = line.split(": ")[1].replace("\"","")
+                        continue
+
+                    if re.search(r"Remote router ID ",line):
+                        tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = line.split("Remote router ID ")[1].split()[0].lstrip().rstrip()
+                        continue
+
+                match = 0
+                for line in tempPeeringParseAll:
+                    if tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == line[PeeringDict["IPV4AddrRemote"][0]]:
+                        match = 1
+                if match == 0:
+                    # print(tempPeeringParse)
+                    tempPeeringParseAll.append(tempPeeringParse)
+
+        # Syntax: Cisco IOS
+        if (CLISyntax == "IOS"):
+            # Look for BGP entries to find neighbor information
+            neighborDelimiter = r"\r*\nBGP neighbor is "
+            for neighborText in re.split(neighborDelimiter,BGPNeighborsText):
+                # Skip text if it has no neighbor specified
+                if not re.search(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",neighborText):
+                    continue
+
+                tempPeeringParse = [""] * len(PeeringDict)
+
+                # Collecting data for current neighbor
+                for line in re.split(r"\r*\n",neighborText):
+
+                    if re.search(r"remote AS ",line):
+                        tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = line.split(",")[0].lstrip().rstrip()
+                        tempPeeringParse[PeeringDict["ASRemote"][0]] = line.split("remote AS ")[1].split(",")[0].lstrip().rstrip()
+                        if len(line.split(", ")) >= 3:
+                            if line.split(", ")[2].split(" link")[0].lstrip().rstrip() == "external":
+                                tempPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
+                            elif line.split(", ")[2].split(" link")[0].lstrip().rstrip() == "internal":
+                                tempPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
+                        continue
+
+                    if re.search(r"remote router ID ",line):
+                        tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = line.split("remote router ID ")[1].split()[0].lstrip().rstrip()
+                        continue
+
+                match = 0
+                for line in tempPeeringParseAll:
+                    if tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == line[PeeringDict["IPV4AddrRemote"][0]]:
+                        match = 1
+                if match == 0:
+                    # print(tempPeeringParse)
+                    tempPeeringParseAll.append(tempPeeringParse)
+
+
+        # Syntax: Huawei VRP
+        if (CLISyntax == "VRP"):
+            # TBD
+            pass
+
+        # Syntax: ALU/Nokia SR-OS
+        if (CLISyntax == "SR-OS"):
+            # Look for BGP entries to find neighbor information
+            neighborDelimiter = r"---+\r*\nPeer *: "
+            for neighborText in re.split(neighborDelimiter,BGPNeighborsText):
+                # Skip text if it has no neighbor specified
+                if not re.search(r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}",neighborText):
+                    continue
+
+                tempPeeringParse = [""] * len(PeeringDict)
+
+                tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = re.split(r"\r*\n",neighborText)[0]
+
+                # Collecting data for current neighbor
+                for line in re.split(r"\r*\n",neighborText):
+
+                    if re.search(r"Description *: ",line):
+                        tempPeeringParse[PeeringDict["PeerDescr"][0]] = line.split(": ")[1]
+                        continue
+                    if re.search(r"Peer AS *: ",line):
+                        tempPeeringParse[PeeringDict["ASRemote"][0]] = line.split(": ")[1].split()[0]
+                        continue
+                    if re.search(r"Local AS *: ",line):
+                        tempPeeringParse[PeeringDict["AS"][0]] = line.split(": ")[1].split()[0]
+                        continue
+                    if re.search(r"Peer Address *: ",line):
+                        tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = line.split(": ")[1].split()[0]
+                        continue
+                    if re.search(r"Local Address *: ",line):
+                        tempPeeringParse[PeeringDict["IPV4Addr"][0]] = line.split(": ")[1].split()[0]
+                        continue
+                    if re.search(r"Peer Type *: ",line):
+                        if line.split(": ")[2].split()[0].lstrip().rstrip() == "External":
+                            tempPeeringParse[PeeringDict["PeeringType"][0]] = "eBGP"
+                        elif line.split(": ")[2].split()[0].lstrip().rstrip() == "Internal":
+                            tempPeeringParse[PeeringDict["PeeringType"][0]] = "iBGP"
+                        continue
+
+                match = 0
+                for line in tempPeeringParseAll:
+                    if tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == line[PeeringDict["IPV4AddrRemote"][0]]:
+                        match = 1
+                if match == 0:
+                    # print(tempPeeringParse)
+                    tempPeeringParseAll.append(tempPeeringParse)
+
+
+        # if debug:
+        #     # Write summary neighbors data to a file for debug purposes
+        #     with open(outputFilePath, 'a') as outputFile:
+        #         if len(PeeringParseAll) > 0:
+        #             outputFile.write("DEBUG: Summary neighbor information from all sources is shown below:\n\n")
+        #             outputFile.write("\t".join(str(item) for item in PeeringDict))
+        #             outputFile.write("\n")
+        #             for peeringLine in PeeringParseAll:
+        #                 outputFile.write("\t".join(str(item) for item in peeringLine))
+        #                 outputFile.write("\n")
+        #         outputFile.write("\n")
+
+
+        # # Write BGP data to a file (for diagnostic purposes)
+        # with open(outputFilePath, 'a') as outputFile:
+        #     if len(tempPeeringParseAll) > 0:
+        #         outputFile.write("Found following neighbors from BGP:\n\n")
+        #         outputFile.write("\t".join(str(item) for item in PeeringDict))
+        #         outputFile.write("\n")
+        #         for peeringLine in tempPeeringParseAll:
+        #             outputFile.write("\t".join(str(item) for item in peeringLine))
+        #             outputFile.write("\n")
+        #     outputFile.write("\n")
+
+        # Enrich BGP peering table with parsed data from BGP neighbors
+        for tempPeeringParse in tempPeeringParseAll:
+            # Updating data for existing neighbors
+            lineIndex = 0
+            for peeringLine in BGPPeeringParseAll:
+
+                # Check if remote addresses match
+                if (( tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == peeringLine[PeeringDict["IPV4AddrRemote"][0]].split("/")[0] )):
+                    if ( tempPeeringParse[PeeringDict["PeeringType"][0]] != "" ) and ( tempPeeringParse[PeeringDict["PeeringType"][0]] != peeringLine[PeeringDict["PeeringType"][0]] ):
+                        BGPPeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = tempPeeringParse[PeeringDict["PeeringType"][0]]
+                    if ( tempPeeringParse[PeeringDict["PeerDescr"][0]] != "" ) and ( tempPeeringParse[PeeringDict["PeerDescr"][0]] != peeringLine[PeeringDict["PeerDescr"][0]] ):
+                        BGPPeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] = tempPeeringParse[PeeringDict["PeerDescr"][0]]
+                    if ( tempPeeringParse[PeeringDict["AS"][0]] != "" ) and ( tempPeeringParse[PeeringDict["AS"][0]] != peeringLine[PeeringDict["AS"][0]] ):
+                        BGPPeeringParseAll[lineIndex][PeeringDict["AS"][0]] = tempPeeringParse[PeeringDict["AS"][0]]
+                    if ( tempPeeringParse[PeeringDict["ASRemote"][0]] != "" ) and ( tempPeeringParse[PeeringDict["ASRemote"][0]] != peeringLine[PeeringDict["ASRemote"][0]] ):
+                        BGPPeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = tempPeeringParse[PeeringDict["ASRemote"][0]]
+                    if ( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" ) and ( tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]] ):
+                        BGPPeeringParseAll[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                    if ( tempPeeringParse[PeeringDict["IPV4Addr"][0]] != "" ) and ( tempPeeringParse[PeeringDict["IPV4Addr"][0]] != peeringLine[PeeringDict["IPV4Addr"][0]] ):
+                        BGPPeeringParseAll[lineIndex][PeeringDict["IPV4Addr"][0]] = tempPeeringParse[PeeringDict["IPV4Addr"][0]]
+
+                lineIndex = lineIndex + 1
+
+       ################################################### Print peering information from BGP ###################################################
+
+        # Write BGP subnet data to a file (for diagnostic purposes)
+        with open(outputFilePath, 'a') as outputFile:
+            if len(BGPPeeringParseAll) > 0:
+                outputFile.write("Found following neighbors from BGP:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        outputFile.write(str(value))
+                    else:
+                        outputFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                outputFile.write("\n")
+                # Print data
+                for peeringLine in BGPPeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            outputFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            outputFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    outputFile.write("\n")
+                outputFile.write("\n")
+
+        # # Write BGP data to a file (for diagnostic purposes)
+        # with open(outputFilePath, 'a') as outputFile:
+        #     if len(BGPPeeringParseAll) > 0:
+        #         outputFile.write("Found following neighbors from BGP:\n\n")
+        #         outputFile.write("\t".join(str(item) for item in PeeringDict))
+        #         outputFile.write("\n")
+        #         for peeringLine in BGPPeeringParseAll:
+        #             outputFile.write("\t".join(str(item) for item in peeringLine))
+        #             outputFile.write("\n")
+        #     outputFile.write("\n")
+
+
+        # Enrich peering table with parsed data from BGP
+        for tempPeeringParse in BGPPeeringParseAll:
+            # Updating data for existing neighbors
+            lineIndex = 0
+            match1 = 0
+            for peeringLine in PeeringParseAll:
+
+                # Getting adresses for local subnet
+                tempIPV4SubnetList = []
+                if str(peeringLine[PeeringDict["IPV4Subnet"][0]]) != "":
+                    for prefix in peeringLine[PeeringDict["IPV4Subnet"][0]].split("|"):
+                        tempIPV4Subnet = ipaddress.ip_interface(str(prefix))
+                        for address in tempIPV4Subnet.network.hosts():
+                            tempIPV4SubnetList.append(str(address))
+
+                # Check if remote addresses match
+                if ( tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] == peeringLine[PeeringDict["IPV4AddrRemote"][0]].split("/")[0] ):
+                    match1 = 1
+                    if tempPeeringParse[PeeringDict["PeeringType"][0]] not in peeringLine[PeeringDict["PeeringType"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                    if tempPeeringParse[PeeringDict["AS"][0]] not in peeringLine[PeeringDict["AS"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["AS"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["AS"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["AS"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + tempPeeringParse[PeeringDict["AS"][0]]
+
+                    if tempPeeringParse[PeeringDict["PeerDescr"][0]] not in peeringLine[PeeringDict["PeerDescr"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] + tempPeeringParse[PeeringDict["PeerDescr"][0]]
+
+                    if tempPeeringParse[PeeringDict["ASRemote"][0]] not in peeringLine[PeeringDict["ASRemote"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] + tempPeeringParse[PeeringDict["ASRemote"][0]]
+
+                    if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
+                        PeeringParseAll[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                        PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = "Remote system IP updated from BGP"
+                    elif tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                        if "BGP" not in PeeringParseAll[lineIndex][PeeringDict["Comments"][0]]:
+                            PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] + "|BGP"
+                else:
+                    # Check if remote address belongs to local interface's subnet
+                    if (( tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] in tempIPV4SubnetList )):
+                        match1 = 1
+                        # Check if peer address is empty
+                        if peeringLine[PeeringDict["IPV4AddrRemote"][0]] == "":
+                            peeringLine[PeeringDict["IPV4AddrRemote"][0]] = tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]]
+                            if tempPeeringParse[PeeringDict["PeeringType"][0]] not in peeringLine[PeeringDict["PeeringType"][0]].split("|"):
+                                if PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] != "":
+                                    PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + "|"
+                                PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                            if tempPeeringParse[PeeringDict["AS"][0]] not in peeringLine[PeeringDict["AS"][0]].split("|"):
+                                if PeeringParseAll[lineIndex][PeeringDict["AS"][0]] != "":
+                                    PeeringParseAll[lineIndex][PeeringDict["AS"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + "|"
+                                PeeringParseAll[lineIndex][PeeringDict["AS"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + tempPeeringParse[PeeringDict["AS"][0]]
+
+                            if tempPeeringParse[PeeringDict["PeerDescr"][0]] not in peeringLine[PeeringDict["PeerDescr"][0]].split("|"):
+                                if PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] != "":
+                                    PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] + "|"
+                                PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeerDescr"][0]] + tempPeeringParse[PeeringDict["PeerDescr"][0]]
+
+                            if tempPeeringParse[PeeringDict["ASRemote"][0]] not in peeringLine[PeeringDict["ASRemote"][0]].split("|"):
+                                if PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] != "":
+                                    PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["AS"][0]] + "|"
+                                PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] = PeeringParseAll[lineIndex][PeeringDict["ASRemote"][0]] + tempPeeringParse[PeeringDict["ASRemote"][0]]
+
+                            if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
+                                PeeringParseAll[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                                PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = "Remote system IP updated from BGP"
+                            elif tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                                if "BGP" not in PeeringParseAll[lineIndex][PeeringDict["Comments"][0]]:
+                                    PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] + "|BGP"
+
+                        else:
+                            # Create duplicate line with another peer address
+                            tempPeeringLine = peeringLine.copy()
+                            tempPeeringLine[PeeringDict["IPV4AddrRemote"][0]] = tempPeeringLine[PeeringDict["IPV4AddrRemote"][0]]
+                            if tempPeeringParse[PeeringDict["PeeringType"][0]] not in tempPeeringLine[PeeringDict["PeeringType"][0]].split("|"):
+                                if tempPeeringLine[PeeringDict["PeeringType"][0]] != "":
+                                    tempPeeringLine[PeeringDict["PeeringType"][0]] = tempPeeringLine[PeeringDict["PeeringType"][0]] + "|"
+                                tempPeeringLine[PeeringDict["PeeringType"][0]] = tempPeeringLine[PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                            if tempPeeringParse[PeeringDict["AS"][0]] not in tempPeeringLine[PeeringDict["AS"][0]].split("|"):
+                                if tempPeeringLine[lineIndex][PeeringDict["AS"][0]] != "":
+                                    tempPeeringLine[lineIndex][PeeringDict["AS"][0]] = tempPeeringLine[lineIndex][PeeringDict["AS"][0]] + "|"
+                                tempPeeringLine[lineIndex][PeeringDict["AS"][0]] = tempPeeringLine[lineIndex][PeeringDict["AS"][0]] + tempPeeringParse[PeeringDict["AS"][0]]
+
+                            if tempPeeringParse[PeeringDict["PeerDescr"][0]] not in tempPeeringLine[PeeringDict["PeerDescr"][0]].split("|"):
+                                if tempPeeringLine[lineIndex][PeeringDict["PeerDescr"][0]] != "":
+                                    tempPeeringLine[lineIndex][PeeringDict["PeerDescr"][0]] = tempPeeringLine[lineIndex][PeeringDict["PeerDescr"][0]] + "|"
+                                tempPeeringLine[lineIndex][PeeringDict["PeerDescr"][0]] = tempPeeringLine[lineIndex][PeeringDict["PeerDescr"][0]] + tempPeeringParse[PeeringDict["PeerDescr"][0]]
+
+                            if tempPeeringParse[PeeringDict["ASRemote"][0]] not in tempPeeringLine[PeeringDict["ASRemote"][0]].split("|"):
+                                if tempPeeringLine[lineIndex][PeeringDict["ASRemote"][0]] != "":
+                                    tempPeeringLine[lineIndex][PeeringDict["ASRemote"][0]] = tempPeeringLine[lineIndex][PeeringDict["AS"][0]] + "|"
+                                tempPeeringLine[lineIndex][PeeringDict["ASRemote"][0]] = tempPeeringLine[lineIndex][PeeringDict["ASRemote"][0]] + tempPeeringParse[PeeringDict["ASRemote"][0]]
+
+                            if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringLine[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
+                                tempPeeringLine[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                                tempPeeringLine[lineIndex][PeeringDict["Comments"][0]] = "Remote system IP updated from BGP"
+                            elif tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                                if "BGP" not in tempPeeringLine[lineIndex][PeeringDict["Comments"][0]]:
+                                    tempPeeringLine[lineIndex][PeeringDict["Comments"][0]] = tempPeeringLine[lineIndex][PeeringDict["Comments"][0]] + "|BGP"
+
+                            PeeringParseAll.insert(lineIndex,tempPeeringLine)
+
+                lineIndex = lineIndex + 1
+
+            if match1 == 0:
+                # Look for other interfaces that were not included in peering table earlier if there are matching ports
+                for interfaceLine in InterfacesParseAll:
+
+                    # Getting adresses for local subnet
+                    tempIPV4SubnetList = []
+                    if str(interfaceLine[InterfacesDict["IPV4Subnet"][0]]) != "":
+                        for prefix in interfaceLine[InterfacesDict["IPV4Subnet"][0]].split("|"):
+                            tempIPV4Subnet = ipaddress.ip_interface(str(prefix))
+                            for address in tempIPV4Subnet.network.hosts():
+                                tempIPV4SubnetList.append(str(address))
+
+                    if  (
+                            ( "eBGP" in tempPeeringParse[PeeringDict["PeeringType"][0]].split("|") and tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] in tempIPV4SubnetList )
+                            or
+                            (( tempPeeringParse[PeeringDict["IfName"][0]] == interfaceLine[InterfacesDict["IfName"][0]] ) or (( tempPeeringParse[PeeringDict["IPV4Addr"][0]] != "" ) and (tempPeeringParse[PeeringDict["IPV4Addr"][0]] == interfaceLine[InterfacesDict["IPV4Addr"][0]].split("/")[0] )))
+                        ):
+
+                        match1 = 1
+                        PeeringParse = [""] * len(PeeringDict)
+
+                        PeeringParse[PeeringDict["PeeringType"][0]] = tempPeeringParse[PeeringDict["PeeringType"][0]]
+                        PeeringParse[PeeringDict["Hostname"][0]] = Hostname
+                        PeeringParse[PeeringDict["SysAddr"][0]] = SysAddr
+                        PeeringParse[PeeringDict["CLISyntax"][0]] = CLISyntax
+                        PeeringParse[PeeringDict["IfName"][0]] = interfaceLine[InterfacesDict["IfName"][0]]
+                        PeeringParse[PeeringDict["IfDescr"][0]] = interfaceLine[InterfacesDict["IfDescr"][0]]
+                        PeeringParse[PeeringDict["PortBinding"][0]] = interfaceLine[InterfacesDict["PortBinding"][0]]
+                        PeeringParse[PeeringDict["IPV4Addr"][0]] = interfaceLine[InterfacesDict["IPV4Addr"][0]]
+                        PeeringParse[PeeringDict["IPV4Subnet"][0]] = interfaceLine[InterfacesDict["IPV4Subnet"][0]]
+                        PeeringParse[PeeringDict["IPV6Addr"][0]] = interfaceLine[InterfacesDict["IPV6Addr"][0]]
+                        PeeringParse[PeeringDict["IPV6Subnet"][0]] = interfaceLine[InterfacesDict["IPV6Subnet"][0]]
+                        PeeringParse[PeeringDict["AS"][0]] = tempPeeringParse[PeeringDict["AS"][0]]
+                        PeeringParse[PeeringDict["ASRemote"][0]] = tempPeeringParse[PeeringDict["ASRemote"][0]]
+                        PeeringParse[PeeringDict["PeerDescr"][0]] = tempPeeringParse[PeeringDict["PeerDescr"][0]]
+                        if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                            PeeringParse[PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                            PeeringParse[PeeringDict["Comments"][0]] = "Remote system IP updated from BGP"
+                        PeeringParse[PeeringDict["IPV4AddrRemote"][0]] = tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]]
+
+                        for tempPortName in interfaceLine[InterfacesDict["PortName"][0]].split("|"):
+                            tempPeeringParse2 = PeeringParse.copy()
+
+                            tempPeeringParse2[PeeringDict["PortName"][0]] = tempPortName
+                            PeeringParseAll.append(tempPeeringParse2)
+
+            if match1 == 0:
+                print("Error: BGP peer " + tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] + " is not found in peering and interface tables")
+
+       ################################################### Print summary peering information from all sources to debug file ###################################################
+
+        # Write summary neighbors data to a file
+        with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+            if len(PeeringParseAll) > 0:
+                debugTextFile.write("Summary neighbor information from all sources (after BGP enrichment) is shown below:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        debugTextFile.write(str(value))
+                    else:
+                        debugTextFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                debugTextFile.write("\n")
+                # Print data
+                for peeringLine in PeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            debugTextFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            debugTextFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    debugTextFile.write("\n")
+                debugTextFile.write("\n")
+
+        ################################################### Create a list of addresses to connect for polling ###################################################
+
+        pollPeerList = []
+        for peeringParseLine in PeeringParseAll:
+
+            # Skip peer with empty remote adresses
+            if peeringParseLine[PeeringDict["IPV4AddrRemote"][0]] == "":
+                continue
+
+            match = 0
+            # Check if values are already in list
+            for pollPeerLine in pollPeerList:
+                if peeringParseLine[PeeringDict["IPV4AddrRemote"][0]].split("|")[0].split("/")[0] == pollPeerLine[0]:
+                    match = 1
+            if match == 0:
+                pollPeerLine = [ "" ] * 2
+                pollPeerLine[0] = peeringParseLine[PeeringDict["IPV4AddrRemote"][0]].split("|")[0].split("/")[0]
+                pollPeerLine[1] = peeringParseLine[PeeringDict["IfName"][0]]
+                # print(pollPeerLine)
+                pollPeerList.append(pollPeerLine)
+
+        # if debug:
+        #     with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+        #         debugTextFile.write("\n".join(str(item) for item in pollPeerList))
+
+        ################################################### Connect and poll all neighbors over SSH/Telnet ###################################################
+
+        tempPeeringParseAll = []
+        # output = pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,srcIfName,CLISyntax,execTimeout):
+        for pollPeerLine in pollPeerList:
+            print("Polling neighbor " + pollPeerLine[0] + " from source interface " + pollPeerLine[1])
+            output = pollNeighbor(connectionCursor,protocol,login,password1,password2,pollPeerLine[0],pollPeerLine[1],CLISyntax,60)
+
+            if output[0] == 0:
+                print("Neighbor " + pollPeerLine[0] + " is accessible via " + output[1] + ", has remoteHostname=" + output[2] + ", remoteSysAddr=" + output[3] + ", remoteCLISyntax=" + output[4])
+
+                tempPeeringParse = [""] * len(PeeringDict)
+                tempPeeringParse[PeeringDict["PeeringType"][0]] = output[1]
+                tempPeeringParse[PeeringDict["IfName"][0]] = pollPeerLine[1]
+                tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = pollPeerLine[0]
+                tempPeeringParse[PeeringDict["HostnameRemote"][0]] = output[2]
+                tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = output[3]
+                tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = output[4]
+
+                tempPeeringParseAll.append(tempPeeringParse)
+
+            if debug:
+                with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+                    debugTextFile.write("\n\n\n#####\tPolling neighbor " + pollPeerLine[0] + " from source interface " + pollPeerLine[1] + " on " + str(datetime.datetime.today()) + "\t#####")
+                    debugTextFile.write("\n".join(str(item) for item in output[5]))
+
+        # Write SSH/Telnet to a file (for diagnostic purposes)
+        with open(outputFilePath, 'a') as outputFile:
+            if len(tempPeeringParseAll) > 0:
+                outputFile.write("Found following neighbors from SSH/Telnet:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        outputFile.write(str(value))
+                    else:
+                        outputFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                outputFile.write("\n")
+                # Print data
+                for peeringLine in tempPeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            outputFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            outputFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    outputFile.write("\n")
+                outputFile.write("\n")
+
+        # Enrich peering table with parsed data from SSH/Telnet
+        for tempPeeringParse in tempPeeringParseAll:
+            # Updating data for existing neighbors
+            lineIndex = 0
+            for peeringLine in PeeringParseAll:
+
+                # Check if remote addresses match
+                if ( tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]].split("/")[0] == peeringLine[PeeringDict["IPV4AddrRemote"][0]].split("/")[0] ):
+                    match1 = 1
+                    if tempPeeringParse[PeeringDict["PeeringType"][0]] not in peeringLine[PeeringDict["PeeringType"][0]].split("|"):
+                        if PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] != "":
+                            PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + "|"
+                        PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] = PeeringParseAll[lineIndex][PeeringDict["PeeringType"][0]] + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                    if tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "" and tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != peeringLine[PeeringDict["SysAddrRemote"][0]]:
+                        PeeringParseAll[lineIndex][PeeringDict["SysAddrRemote"][0]] = tempPeeringParse[PeeringDict["SysAddrRemote"][0]]
+                        PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = "Remote system IP updated from " + tempPeeringParse[PeeringDict["PeeringType"][0]]
+                    elif tempPeeringParse[PeeringDict["SysAddrRemote"][0]] != "":
+                        if tempPeeringParse[PeeringDict["PeeringType"][0]] not in PeeringParseAll[lineIndex][PeeringDict["Comments"][0]]:
+                            PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] = PeeringParseAll[lineIndex][PeeringDict["Comments"][0]] + "|" + tempPeeringParse[PeeringDict["PeeringType"][0]]
+
+                    if tempPeeringParse[PeeringDict["HostnameRemote"][0]] != "" and tempPeeringParse[PeeringDict["HostnameRemote"][0]] != peeringLine[PeeringDict["HostnameRemote"][0]]:
+                        PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = tempPeeringParse[PeeringDict["HostnameRemote"][0]]
+
+                    if tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] != "" and tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] != peeringLine[PeeringDict["CLISyntaxRemote"][0]]:
+                        PeeringParseAll[lineIndex][PeeringDict["CLISyntaxRemote"][0]] = tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]]
+
+                # Check if system IP match
+                elif ( tempPeeringParse[PeeringDict["SysAddrRemote"][0]].split("/")[0] == peeringLine[PeeringDict["SysAddrRemote"][0]].split("/")[0] ):
+                    if tempPeeringParse[PeeringDict["HostnameRemote"][0]] != "" and tempPeeringParse[PeeringDict["HostnameRemote"][0]] != peeringLine[PeeringDict["HostnameRemote"][0]]:
+                        PeeringParseAll[lineIndex][PeeringDict["HostnameRemote"][0]] = tempPeeringParse[PeeringDict["HostnameRemote"][0]]
+
+                lineIndex = lineIndex + 1
+
+       ################################################### Print summary peering information from all sources ###################################################
+
+        # Write summary neighbors data to a file
+        with open(outputFilePath, 'a') as outputFile:
+            if len(PeeringParseAll) > 0:
+                outputFile.write("Summary neighbor information from all sources is shown below:\n")
+                # Print header
+                valueNumber = 0
+                for value in printPeeringValueList:
+                    if valueNumber == 0:
+                        outputFile.write(str(value))
+                    else:
+                        outputFile.write("\t" + str(value))
+                    valueNumber = valueNumber + 1
+                outputFile.write("\n")
+                # Print data
+                for peeringLine in PeeringParseAll:
+                    valueNumber = 0
+                    for value in printPeeringValueList:
+                        if valueNumber == 0:
+                            outputFile.write(str(peeringLine[PeeringDict[value][0]]))
+                        else:
+                            outputFile.write("\t" + str(peeringLine[PeeringDict[value][0]]))
+                        valueNumber = valueNumber + 1
+                    outputFile.write("\n")
+                outputFile.write("\n")
+
+
+        ################################################### Calculate and print execution time ###################################################
 
         execTime = time.time() - startTime
         with open(outputFilePath, 'a') as outputFile:
-            outputFile.write("#####\tCollection finished in " + str(round(execTime,2)) + " second(s)\t#####")
+            outputFile.write("#####\tNeighbors collection finished in " + str(round(execTime,2)) + " second(s)\t#####")
 
         if connectionCursor != "":
             connectionCursor.close()
             if protocol == "ssh":
                 client.close()
-
 
 #####################################################################################################################################################
 #####################################################################################################################################################
@@ -6249,7 +9521,7 @@ else:
                         if argument == value:
                             if value != "Hist":
                                 defaultCLISyntax = value
-        
+
         if debug: print("debug: "+"clean input: "+str(genClean))
         if debug: print("debug: "+"default CLI syntax set to: "+str(defaultCLISyntax))
 
@@ -6301,15 +9573,15 @@ else:
                 outputCursor = outputDB.cursor()
 
                 DBQuery="""CREATE TABLE sysInfo (
-                            DBFormatVersion, 
-                            CreationDate, 
-                            LastUpdatedTime, 
+                            DBFormatVersion,
+                            CreationDate,
+                            LastUpdatedTime,
                             LastUpdatedBy
                             )"""
                 if debugSQL: print("debug: "+str(DBQuery))
                 outputCursor.execute(DBQuery)
 
-                DBQuery="""INSERT INTO sysInfo 
+                DBQuery="""INSERT INTO sysInfo
                             VALUES (
                             '"""+str(DBFormatVersion)+"""',
                             '"""+str(datetime.datetime.today())+"""',
@@ -6321,7 +9593,7 @@ else:
 
                 outputDB.commit()
 
-                DBQuery="""SELECT name 
+                DBQuery="""SELECT name
                             FROM sqlite_master where type='table'
                             """
                 if debugSQL: print("debug: "+str(DBQuery))
@@ -6352,7 +9624,7 @@ else:
                     outputDB.close()
                     os.remove(outputPath)
                     sys.exit()
-            
+
             print("Successfully created database at \""+outputPath+"\".")
 
         else:
@@ -6365,7 +9637,7 @@ else:
                 outputCursor = outputDB.cursor()
 
                 DBQuery="""SELECT name
-                            FROM sqlite_master 
+                            FROM sqlite_master
                             WHERE type='table'
                             """
                 if debugSQL: print("debug: "+str(DBQuery))
@@ -6382,7 +9654,7 @@ else:
                     outputDB.close()
                     sys.exit()
 
-                DBQuery="""SELECT * 
+                DBQuery="""SELECT *
                             FROM sysInfo
                             """
                 if debugSQL: print("debug: "+str(DBQuery))
@@ -6396,7 +9668,7 @@ else:
                     outputDB.close()
                     sys.exit()
                 else:
-                    DBQuery="""SELECT DBFormatVersion 
+                    DBQuery="""SELECT DBFormatVersion
                                 FROM sysInfo
                                 """
                     if debugSQL: print("debug: "+str(DBQuery))
@@ -6417,23 +9689,23 @@ else:
                     outputDB = sqlite3.connect(outputPath)
                     outputCursor = outputDB.cursor()
 
-                    DBQuery="""SELECT * 
+                    DBQuery="""SELECT *
                                 FROM sysInfo
                                 """
                     if debugSQL: print("debug: "+str(DBQuery))
                     outputCursor.execute(DBQuery)
                     if debug: print(outputCursor.fetchall())
                     DBQuery= """UPDATE sysInfo
-                                SET LastUpdatedTime = '"""+str(datetime.datetime.today())+"""' 
+                                SET LastUpdatedTime = '"""+str(datetime.datetime.today())+"""'
                                 WHERE DBFormatVersion = '"""+str(DBFormatVersion)+"""'
                                 """
                     if debugSQL: print("debug: "+str(DBQuery))
                     outputCursor.execute(DBQuery)
                     if debug: print(outputCursor.fetchall())
                     outputDB.commit()
-                
+
                 print("Successfully opened database at \""+outputPath+"\".")
-        
+
         parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean)
     else:
 #####################################################################################################################################################
@@ -6472,7 +9744,7 @@ else:
             inputCursor = inputDB.cursor()
 
             DBQuery="""SELECT name
-                        FROM sqlite_master 
+                        FROM sqlite_master
                         WHERE type='table'
                         """
             if debugSQL: print("debug: "+str(DBQuery))
@@ -6489,7 +9761,7 @@ else:
                 inputDB.close()
                 sys.exit()
 
-            DBQuery="""SELECT * 
+            DBQuery="""SELECT *
                         FROM sysInfo
                         """
             if debugSQL: print("debug: "+str(DBQuery))
@@ -6503,7 +9775,7 @@ else:
                 inputDB.close()
                 sys.exit()
             else:
-                DBQuery="""SELECT DBFormatVersion 
+                DBQuery="""SELECT DBFormatVersion
                             FROM sysInfo
                             """
                 if debugSQL: print("debug: "+str(DBQuery))
@@ -6518,7 +9790,7 @@ else:
                     print("DB opening error, DB format version mismatch. Please specify another output file.\r\n")
                     inputDB.close()
                     sys.exit()
-            
+
             print("Successfully opened database at \""+inputPath+"\".")
 
             if ((os.path.isfile(outputPath) == False) & (os.path.isdir(outputPath) == False)):
@@ -6581,7 +9853,7 @@ else:
                 login = sys.argv[2]
                 # password = sys.argv[2].split(":")[1]
                 if debug: print("debug: "+"Using login: "+str(login))
-                
+
                 # Checking output directory
                 outputPath = sys.argv[4]
                 if ( os.path.isfile(outputPath) == True ):
@@ -6642,17 +9914,17 @@ else:
                         if fileBool:
                             print("Found address in file: " + str(value))
                         if int(ipaddress.ip_address(str(value))) not in mgmtAddrList:
-                            mgmtAddrList.append(int(ipaddress.ip_address(str(value))))  
+                            mgmtAddrList.append(int(ipaddress.ip_address(str(value))))
 
                     else:
                     # Searching for IPv4 ranges in provided input
                         if re.match(r"^([1-9][0-9]?|1[0-9][0-9]|(2[0-1][0-9]|22[0-3]))(\.([1-9]?[0-9]|1[0-9][0-9]|(2[0-4][0-9]|25[0-5]))){3}-([1-9][0-9]?|1[0-9][0-9]|(2[0-1][0-9]|22[0-3]))(\.([1-9]?[0-9]|1[0-9][0-9]|(2[0-4][0-9]|25[0-5]))){3}$", value):
                             if fileBool:
                                 print("Found address range in file: " + str(value))
- 
+
                             ipaddStart = ipaddress.ip_address(str(value.split("-")[0]))
                             ipaddStop = ipaddress.ip_address(str(value.split("-")[1]))
-                            
+
                             # print(int(ipaddStop)-int(ipaddStart)+1)
                             if (int(ipaddStop)-int(ipaddStart)+1) > 1024:
                                 print("Ranges containing more than 1024 adresses are not allowed.")
@@ -6726,12 +9998,12 @@ else:
                 password1 = password2 = ""
                 password1 = getpass.getpass("Please enter a password for authentication: ")
                 password2 = getpass.getpass("Please enter a secondary (enable) password: ")
-                
+
                 if password2 == "":
                     password2 = password1
 
                 print("Collecting data...\r\n")
-                
+
                 for host in mgmtAddrList:
                     hostAddr = ipaddress.ip_address(host)
                     collectFunc(login,password1,password2,hostAddr,outputPath,recursive)
