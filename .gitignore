@@ -1,0 +1,7 @@
+venv
+.coverage
+temp
+*.db
+.tox
+*.pyc
+__pycache__
