@@ -169,8 +169,8 @@ for value in PeeringDict:
 CommandsDict =  {
     "IOS": [
         [ "show version", 30 ],
-        # [ "terminal length 0", 30 ],
-        [ "", 30 ],
+        [ "terminal length 0", 30 ],
+        # [ "", 30 ],
         [ "show running-config", 300 ],
         [ "show bootvar", 30 ],
         [ "show interfaces", 60 ],
@@ -234,8 +234,8 @@ CommandsDict =  {
     ],
     "IOS-XR": [
         [ "show version", 30 ],
-        # [ "terminal length 0", 30 ],
-        [ "", 30 ],
+        [ "terminal length 0", 30 ],
+        # [ "", 30 ],
         [ "show running-config", 300 ],
         [ "show variables boot", 30 ],
         [ "show interfaces", 60 ],
@@ -304,8 +304,8 @@ CommandsDict =  {
     ],
     "VRP": [
         [ "display version", 30 ],
-        # [ "screen-length 0 temporary", 30],
-        [ "", 30 ],
+        [ "screen-length 0 temporary", 30],
+        # [ "", 30 ],
         [ "display current-configuration", 300 ],
         [ "display interface", 60 ],
         [ "display interface phy-option", 60 ],
@@ -348,13 +348,14 @@ CommandsDict =  {
     ],
     "SR-OS": [
         [ "show version", 30 ],
-        # [ "environment no more", 30 ],
-        [ "", 30 ],
+        [ "environment no more", 30 ],
+        # [ "", 30 ],
         [ "admin display-config", 300 ],
         [ "show bof", 30 ],
         [ "show system information", 30 ],
         [ "show port", 60 ],
         [ "show port {port-id} optical detail", 60 ],
+        [ "monitor port all-ethernet-rates", 120 ],
         [ "show card detail", 60 ],
         [ "show router \"{router-name}\" interface detail", 60 ],
         [ "show router {service-id} interface detail", 60 ],
@@ -595,7 +596,6 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
         while pageRead == 0:
             # print(outputPage)
             outputPage = ""
-            # cycleStartTime = time.time()
             if protocol == "ssh":
                 waitTime = 0
                 # Waiting for data
@@ -803,7 +803,7 @@ def execCLICommand(connectionCursor, protocol, command, execTimeout):
 #####################################################################################################################################################
 def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,srcIfName,CLISyntax,execTimeout):
     startTime = time.time()
-    if execTimeout is None: execTimeout = 60
+    if execTimeout is None: execTimeout = 30
     readTimeout = 0.1
     waitTimeout = 60
 
@@ -815,6 +815,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
     remoteSysAddr = ""
     remoteCLISyntax = ""
     remoteProtocol = ""
+    outputStream = ""
 
     # Define commands depending on syntax
     commandSSHConnect = ""
@@ -839,14 +840,8 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
         # TBD
         pass
 
-    outputStream = ""
-    outputStream1 = ""
-    # Sending Ctrl+C + Ctrl+Z to abort any commands in progress and exit to top level
-    if protocol == "ssh":
-        connectionCursor.send("\x03\x26\n")
-    if protocol == "telnet":
-        connectionCursor.write(b"\x03\x26\n")
-    time.sleep(0.1)
+    outputStream0 = ""
+    # Collect local shell prompt first
     # print("1")
     # Cleaning terminal contents before execution
     if protocol == "ssh":
@@ -854,13 +849,17 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
             try:
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
-                    print("Error: remote connection to " + remoteAddr + " has timed out")
+                    print("Error: remote connection to " + remoteAddr + " has timed out while trying to find local shell prompt and cleaning terminal")
                     connectionCursor.send("\x03\n")
-                    return [ 1, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                    remoteOutputText.extend(re.split("\r*\n",outputStream0))
+                    connectionSuccess = -1
+                    break
                 connectionCursor.settimeout(readTimeout)
                 outputChunk = connectionCursor.recv(1000).decode("utf-8")
                 # print(outputChunk)
-                outputStream1 = outputStream1 + outputChunk
+                outputStream0 = outputStream0 + outputChunk
+                if not connectionCursor.recv_ready():
+                    time.sleep(0.1)
             except:
                 print("   Connection error: ", sys.exc_info()[0])
     if protocol == "telnet":
@@ -870,22 +869,25 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
             try:
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
-                    print("Error: remote connection to " + remoteAddr + " has timed out")
+                    print("Error: remote connection to " + remoteAddr + " has timed out while trying to find local shell prompt and cleaning terminal")
                     connectionCursor.write(b"\x03\n")
-                    return [ 1, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                    remoteOutputText.extend(re.split("\r*\n",outputStream0))
+                    connectionSuccess = -1
+                    break
                 terminalLine = ""
                 terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
                 if (terminalLine == ""):
                     terminalRead = 1
-                outputStream1 = outputStream1 + terminalLine
+                outputStream0 = outputStream0 + terminalLine
             except:
                 print("   Connection error: ", sys.exc_info()[0])
 
+    # remoteOutputText.extend(re.split("\r*\n",outputStream0))
+
     # Checking if terminal is alive
     # print("2")
-    outputStream2 = ""
     terminalActive = False
-    for attempt in range(0,20):
+    for attempt2 in range(0,20):
         # Sending empty line to see response
         if protocol == "ssh":
             connectionCursor.send("\n")
@@ -899,25 +901,30 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
             while not connectionCursor.recv_ready():
                 execTime = time.time() - startTime
                 if ( execTime > execTimeout ):
-                    print("Error: remote connection to " + remoteAddr + " has timed out")
+                    print("Error: remote connection to " + remoteAddr + " has timed out while trying to find local shell prompt")
                     connectionCursor.send("\x03\n")
-                    return [ 2, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
-                time.sleep(0.1)
-                waitTime = waitTime + 0.1
-                if waitTime >= waitTimeout:
-                    print("Error: remote connection to " + remoteAddr + " has timed out while attempting to get CLI prefix")
+                    remoteOutputText.extend(re.split("\r*\n",outputStream0))
+                    connectionSuccess = -1
                     break
+                if not connectionCursor.recv_ready():
+                    time.sleep(0.1)
+                # waitTime = waitTime + 0.1
+                # if waitTime >= waitTimeout:
+                #     print("Error: remote connection to " + remoteAddr + " has timed out while trying to find local shell prompt")
+                #     break
         if protocol == "ssh":
             while connectionCursor.recv_ready():
                 try:
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
-                        print("Error: remote connection to " + remoteAddr + " has timed out")
+                        print("Error: remote connection to " + remoteAddr + " has timed out while trying to find local shell prompt")
                         connectionCursor.send("\x03\n")
-                        return [ 2, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                        remoteOutputText.extend(re.split("\r*\n",outputStream0))
+                        connectionSuccess = -1
+                        break
                     connectionCursor.settimeout(readTimeout)
                     outputChunk = connectionCursor.recv(1000).decode("utf-8")
-                    outputStream2 = outputStream2 + outputChunk
+                    outputStream0 = outputStream0 + outputChunk
                     if not connectionCursor.recv_ready():
                         time.sleep(0.1)
                 except:
@@ -929,90 +936,252 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                 try:
                     execTime = time.time() - startTime
                     if ( execTime > execTimeout ):
-                        print("Error: remote connection to " + remoteAddr + " has timed out")
+                        print("Error: remote connection to " + remoteAddr + " has timed out while trying to find local shell prompt")
                         connectionCursor.write(b"\x03\n")
-                        return [ 2, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                        connectionSuccess = -1
+                        break
                     terminalLine = ""
                     terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
                     if (terminalLine == ""):
                         terminalRead = 1
                     else:
-                        outputStream2 = outputStream2 + terminalLine
+                        outputStream0 = outputStream0 + terminalLine
                 except:
                     print("   Connection error: ", sys.exc_info()[0])
 
-        for line in re.split(r"\r*\n",outputStream2)[-1:]:
+        for line in re.split(r"\r*\n",outputStream0)[-1:]:
             line = re.sub(r"\x1b\[K( |\x08)*\x1b\[K","",line)                       # Cisco IOS-XR garbage line
             line = re.sub(r"\x1b\[K","",line)                                       # Cisco IOS-XR garbage line
             line = re.sub(r"\x1b\[42D +\x1b\[42D","",line)                          # Huawei VRP garbage line
             line = re.sub(r" *\[1D","",line)                                        # Huawei VRP garbage line
             line = line.translate(translator)
             line = line.lstrip().rstrip()
-        # if ( re.search(shellPromptRegexEmptyLine,outputStream2.replace("\r","")) ):
+        # if ( re.search(shellPromptRegexEmptyLine,outputStream0.replace("\r","")) ):
             if ( re.search(shellPromptRegexEmptyLine,line) ):
-                # shellPrompt = re.search(shellPromptRegexEmptyLine,outputStream2.replace("\r","")).group().lstrip().rstrip()
+                # shellPrompt = re.search(shellPromptRegexEmptyLine,outputStream0.replace("\r","")).group().lstrip().rstrip()
                 localShellPrompt = re.search(shellPromptRegexEmptyLine,line).group()
-                # print("shellPrompt")
-                # print(shellPrompt)
+                # print("localShellPrompt")
+                # print(localShellPrompt)
                 terminalActive = True
                 break
-        # else:
-        #     time.sleep(0.5)
-        if terminalActive == False:
-            time.sleep(0.1)
-        else:
-            break
 
-    if ( not terminalActive ):
-        print("Error: terminal not responding while trying to connect to " + remoteAddr)
-        return [ 3, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
-    else:
-        # First try SSH and then Telnet
-        outputStream3 = ""
-        for attempt in range(2):
-            if attempt == 0:
-                command = commandSSHConnect
-                remoteProtocol = "SSH"
+        if terminalActive == True:
+            break
+    outputStream += outputStream0
+
+
+
+    # Try to connect
+    # First try SSH and then Telnet
+    for attempt1 in range(2):
+        # print(f"2.{attempt1}")
+        protocolStartTime = time.time()
+        connectionSuccess = 0
+        if attempt1 == 0:
+            # command = commandSSHConnect
+            command = commandTelnetConnect
+            remoteProtocol = "Telnet"
+        else:
+            # command = commandTelnetConnect
+            command = commandSSHConnect
+            remoteProtocol = "SSH"
+
+        outputStream1 = ""
+        # Sending Ctrl+C + Ctrl+Z to abort any commands in progress and exit to top level
+        if protocol == "ssh":
+            connectionCursor.send("\x03\x26\n")
+        if protocol == "telnet":
+            connectionCursor.write(b"\x03\x26\n")
+        time.sleep(0.1)
+        # print("1")
+        # Cleaning terminal contents before execution
+        if protocol == "ssh":
+            while connectionCursor.recv_ready():
+                try:
+                    execTime = time.time() - protocolStartTime
+                    if ( execTime > execTimeout ):
+                        print("Error: remote connection to " + remoteAddr + " has timed out while preparing to execute command \"" + command + "\" and cleaning terminal")
+                        connectionCursor.send("\x03\n")
+                        remoteOutputText.extend(re.split("\r*\n",outputStream1))
+                        connectionSuccess = -1
+                        break
+                    connectionCursor.settimeout(readTimeout)
+                    outputChunk = connectionCursor.recv(1000).decode("utf-8")
+                    # print(outputChunk)
+                    outputStream1 = outputStream1 + outputChunk
+                    if not connectionCursor.recv_ready():
+                        time.sleep(0.1)
+                except:
+                    print("   Connection error: ", sys.exc_info()[0])
+        if protocol == "telnet":
+            terminalRead = 0
+            outputChunk = ""
+            while terminalRead == 0:
+                try:
+                    execTime = time.time() - protocolStartTime
+                    if ( execTime > execTimeout ):
+                        print("Error: remote connection to " + remoteAddr + " has timed out while preparing to execute command \"" + command + "\" and cleaning terminal")
+                        connectionCursor.write(b"\x03\n")
+                        remoteOutputText.extend(re.split("\r*\n",outputStream1))
+                        connectionSuccess = -1
+                        break
+                    terminalLine = ""
+                    terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
+                    if (terminalLine == ""):
+                        terminalRead = 1
+                    outputStream1 = outputStream1 + terminalLine
+                except:
+                    print("   Connection error: ", sys.exc_info()[0])
+
+        # remoteOutputText.extend(re.split("\r*\n",outputStream1))
+
+        if connectionSuccess == -1:
+            continue
+
+        # Checking if terminal is alive
+        # print(f"3.{attempt1}")
+        outputStream2 = ""
+        localShellOk = False
+        for attempt2 in range(0,200):
+            # Sending empty line to see response
+            if protocol == "ssh":
+                connectionCursor.send("\n")
+            if protocol == "telnet":
+                connectionCursor.write(b"\n")
+            time.sleep(1)
+
+            # Reading terminal to get CLI prefix
+            if protocol == "ssh":
+                waitTime = 0
+                while not connectionCursor.recv_ready():
+                    execTime = time.time() - protocolStartTime
+                    if ( execTime > execTimeout ):
+                        print("Error: remote connection to " + remoteAddr + " has timed out while preparing to execute command \"" + command + "\"")
+                        connectionCursor.send("\x03\n")
+                        remoteOutputText.extend(re.split("\r*\n",outputStream2))
+                        connectionSuccess = -1
+                        break
+                    if not connectionCursor.recv_ready():
+                        time.sleep(0.1)
+                    # waitTime = waitTime + 0.1
+                    # if waitTime >= waitTimeout:
+                    #     print("Error: remote connection to " + remoteAddr + " has timed out while preparing to execute command \"" + command + "\"")
+                    #     break
+            if protocol == "ssh":
+                while connectionCursor.recv_ready():
+                    try:
+                        execTime = time.time() - protocolStartTime
+                        if ( execTime > execTimeout ):
+                            print("Error: remote connection to " + remoteAddr + " has timed out while preparing to execute command \"" + command + "\"")
+                            connectionCursor.send("\x03\n")
+                            remoteOutputText.extend(re.split("\r*\n",outputStream2))
+                            connectionSuccess = -1
+                            break
+                        connectionCursor.settimeout(readTimeout)
+                        outputChunk = connectionCursor.recv(1000).decode("utf-8")
+                        outputStream2 = outputStream2 + outputChunk
+                        if not connectionCursor.recv_ready():
+                            time.sleep(0.1)
+                    except:
+                        print("   Connection error: ", sys.exc_info()[0])
+            if protocol == "telnet":
+                terminalRead = 0
+                outputChunk = ""
+                while terminalRead == 0:
+                    try:
+                        execTime = time.time() - protocolStartTime
+                        if ( execTime > execTimeout ):
+                            print("Error: remote connection to " + remoteAddr + " has timed out while preparing to execute command \"" + command + "\"")
+                            connectionCursor.write(b"\x03\n")
+                            connectionSuccess = -1
+                            break
+                        terminalLine = ""
+                        terminalLine = connectionCursor.read_until(b"\n",readTimeout).decode('utf-8')
+                        if (terminalLine == ""):
+                            terminalRead = 1
+                        else:
+                            outputStream2 = outputStream2 + terminalLine
+                    except:
+                        print("   Connection error: ", sys.exc_info()[0])
+
+            for line in re.split(r"\r*\n",outputStream2)[-1:]:
+                line = re.sub(r"\x1b\[K( |\x08)*\x1b\[K","",line)                       # Cisco IOS-XR garbage line
+                line = re.sub(r"\x1b\[K","",line)                                       # Cisco IOS-XR garbage line
+                line = re.sub(r"\x1b\[42D +\x1b\[42D","",line)                          # Huawei VRP garbage line
+                line = re.sub(r" *\[1D","",line)                                        # Huawei VRP garbage line
+                line = line.translate(translator)
+                line = line.lstrip().rstrip()
+
+                if ( re.search(shellPromptRegexEmptyLine,line) ):
+                    if not ( re.search(localShellPrompt + r"( |\$)*",line) ):
+                        print("Error: looks like we are not on local shell now " + re.search(shellPromptRegexEmptyLine,line).group() + ", exiting...")
+                        # Sending exit
+                        if protocol == "ssh":
+                            connectionCursor.send("exit\n")
+                        if protocol == "telnet":
+                            connectionCursor.write(b"exit\n")
+                        time.sleep(0.1)
+                    else:
+                        localShellOk = True
+                        break
+
+            if localShellOk == False:
+                time.sleep(0.1)
             else:
-                command = commandTelnetConnect
-                remoteProtocol = "Telnet"
+                break
+
+            if connectionSuccess == -1:
+                break
+
+        if connectionSuccess == -1:
+            continue
+
+        remoteOutputText.extend(re.split("\r*\n",outputStream2))
+
+        if ( not terminalActive ):
+            print("Error: terminal not responding while trying to connect to " + remoteAddr)
+            connectionSuccess = -1
+            continue
+        else:
 
             # Sending command
             if protocol == "ssh":
-                # connectionCursor.send("\n" + command + "\n")
                 connectionCursor.send(command + "\n")
             if protocol == "telnet":
-                # connectionCursor.write(b"\n" + command.encode('ascii') + b"\n")
                 connectionCursor.write(command.encode('ascii') + b"\n")
 
             print(f"Sending command {command}")
             time.sleep(1)
 
             # Reading command output and waiting for password prompt
-            connectionSuccess = 0
+            # print(f"4.{attempt1}")
+            outputStream3 = ""
             while connectionSuccess == 0:
-                # time.sleep(1)
+            # print(outputPage)
                 outputPage = ""
                 if protocol == "ssh":
                     waitTime = 0
                     # Waiting for data
+                    # print(f"5.{attempt1}")
                     while not connectionCursor.recv_ready():
-                        execTime = time.time() - startTime
+                        execTime = time.time() - protocolStartTime
                         if ( execTime > execTimeout ):
-                            print("Error: command \"" + command + "\" execution has timed out")
+                            print("Error: command \"" + command + "\" execution procedure has timed out while attempting to execute target command (no data received)")
                             connectionCursor.send("\x03\n")
                             connectionSuccess = -1
                             break
+                    if not connectionCursor.recv_ready():
                         time.sleep(0.1)
-                        waitTime = waitTime + 0.1
-                        if waitTime >= waitTimeout:
-                            print("Error: command \"" + command + "\" execution procedure has timed out while attempting to execute target command")
-                            break
+                        # waitTime = waitTime + 0.1
+                        # if waitTime >= waitTimeout:
+                        #     print("Error: command \"" + command + "\" execution procedure has timed out while attempting to execute target command")
+                        #     break
+                    # print(f"6.{attempt1}")
                     while connectionCursor.recv_ready():
                         try:
-                            execTime = time.time() - startTime
+                            execTime = time.time() - protocolStartTime
                             if ( execTime > execTimeout ):
-                                print("Error: command \"" + command + "\" execution has timed out")
+                                print("Error: command \"" + command + "\" execution procedure has timed out while attempting to execute target command")
                                 connectionCursor.send("\x03\n")
                                 connectionSuccess = -1
                                 break
@@ -1026,13 +1195,15 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                         except:
                             print("   Connection error: ", sys.exc_info()[0])
                             # return None
+                    # print(f"7.{attempt1}")
+
                 if protocol == "telnet":
                     terminalRead = 0
                     while terminalRead == 0:
                         try:
-                            execTime = time.time() - startTime
+                            execTime = time.time() - protocolStartTime
                             if ( execTime > execTimeout ):
-                                print("Error: command \"" + command + "\" execution has timed out")
+                                print("Error: command \"" + command + "\" execution procedure has timed out while attempting to execute target command")
                                 connectionCursor.write(b"\x03\n")
                                 connectionSuccess = -1
                                 break
@@ -1046,29 +1217,35 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                         except:
                             print("   Connection error: ", sys.exc_info()[0])
 
+                if connectionSuccess == -1:
+                    break
+
+                # print(f"8.{attempt1}")
                 outputStream3 = outputStream3 + outputPage
-                remoteOutputText.extend(re.split(r"\r*\n",outputPage))
+                # remoteOutputText.extend(re.split(r"\r*\n",outputStream3))
 
                 # Check text lines for login/password or shell prompts
                 if len(outputStream3) > 0:
+                    triggered = False
                     for line in re.split(r"\r*\n",outputStream3)[-1:]:
-                        if re.search(r"((E|e)rror|(F|f)ail|(R|r)efuse|(N|n)ot +allowed)",line):
-                            print(f"Received a line with error \"{line}\"")
-                            connectionSuccess = -1
-                            # Aborting previous commands
-                            if protocol == "ssh":
-                                connectionCursor.send("\x03\n")
-                            if protocol == "telnet":
-                                connectionCursor.write(b"\x03\n")
-                            time.sleep(3)
-                            break
-                        elif re.search(r"(Y|y)es(/(N|n)o)?",line):
+                        # if re.search(r"((E|e)rror|(F|f)ail|(R|r)efuse|(N|n)ot +allowed)",line):
+                        #     print(f"Received a line with error \"{line}\"")
+                        #     connectionSuccess = -1
+                        #     # Aborting previous commands
+                        #     if protocol == "ssh":
+                        #         connectionCursor.send("\x03\n")
+                        #     if protocol == "telnet":
+                        #         connectionCursor.write(b"\x03\n")
+                        #     time.sleep(3)
+                        #     break
+                        if re.search(r"(Y|y)es(/(N|n)o)?",line):
                             print(f"Received yes/no prompt \"{line}\"")
                             # Accepting remote key
                             if protocol == "ssh":
                                 connectionCursor.send("yes\n")
                             if protocol == "telnet":
                                 connectionCursor.write(b"yes\n")
+                            triggered = True
                             time.sleep(1)
                             break
                         elif re.search(r"((L|l)ogin|((U|u)ser)?(N|n)ame)",line):
@@ -1078,6 +1255,7 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                                 connectionCursor.send(login + "\n")
                             if protocol == "telnet":
                                 connectionCursor.write(login.encode('ascii') + b"\n")
+                            triggered = True
                             time.sleep(1)
                             break
                         elif re.search(r"(P|p)ass(word)?",line):
@@ -1087,93 +1265,125 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                                 connectionCursor.send(password1 + "\n")
                             if protocol == "telnet":
                                 connectionCursor.write(password1.encode('ascii') + b"\n")
+                            triggered = True
                             time.sleep(1)
                             break
                         # Detect if output contains local shell prompt without command (connection failed)
                         elif ( re.search(re.escape(localShellPrompt) + r"( |\$)*$",line) ):
                             print(f"Received local shell prompt \"{line}\"")
+                            triggered = True
                             connectionSuccess = -1
                             break
                         # Detect if output contains any other shell prompt without command (connection succedeed)
                         elif ( re.search(shellPromptRegexEmptyLine,line) ):
                             print(f"Received remote shell prompt \"{line}\"")
+                            triggered = True
                             connectionSuccess = 1
                             break
 
+                    if triggered == False:
+                        # print(re.split(r"\r*\n",outputStream3)[-4:-1])
+                        for line in re.split(r"\r*\n",outputStream3)[-4:-1]:
+                            if re.search(r"((E|e)rror|(F|f)ail|(R|r)efuse|(N|n)ot +allowed)",line):
+                                print(f"Received a line with error \"{line}\"")
+                                connectionSuccess = -1
+                                # Aborting previous commands
+                                if protocol == "ssh":
+                                    connectionCursor.send("\x03\n")
+                                if protocol == "telnet":
+                                    connectionCursor.write(b"\x03\n")
+                                triggered == True
+                                time.sleep(3)
+                                break
+
+            # print(f"9.{attempt1}")
             # Check if we are connected, then proceed
             if connectionSuccess == 1:
                 break
+            elif connectionSuccess == -1:
+                continue
 
-        remoteOutputText.extend(re.split(r"\r*\n",outputStream1 + outputStream2 + outputStream3))
+        outputStream += outputStream1 + outputStream2 + outputStream3
 
-        if connectionSuccess != 1:
-            if protocol == "ssh":
-                connectionCursor.send("\x03")
-            if protocol == "telnet":
-                connectionCursor.write(b"\x03")
+    startTime = time.time()
+    # remoteOutputText.extend(re.split(r"\r*\n",outputStream1 + outputStream2 + outputStream3))
+    # outputStream = outputStream0 + outputStream1 + outputStream2 + outputStream3
+    remoteOutputText.extend(re.split("\r*\n",outputStream))
+    if connectionSuccess != 1:
+        if protocol == "ssh":
+            connectionCursor.send("\x03")
+        if protocol == "telnet":
+            connectionCursor.write(b"\x03")
 
-            print("Error: remote connection to " + remoteAddr + " failed")
-            execTime = time.time() - startTime
-            return [ 5, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
-        else:
+        print("Error: remote connection to " + remoteAddr + " failed")
+        execTime = time.time() - startTime
+        return [ 5, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+    else:
 
-            # Determine SW version and CLI syntax
-            remoteCLISyntax = ""
-            # Issuing a Cisco/Nokia style command
-            for attempt in range(0,2):
+        # Determine SW version and CLI syntax
+        remoteCLISyntax = ""
+        # Issuing a Cisco/Nokia style command
+        for attempt in range(0,3):
+            try:
                 remoteVersionLines = []
                 print("Executing remote command \"" + str(CommandsDict["IOS"][0][0]) + "\"")
                 output = execCLICommand(connectionCursor, protocol, CommandsDict["IOS"][0][0], CommandsDict["IOS"][0][1])
                 remoteVersionLines.extend(output[1])
                 if output[0] == 0: break
+            except:
+                print("Command \"" + str(CommandsDict["IOS"][0][0]) + "\" failed with exception", sys.exc_info()[0])
 
-            # Trying to find shell prompt
-            remoteShellPrompt = ""
-            for line in remoteVersionLines:
-                if not re.match(r"^#+.*#+$",line):
-                    # Syntax: all
-                    if re.search(shellPromptRegex,line):
-                        remoteShellPrompt = line.lstrip().rstrip()
-                        remoteShellPrompt = re.split(r"((>|#|\$|\%))", remoteShellPrompt)[0] + re.split(r"((>|#|\$|\%))", remoteShellPrompt)[1]
-                    if remoteShellPrompt != "":
-                        print("Found remote shell prompt: "+remoteShellPrompt)
-                        break
-
-            # Trying to find CLI syntax of Cisco/Nokia node
-            for line in remoteVersionLines:
-                searchExpression = r'.*Cisco IOS XR'
-                if re.match(searchExpression,line):
-                    remoteCLISyntax = "IOS-XR"
-                    break
-                searchExpression = r'.*Cisco IOS((-| )XE)? '
-                if re.match(searchExpression,line):
-                    remoteCLISyntax = "IOS"
-                    break
-                searchExpression = r'.*TiMOS-'
-                if re.match(searchExpression,line):
-                    remoteCLISyntax = "SR-OS"
+        # Trying to find shell prompt
+        remoteShellPrompt = ""
+        for line in remoteVersionLines:
+            if not re.match(r"^#+.*#+$",line):
+                # Syntax: all
+                if re.search(shellPromptRegex,line):
+                    remoteShellPrompt = line.lstrip().rstrip()
+                    remoteShellPrompt = re.split(r"((>|#|\$|\%))", remoteShellPrompt)[0] + re.split(r"((>|#|\$|\%))", remoteShellPrompt)[1]
+                if remoteShellPrompt != "":
+                    print("Found remote shell prompt: "+remoteShellPrompt)
                     break
 
-            if remoteCLISyntax == "":
-                # Issuing a Huawei style command
-                for attempt in range(0,2):
+        # Trying to find CLI syntax of Cisco/Nokia node
+        for line in remoteVersionLines:
+            searchExpression = r'.*Cisco IOS XR'
+            if re.match(searchExpression,line):
+                remoteCLISyntax = "IOS-XR"
+                break
+            searchExpression = r'.*Cisco IOS((-| )XE)? '
+            if re.match(searchExpression,line):
+                remoteCLISyntax = "IOS"
+                break
+            searchExpression = r'.*TiMOS-'
+            if re.match(searchExpression,line):
+                remoteCLISyntax = "SR-OS"
+                break
+
+        if remoteCLISyntax == "":
+            # Issuing a Huawei style command
+            for attempt in range(0,3):
+                try:
                     remoteVersionLines = []
                     print("Executing remote command \"" + str(CommandsDict["VRP"][0][0]) + "\"")
                     output = execCLICommand(connectionCursor, protocol, CommandsDict["VRP"][0][0], CommandsDict["VRP"][0][1])
                     remoteVersionLines.extend(output[1])
                     if output[0] == 0: break
+                except:
+                    print("Command \"" + str(CommandsDict["VRP"][0][0]) + "\" failed with exception", sys.exc_info()[0])
 
-                # Trying to find CLI syntax of Hiawei node
-                for line in remoteVersionLines:
-                    searchExpression = r'.*VRP \(R\) software'
-                    if re.match(searchExpression,line):
-                        remoteCLISyntax = "VRP"
-                        break
+            # Trying to find CLI syntax of Hiawei node
+            for line in remoteVersionLines:
+                searchExpression = r'.*VRP \(R\) software'
+                if re.match(searchExpression,line):
+                    remoteCLISyntax = "VRP"
+                    break
 
-            remoteOutputText.extend(remoteVersionLines)
-            if remoteCLISyntax == "":
-                print("Could not determine remote CLI syntax, skipping to next remote node")
-                remoteOutputText = remoteVersionLines.copy()
+        remoteOutputText.extend(remoteVersionLines)
+        if remoteCLISyntax == "":
+            print("Could not determine remote CLI syntax, skipping to next remote node")
+            remoteOutputText = remoteVersionLines.copy()
+            try:
                 command3 = "exit"
                 print("Executing remote command \"" + str(command3) + "\"")
                 output3 = execCLICommand(connectionCursor, protocol, command3, 10)
@@ -1182,55 +1392,64 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                     print("Executing remote command \"" + str(command3) + "\"")
                     output3 = execCLICommand(connectionCursor, protocol, command3, 10)
                 remoteOutputText.extend(output3[1])
-                execTime = time.time() - startTime
-                return [ 0, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
-            else:
-                print("Using following command syntax for this remote node: "+remoteCLISyntax)
+            except:
+                print("Could not exit from the remote node")
+            execTime = time.time() - startTime
+            return [ 0, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+        else:
+            print("Using following command syntax for this remote node: "+remoteCLISyntax)
 
-            remoteEnableLines = []
-            # Vendor-specific preparation phase
-            if remoteCLISyntax == "IOS":
-                if re.search(r'>',remoteShellPrompt):
+        remoteEnableLines = []
+        # Vendor-specific preparation phase
+        if remoteCLISyntax == "IOS":
+            if re.search(r'>',remoteShellPrompt):
 
-                    for attempt in range(0,2):
+                for attempt in range(0,3):
+                    try:
                         print("Executing remote command \"enable\"")
                         output = execCLICommand(connectionCursor, protocol, "enable\n" + password2, 20)
                         remoteEnableLines.extend(output[1])
                         remoteOutputText.extend(remoteEnableLines)
                         if output[0] == 0: break
+                    except:
+                        print("Command \"enable\" failed with exception", sys.exc_info()[0])
 
-                    # if debug:
-                    #     with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
-                    #         debugTextFile.write("\n".join(str(item) for item in enableLines))
+                # if debug:
+                #     with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+                #         debugTextFile.write("\n".join(str(item) for item in enableLines))
 
-                    remoteShellPrompt = remoteShellPrompt.replace(">","#")
-                    searchExpression = re.escape(remoteShellPrompt)
-                    match = 0
-                    for line in output[1]:
-                        if re.search(searchExpression, line):
-                            match = 1
-                            break
-                    if match == 1:
-                        for attempt in range(0,2):
+                remoteShellPrompt = remoteShellPrompt.replace(">","#")
+                searchExpression = re.escape(remoteShellPrompt)
+                match = 0
+                for line in output[1]:
+                    if re.search(searchExpression, line):
+                        match = 1
+                        break
+                if match == 1:
+                    for attempt in range(0,3):
+                        try:
                             remoteVersionLines = []
                             print("Executing remote command \"" + str(CommandsDict["IOS"][0][0]) + "\"")
                             output = execCLICommand(connectionCursor, protocol, CommandsDict["IOS"][0][0], CommandsDict["IOS"][0][1])
                             remoteVersionLines.extend(output[1])
                             remoteOutputText.extend(remoteVersionLines)
                             if output[0] == 0: break
+                        except:
+                            print("Command \"" + str(CommandsDict["IOS"][0][0]) + "\" failed with exception", sys.exc_info()[0])
 
-                        print("Using new remote shell prompt: "+remoteShellPrompt)
-
-
-                    else:
-                        print("Could not activate enable mode, skipping to next node")
-                        execTime = time.time() - startTime
-                        return [ 0, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
+                    print("Using new remote shell prompt: "+remoteShellPrompt)
 
 
+                else:
+                    print("Could not activate enable mode, skipping to next node")
+                    execTime = time.time() - startTime
+                    return [ 0, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
 
-            # Send required commands
-            if remoteCLISyntax == "IOS" or remoteCLISyntax == "IOS-XR":
+
+
+        # Send required commands
+        if remoteCLISyntax == "IOS" or remoteCLISyntax == "IOS-XR":
+            try:
                 command1 = "show run | i hostname"
                 print("Executing remote command \"" + str(command1) + "\"")
                 output1 = execCLICommand(connectionCursor, protocol, command1, 10)
@@ -1251,8 +1470,11 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                 print("Executing remote command \"" + str(command3) + "\"")
                 output3 = execCLICommand(connectionCursor, protocol, command3, 10)
                 remoteOutputText.extend(output3[1])
+            except:
+                print("Commands failed with exception", sys.exc_info()[0])
 
-            if remoteCLISyntax == "SR-OS":
+        if remoteCLISyntax == "SR-OS":
+            try:
                 command1 = "admin display-config | match \"        name\""
                 print("Executing remote command \"" + str(command1) + "\"")
                 output1 = execCLICommand(connectionCursor, protocol, command1, 10)
@@ -1273,9 +1495,20 @@ def pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,
                 print("Executing remote command \"" + str(command3) + "\"")
                 output3 = execCLICommand(connectionCursor, protocol, command3, 10)
                 remoteOutputText.extend(output3[1])
+            except:
+                print("Commands failed with exception", sys.exc_info()[0])
 
-            # print(output1)
-            # print(output2)
+        if remoteCLISyntax == "VRP":
+            try:
+                command3 = "exit"
+                print("Executing remote command \"" + str(command3) + "\"")
+                output3 = execCLICommand(connectionCursor, protocol, command3, 10)
+                remoteOutputText.extend(output3[1])
+            except:
+                print("Commands failed with exception", sys.exc_info()[0])
+
+        # print(output1)
+        # print(output2)
 
     execTime = time.time() - startTime
     return [ 0, remoteProtocol, remoteHostname, remoteSysAddr, remoteCLISyntax, remoteOutputText, execTime]
@@ -9707,29 +9940,35 @@ def collectFunc(login,password1,password2,hostAddr,outputPath,recursive):
         ################################################### Connect and poll all neighbors over SSH/Telnet ###################################################
 
         tempPeeringParseAll = []
-        # output = pollNeighbor(connectionCursor,protocol,login,password1,password2,remoteAddr,srcIfName,CLISyntax,execTimeout):
         for pollPeerLine in pollPeerList:
             if CLISyntax != "VRP":
                 print("Polling neighbor " + pollPeerLine[0] + " from source interface " + pollPeerLine[1])
-                output = pollNeighbor(connectionCursor,protocol,login,password1,password2,pollPeerLine[0],pollPeerLine[1],CLISyntax,60)
+                try:
+                    output = pollNeighbor(connectionCursor,protocol,login,password1,password2,pollPeerLine[0],pollPeerLine[1],CLISyntax,60)
 
-                if output[0] == 0:
-                    print("Neighbor " + pollPeerLine[0] + " is accessible via " + output[1] + ", has remoteHostname=" + output[2] + ", remoteSysAddr=" + output[3] + ", remoteCLISyntax=" + output[4])
+                    if output[0] == 0:
+                        print("Neighbor " + pollPeerLine[0] + " is accessible via " + output[1] + ", has remoteHostname=" + output[2] + ", remoteSysAddr=" + output[3] + ", remoteCLISyntax=" + output[4])
 
-                    tempPeeringParse = [""] * len(PeeringDict)
-                    tempPeeringParse[PeeringDict["PeeringType"][0]] = output[1]
-                    tempPeeringParse[PeeringDict["IfName"][0]] = pollPeerLine[1]
-                    tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = pollPeerLine[0]
-                    tempPeeringParse[PeeringDict["HostnameRemote"][0]] = output[2]
-                    tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = output[3]
-                    tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = output[4]
+                        tempPeeringParse = [""] * len(PeeringDict)
+                        tempPeeringParse[PeeringDict["PeeringType"][0]] = output[1]
+                        tempPeeringParse[PeeringDict["IfName"][0]] = pollPeerLine[1]
+                        tempPeeringParse[PeeringDict["IPV4AddrRemote"][0]] = pollPeerLine[0]
+                        tempPeeringParse[PeeringDict["HostnameRemote"][0]] = output[2]
+                        tempPeeringParse[PeeringDict["SysAddrRemote"][0]] = output[3]
+                        tempPeeringParse[PeeringDict["CLISyntaxRemote"][0]] = output[4]
 
-                    tempPeeringParseAll.append(tempPeeringParse)
+                        tempPeeringParseAll.append(tempPeeringParse)
 
-                if debug:
-                    with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
-                        debugTextFile.write("\n\n\n#####\tPolling neighbor " + pollPeerLine[0] + " from source interface " + pollPeerLine[1] + " on " + str(datetime.datetime.today()) + "\t#####\n")
-                        debugTextFile.write("\n".join(str(item) for item in output[5]))
+                    if debug:
+                        with open("./" + outputPath + "/debugText.txt", 'a') as debugTextFile:
+                            debugTextFile.write("\n\n\n#####\tPolling neighbor " + pollPeerLine[0] + " from source interface " + pollPeerLine[1] + " on " + str(datetime.datetime.today()) + "\t#####\n")
+                            debugTextFile.write("\n".join(str(item) for item in output[5]))
+                except KeyboardInterrupt:
+                    print("Polling neighbor " + hostAddr + " aborted by user")
+                    continue
+                except:
+                    print("Polling neighbor " + hostAddr + " failed with error: ", sys.exc_info()[0])
+                    continue
 
         # Write SSH/Telnet to a file (for diagnostic purposes)
         with open(outputFilePath, 'a') as outputFile:
@@ -10368,7 +10607,10 @@ else:
 
                 for host in mgmtAddrList:
                     hostAddr = ipaddress.ip_address(host)
-                    collectFunc(login,password1,password2,hostAddr,outputPath,recursive)
+                    try:
+                        collectFunc(login,password1,password2,hostAddr,outputPath,recursive)
+                    except:
+                        print("Connection from " + hostAddr + " failed with error: ", sys.exc_info()[0])
                 # print("Function under construction")
             else:
                 print("Unknown argument \""+sys.argv[1]+"\"")
