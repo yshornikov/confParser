@@ -170,6 +170,7 @@ CommandsDict =  {
     "IOS": [
         [ "show version", 30 ],
         [ "terminal length 0", 30 ],
+        # [ "", 30 ],
         [ "show running-config", 300 ],
         [ "show bootvar", 30 ],
         [ "show logging", 60 ],
@@ -236,6 +237,7 @@ CommandsDict =  {
     "IOS-XR": [
         [ "show version", 30 ],
         [ "terminal length 0", 30 ],
+        # [ "", 30 ],
         [ "show running-config", 300 ],
         [ "show variables boot", 30 ],
         [ "show logging", 60 ],
@@ -309,6 +311,7 @@ CommandsDict =  {
     "VRP": [
         [ "display version", 30 ],
         [ "screen-length 0 temporary", 30 ],
+        # [ "", 30 ],
         [ "display current-configuration", 300 ],
         [ "display startup", 30 ],
         [ "display logbuffer", 60 ],
@@ -361,7 +364,7 @@ CommandsDict =  {
         [ "display mpls lsp verbose", 60 ],
         [ "display mpls interface verbose", 60 ],
         [ "display mpls ldp peer all verbose", 60 ],
-        [ "display mpls ldp adjacency verbose",  ],
+        [ "display mpls ldp adjacency verbose", 60 ],
         [ "display mpls ldp remote-peer", 60 ],
         [ "display mpls ldp interface verbose", 60 ],
         [ "display mpls ldp lsp all", 300 ],
@@ -369,9 +372,9 @@ CommandsDict =  {
         [ "display mpls rsvp peer", 60 ],
         [ "display mpls rsvp interface", 60 ],
         [ "display mpls rsvp request", 60 ],
-        [ "display mpls rsvp-te psb-content",  ],
+        [ "display mpls rsvp-te psb-content", 60 ],
         [ "display mpls rsvp reservation", 60 ],
-        [ "display mpls rsvp-te rsb-content",  ],
+        [ "display mpls rsvp-te rsb-content", 60 ],
         [ "display mpls lsp protocol rsvp-te", 60 ],
         [ "display mpls lsp protocol bgp", 60 ],
         [ "display ip vpn-instance", 60 ],
@@ -392,6 +395,7 @@ CommandsDict =  {
     "SR-OS": [
         [ "show version", 30 ],
         [ "environment no more", 30 ],
+        # [ "", 30 ],
         [ "admin display-config", 300 ],
         [ "show bof", 30 ],
         [ "show boot-messages", 60 ],
@@ -2481,7 +2485,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                     # Find subinterfaces and respective VLANs associated with current interface
                     for obj40 in cfg.find_objects(r"^interface"):
-                        searchExpression = r"^ *interface " + InterfacesParse[InterfacesDict["IfName"][0]] + r"[\. $]"
+                        searchExpression = r"^ *interface " + InterfacesParse[InterfacesDict["IfName"][0]] + r"\..*$"
                         if re.match(searchExpression,obj40.text):
                             # print("FOUND")
                             for obj3 in obj40.re_search_children(r"^ *encapsulation "):
