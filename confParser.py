@@ -2531,7 +2531,7 @@ def parseFunc(inputFiles,outputDB,defaultCLISyntax,genClean):
 
                     # Find all IPv4 addresses associated with current interface
                     for obj2 in obj1.re_search_children("ipv4 address "):
-                        rawInput = obj2.text.split("ipv4 address ")[1].lstrip().rstrip()
+                        rawInput = obj2.text.split("ipv4 address ")[1].lstrip().rstrip().split()[0]
                         rawInput = rawInput.replace(" ","/")
                         ipadd = ipaddress.ip_interface(str(rawInput))
                         if InterfacesParse[InterfacesDict["IPV4Addr"][0]] == "":
